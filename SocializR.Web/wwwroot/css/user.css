@@ -1,0 +1,13 @@
+﻿.delete-user {
+    color: seagreen;
+}
+
+.activate-user {
+    color: darkred;
+}
+
+.nav > li > button {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+}

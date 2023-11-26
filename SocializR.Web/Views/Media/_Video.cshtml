@@ -1,0 +1,24 @@
+﻿@using SocializR.Entities.Enums
+@model MediaModel
+
+@{
+    ViewData["Title"] = "_Media";
+}
+<figure class="media-body">
+    <input type="hidden" asp-for="Id" value="@Model.Id" class="image-id" />
+    <video controls class="figure-img img-fluid rounded" alt="A generic square placeholder image with rounded corners in a figure."
+           id="@Model.Id">
+        <source src="@Url.Action("Render", "Media", new { id = Model.Id })" type="video/mp4">
+        <source src="@Url.Action("Render", "Media", new { id = Model.Id })" type="video/m4v">
+    </video>
+    <div class="figure-caption row">
+        <textarea class="comment-body col-sm-11 text caption" placeholder="Write a description...">@Model.Caption</textarea>
+        <button class="btn btn-xs delete col-sm-1 float-right" data-title="Delete" data-toggle="modal" data-target="#delete">
+            <span class="glyphicon glyphicon-trash"></span>
+        </button>
+    </div>
+</figure>
+
+
+
+

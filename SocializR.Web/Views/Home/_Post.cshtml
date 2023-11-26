@@ -1,0 +1,81 @@
+﻿@inject UserManager<User> userManager
+@model PostVM
+
+@{
+}
+
+<div class="container post-container">
+    <div class="row">
+        <div class="col-sm-1">
+            <a asp-controller="Profile" asp-action="Get" asp-route-id="@Model.UserId">
+                <img class="img-responsive img-circle img-thumbnail user-photo" src="@Url.Action("Render", "Media", new { id = Model.UserPhoto })">
+            </a>
+        </div>
+        <div class="col-sm-7">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a asp-controller="Profile" asp-action="Get" asp-route-id="@Model.UserId" class="text-bold">@Model.FirstName @Model.LastName</a>
+                    <span class="search-for-link">@Model.Title</span>
+                    <span class="delete-post-container btn-group-xs">
+                        <input asp-for="@Model.IsCurrentUserPost" value="@Model.IsCurrentUserPost" name="@Model.IsCurrentUserPost" type="hidden" class="is-current-user-post" />
+                        <input asp-for="@Model.Id" value="@Model.Id" name="@Model.Id" type="hidden" class="post-id" />
+                    </span>
+                    <div class="text-muted">@DateConverter.Convert(Model.CreatedOn)</div>
+                </div>
+                <div class="panel-body pre search-for-link">
+                    @Model.Body
+                </div>
+
+                <div class="images">
+                    @if (Model.Media != null)
+                    {
+                        foreach (var elem in Model.Media)
+                        {
+                            if (elem.Type == MediaTypes.Image)
+                            {
+                                @await Html.PartialAsync("_Image", elem);
+                            }
+                            else if (elem.Type == MediaTypes.Video)
+                            {
+                                @await Html.PartialAsync("_Video", elem);
+                            }
+                        }
+                    }
+                </div>
+
+                <div class="panel-footer post-footer">
+                    <input type="hidden" value=1 class="comments-page" />
+                    <input asp-for="@Model.Id" value="@Model.Id" name="@Model.Id" type="hidden" class="post-id" />
+                    <input asp-for="@Model.IsLikedByCurrentUser" value="@Model.IsLikedByCurrentUser" name="@Model.IsLikedByCurrentUser" type="hidden" class="is-liked" />
+                    <button class="btn like" title="heart post" data-toggle="tooltip" data-placement="bottom"><i class="glyphicon glyphicon-heart"></i></button>
+                    <button class="btn float-right see-comments more-comments" title="see more comments" data-toggle="tooltip" data-placement="bottom"><i class="glyphicon glyphicon-plus"></i><span class="nr-of-likes">More comments</span></button>
+                    <button class="btn float-right see-comments" title="nr. of comments" data-toggle="tooltip" data-placement="bottom"><i class="glyphicon glyphicon-comment"></i><span class="nr-of-comments">@Model.NumberOfComments Comments</span></button>
+                    <button class="btn float-right see-likes" title="see likes" data-toggle="tooltip" data-placement="bottom"><i class="glyphicon glyphicon-heart"></i><span class="nr-of-likes">@Model.NumberOfLikes Hearts</span></button>
+                    <div class="comments-container">
+                        @if (Model.Comments != null)
+                        {
+                            var nrOfComments = Model.Comments.Count-1;
+                            for (var i = 0; i <= nrOfComments; i++) 
+                            {
+                                @await Html.PartialAsync("_Comment", Model.Comments[nrOfComments - i]);
+                            }
+                        }
+                        <div class="fresh-comments-container"></div>
+                        <div class="insert-container">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <img class="img-responsive img-circle img-thumbnail small-user-photo" src="@Url.Action("RenderProfilePicture", "Profile", new { id = userManager.GetUserId(User) })">
+                                </div>
+                                <div class="col-sm-10 no-padding-left">
+                                    <input asp-for="@Model.Id" value="@Model.Id" name="@Model.Id" type="hidden" class="post-id" />
+                                    <textarea class="comment-body textarea-padding col-sm-11 text" placeholder="Write a comment..."></textarea>
+                                    <i class="glyphicon glyphicon-chevron-right btn float-right comment col-sm-1"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

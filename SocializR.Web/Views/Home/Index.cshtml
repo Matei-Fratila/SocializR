@@ -1,0 +1,57 @@
+﻿@inject CurrentUser currentUser
+@model FeedVM
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section scripts{
+    <link href="~/css/feed.css" rel="stylesheet" />
+    <script src="~/js/app/feed.js"></script>
+}
+
+<div class="container post-container">
+    <div class="row">
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-7">
+            <div class="widget-area blank">
+                <h3>
+                    <i class="glyphicon glyphicon-pencil"></i>
+                    Write Post
+                </h3>
+                <div class="status-upload">
+                    <form id="post-form" class="border">
+                        @Html.AntiForgeryToken()
+                        <input id="post-title" class="col-sm-12 textarea-padding" placeholder="Give your post a title" />
+                        <textarea id="post-body" class="textarea-padding" placeholder="What are you doing right now?"></textarea>
+
+                        <div class="col-sm-2 small-margin">
+                            <span class="btn btn-primary btn-file">
+                                <i class="glyphicon glyphicon-camera"></i>
+                                add photos
+                                <input title="add photos" multiple data-toggle="tooltip" data-placement="bottom" type="file" accept="image/*, video/*" text="add photos" id="files" />
+                            </span>
+                        </div>
+
+                        <div class="col-sm-2 small-margin float-right">
+                            <button id="share" type="button" class="btn btn-success">
+                                <i class="glyphicon glyphicon-ok"></i>
+                                Share
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div id="media" class="border">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="posts-container">
+    @foreach (var post in Model.Posts)
+    {
+        @await Html.PartialAsync("_Post", post);
+    }
+</div>

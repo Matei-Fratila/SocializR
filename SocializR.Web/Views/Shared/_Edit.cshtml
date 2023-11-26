@@ -1,0 +1,40 @@
+﻿@model EditAlbumVM
+
+@section scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+}
+
+<form asp-controller="Album" asp-action="Edit" id="edit-album">
+    <input type="hidden" asp-for="@Model.Id" id="album-id" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    @if (Model.Name == "Profile Pictures" || Model.Name == "Posts Photos")
+    {
+        <h3>@Model.Name</h3>
+    }
+    else
+    {
+        <div class="form-group row">
+            <label asp-for="Name" class="col-sm-2 col-form-label">Album name</label>
+            <div class="col-sm-6">
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+
+    }
+
+    <div class="row">
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-default" id="save-changes">Save Changes</button>
+        </div>
+        <div class="col-sm-2">
+            <span class="btn btn-primary btn-file">
+                <i class="glyphicon glyphicon-camera"></i>
+                add photos
+                <input title="add photos" multiple data-toggle="tooltip" data-placement="bottom" type="file" accept="image/*" id="files">
+            </span>
+        </div>
+    </div>
+
+</form>

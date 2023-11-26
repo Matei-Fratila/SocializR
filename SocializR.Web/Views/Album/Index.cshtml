@@ -1,0 +1,36 @@
+﻿@model AlbumsVM
+
+@{
+    ViewData["Title"] = "Create Album";
+}
+
+@section scripts {
+    <script src="~/js/app/gallery.js"></script>
+    <link href="~/css/media.css" rel="stylesheet" />
+    <link href="~/css/album.css" rel="stylesheet" />
+    <script src="~/js/app/album.js"></script>
+    <link href="~/css/gallery.css" rel="stylesheet" />
+}
+
+<h3>Your albums</h3>
+<hr />
+
+@await Html.PartialAsync("_Create", Model.NewAlbum)
+
+<div class="albums-container row">
+    @foreach (var album in Model.Albums)
+    {
+        @await Html.PartialAsync("_Album", album);
+    }
+</div>
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">&times;</a>
+            <h4 class="modal-title" />
+        </div>
+        <div class="modal-body inherited-size" id="modal-gallery">
+        </div>
+    </div>
+</div>

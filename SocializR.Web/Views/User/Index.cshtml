@@ -1,0 +1,22 @@
+﻿@model IPagedList<UserVM>
+@using X.PagedList.Mvc.Core
+@using X.PagedList
+
+@section scripts{
+    <script src="~/js/app/user.js"></script>
+    <link href="~/css/user.css" rel="stylesheet" />
+}
+
+<h3>All Users</h3>
+
+<ul id="users-container" class="nav">
+    @foreach (var user in Model)
+    {
+        @await Html.PartialAsync("_User", user);
+    }
+</ul>
+
+<input type="hidden" id="page" />
+<div class="text-center">
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+</div>

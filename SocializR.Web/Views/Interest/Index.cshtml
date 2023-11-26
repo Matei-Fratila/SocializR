@@ -1,0 +1,41 @@
+﻿@model IEnumerable<InterestVM>
+
+@{
+    ViewData["Title"] = "Interests";
+}
+
+@section scripts{
+    <script src="~/js/app/interest.js"></script>
+}
+
+<h2>Interests</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table table-striped table-hover table-condensed">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <input asp-for="@item.Id" value="@item.Id" name="@item.Id" type="hidden" class="interest-id" />
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @*@Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |*@
+                    <a class="delete-interest">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

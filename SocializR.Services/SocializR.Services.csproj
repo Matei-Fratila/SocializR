@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="AutoMapper" Version="7.0.1" />
+    <DotNetCliToolReference Include="Microsoft.AspNetCore.Http.Features" Version="2.1.1" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore" Version="2.1.2" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.2" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.1.2" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Socializr.DataAccess\SocializR.DataAccess.csproj" />
+    <ProjectReference Include="..\Socializr.Entities\SocializR.Entities.csproj" />
+    <ProjectReference Include="..\Utils\Utils.csproj" />
+  </ItemGroup>
+
+</Project>

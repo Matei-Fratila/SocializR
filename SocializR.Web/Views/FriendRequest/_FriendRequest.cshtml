@@ -1,0 +1,52 @@
+﻿@model FriendrequestVM
+
+@{
+    ViewData["Title"] = "_Image";
+}
+
+<li class="col-sm-10">
+    <a asp-controller="Profile" asp-action="Get" asp-route-id=@Model.Id class="UserName side-menu-item">
+        <img class="img-responsive img-circle img-thumbnail" id="avatar-photo" src="@Url.Action("RenderProfilePicture", "Profile", new { id=Model.Id})">
+        @Model.FirstName @Model.LastName
+    </a>
+</li>
+
+<li class="user-container col-sm-2">
+    <input class="user-id" value="@Model.Id" type="hidden" />
+    <button class="btn-link float-right action"></button>
+    <a class="btn-link float-right accept-friend-request"><i class="glyphicon glyphicon-ok"></i></a>
+    <a class="btn-link float-right reject-friend-request"><i class="glyphicon glyphicon-remove"></i></a>
+    <span class="float-right">@DateConverter.Convert(Model.CreatedOn)</span>
+</li>
+
+@*<div class="container-fluid custom-margin custom-margin-2 personcontainer">
+
+    <div class="col-sm-6">
+        <img src="@Url.Action("RenderProfilePicture", "Profile", new { id = Model.ProfilePhotoId })" height="120" width="120" class="Content" />
+    </div>
+
+    <input asp-for="Id" name="@Model.Id" value="@Model.Id" type="hidden" class="user-id" />
+
+    <div class="col-sm-6">
+        <div>
+            <p>@Model.FirstName @Model.LastName</p>
+        </div>
+
+        <div>
+            <p class="message">@Model.RequestMessage</p>
+        </div>
+
+        <div>
+            <p class="time-created">@DateConverter.Convert(Model.CreatedOn)</p>
+        </div>
+
+        <div class="col-sm-6">
+            <button class="approve-button">Aprove</button>
+        </div>
+
+        <div class="col-sm-6">
+            <button class="reject-button">Reject</button>
+        </div>
+    </div>
+</div>*@
+

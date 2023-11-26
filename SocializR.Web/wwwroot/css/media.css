@@ -1,0 +1,91 @@
+﻿figure {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-bottom: 35px;
+    margin-top: 35px;
+    width: 330px;
+}
+
+.album-container {
+    padding:20px 45px;
+}
+
+.media-container {
+    margin: 20px;
+}
+
+.media-body {
+    width: auto;
+}
+
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    cursor: inherit;
+    display: block;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+
+
+input {
+    border: none;
+}
+
+.card-body{
+    padding:15px;
+    background-color:snow;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+.figure-caption {
+    margin:0;
+    background-color:snow;
+}
+
+input{
+    border:none;
+}
+
+textarea {
+    overflow: hidden;
+    padding: 0;
+    resize: none;
+    border-color: #ddd;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.shadow {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.figure-caption {
+    padding: 15px;
+    width: 330px;
+    display:block;
+}
+
+.cover {
+    object-fit: cover;
+    width: 50px;
+    height: 100px;
+}
+
+figure img, figure video {
+    width:330px;
+    height: auto;
+}

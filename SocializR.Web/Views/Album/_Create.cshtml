@@ -1,0 +1,20 @@
+﻿@model CreateAlbumVM
+
+@{
+    ViewData["Title"] = "Create Album";
+}
+
+<form asp-controller="Album" asp-action="Create" id="create-album">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group row">
+        <label asp-for="Name" class="col-sm-2 col-form-label">Album name</label>
+        <div class="col-sm-8">
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="col-sm-2 form-group">
+            <input type="submit" value="Add" class="btn btn-default" />
+        </div>
+    </div>
+</form>

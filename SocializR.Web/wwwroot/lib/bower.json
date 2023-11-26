@@ -1,0 +1,24 @@
+{
+  "name": "lib",
+  "authors": [
+    "Matei Fratila <matei.fratila@essensys.ro>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "handlebars": "v4.0.11"
+    //"bootstrap": "v3.3.7",
+    //"jquery": "v2.2.0",
+    //"jquery-validation": "v1.14.0",
+    //"jquery-validation-unobtrusive": ""
+  }
+}

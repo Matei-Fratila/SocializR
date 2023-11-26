@@ -1,0 +1,29 @@
+﻿@using SocializR.Web.Code.Converters
+@model CommentVM
+@{
+}
+
+<div class="comment-container">
+    <div class="row">
+        <div class="col-sm-2">
+            <a asp-controller="Profile" asp-action="Get" asp-route-id="@Model.UserId">
+                <img class="img-responsive img-circle img-thumbnail small-user-photo" src="@Url.Action("Render", "Media", new { id = Model.UserPhoto })">
+            </a>
+        </div>
+        <div class="col-sm-10 no-padding-left">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                        <a asp-controller="Profile" asp-action="Get" asp-route-id="@Model.UserId" class="text-bold">@Model.FirstName @Model.LastName</a>
+                        <span class="text-muted">@DateConverter.Convert(Model.CreatedOn)</span>
+                    <div class="delete-comment-container btn-group-xs float-right">
+                        <input asp-for="@Model.IsCurrentUserComment" value="@Model.IsCurrentUserComment" name="@Model.IsCurrentUserComment" type="hidden" class="is-current-user-comment" />
+                        <input asp-for="@Model.Id" value="@Model.Id" name="@Model.Id" type="hidden" class="comment-id" />
+                    </div>
+                </div>
+                <div class="panel-body pre search-for-link">
+                    @Model.Body
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

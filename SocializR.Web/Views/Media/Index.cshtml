@@ -1,0 +1,40 @@
+﻿@model ImagesVM
+
+@{
+    ViewData["Title"] = "EditAlbum";
+}
+
+@section scripts{
+    <link href="~/css/media.css" rel="stylesheet" />
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation/dist/additional-methods.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+    <script src="~/js/app/media.js"></script>
+}
+
+<h3>Edit Photos</h3>
+<hr />
+
+@await Html.PartialAsync("_Edit", Model.Album)
+
+@*<input id="files" type="file" multiple accept="image/*" value="Choose photos" class="btn btn-default" />*@
+
+
+<div id="media" class="row">
+    <div class="col-sm-12 media-container" id="uploaded">
+    </div>
+    @foreach (var media in Model.Album.Media)
+    {
+        <div class="col-sm-5 media-container">
+            @if (media.Type == MediaTypes.Image)
+            {
+                @await Html.PartialAsync("_Image", media);
+            }
+            else if (media.Type == MediaTypes.Video)
+            {
+                @await Html.PartialAsync("_Video", media);
+            }
+        </div>
+    }
+</div>

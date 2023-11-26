@@ -1,0 +1,150 @@
+﻿@inject UserManager<User> UserManager
+@model ViewProfileVM
+@using SocializR.Entities.Enums
+
+@{
+    ViewData["Title"] = "View";
+}
+
+@section scripts{
+    <script src="~/js/app/profile.js"></script>
+    <script src="~/js/app/gallery.js"></script>
+    <script src="~/js/app/album.js"></script>
+    <link href="~/css/media.css" rel="stylesheet" />
+    <link href="~/css/avatar.css" rel="stylesheet" />
+    <link href="~/css/album.css" rel="stylesheet" />
+}
+
+<div class="row avatar sections-layout">
+    <div class="col-sm-3">
+        <img class="img-responsive img-circle img-thumbnail header-photo" src="@Model.FilePath">
+    </div>
+    <div class="col-sm-9 no-padding-left">
+        <h2>@Model.FirstName @Model.LastName</h2>
+    </div>
+
+    @switch (Model.RelationToCurrentUser)
+    {
+        case (RelationTypes.Friends):
+            <a class="btn btn-primary unfriend">Unfriend</a>
+            break;
+        case (RelationTypes.Strangers):
+            <a class="btn btn-primary send-friend-request">Send Friend Request</a>
+            break;
+        case (RelationTypes.PendingAccept):
+            <a class="btn btn-success accept-friend-request">Accept friend request</a>
+            <a class="btn btn-danger reject-friend-request">Reject friend request</a>
+            break;
+        case (RelationTypes.RequestedFriendship):
+            <a class="btn btn-primary delete-friendrequest">Delete Friend Request</a>
+            break;
+        default:
+            break;
+    }
+
+    @if (Model.Id != UserManager.GetUserId(User))
+    {
+        <span>@Model.MutualFriends mutual friends</span>
+
+    }
+
+</div>
+
+
+<div class="row no-margin">
+    <h3>Contact information</h3>
+    <hr />
+
+    <input asp-for="Id" type="hidden" />
+
+    <div class="col-sm-6">
+        <div class="form-group row">
+            <label asp-for="FirstName" class="col-sm-4 col-form-label">First Name</label>
+            <div class="col-sm-8">
+                <span asp-for="FirstName">@Model.FirstName</span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label asp-for="LastName" class="col-sm-4 col-form-label">Last Name</label>
+            <div class="col-sm-8">
+                <span asp-for="LastName">@Model.LastName</span>
+            </div>
+        </div>
+
+        @if (Model.BirthDate != null)
+        {
+            <div class="form-group row">
+                <label asp-for="BirthDate" class="col-sm-4 col-form-label">BirthDate</label>
+                <div class="col-sm-8">
+                    <p>@Model.BirthDate.Value.ToShortDateString()</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group row">
+            <label asp-for="County" class="col-sm-4 col-form-label">County</label>
+            <div class="col-sm-8">
+                <span asp-for="CountyId">@Model.County</span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label asp-for="City" class="col-sm-4 col-form-label">City</label>
+            <div class="col-sm-8">
+                <span asp-for="City">@Model.City</span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label asp-for="Gender" class="col-sm-4 col-form-label">Gender</label>
+            <div class="col-sm-8">
+                <span asp-for="Gender">@Model.Gender</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <h3>Likes and interests</h3>
+    <hr />
+
+    <div class="form-group row">
+        <label asp-for="MyInterests" class="col-sm-2 col-form-label">Interests</label>
+        <div class="col-sm-10">
+            <select asp-for="MyInterests" asp-items="Model.Interests" disabled class="js-states form-control" id="select2interests-view" multiple="multiple"></select>
+        </div>
+    </div>
+</div>
+
+
+@if (Model.IsPrivate == false || Model.Id == UserManager.GetUserId(User) || (Model.IsPrivate == true && Model.RelationToCurrentUser == RelationTypes.Friends))
+{
+    <div>
+        <h3>Albums</h3>
+        <hr />
+        <div class="albums-container row">
+            @foreach (var album in Model.Albums)
+            {
+                @await Html.PartialAsync("../Album/_Album", album);
+            }
+        </div>
+    </div>
+}
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class="close" data-dismiss="modal">&times;</a>
+                <h4 class="modal-title" />
+            </div>
+            <div class="modal-body" id="modal-gallery">
+            </div>
+        </div>
+    </div>
+</div>
+
+

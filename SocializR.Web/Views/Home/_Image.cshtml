@@ -1,0 +1,17 @@
+﻿@using SocializR.Entities.Enums
+@model MediaModel
+
+@{
+    ViewData["Title"] = "_Image";
+}
+
+<input asp-for="Id" name="@Model.Id" value="@Model.Id" type="hidden" class="image-id" />
+<div class="row">
+    <figure class="figure col-sm-12">
+        <input type="hidden" asp-for="Id" value="@Model.Id" class="image-id" />
+        <img src="\images\uploads\pxuzzzum.aqf.jpeg" class="no-side-padding col-sm-12 figure-img img-fluid rounded" alt="A generic square placeholder image with rounded corners in a figure." />
+        <textarea class="comment-body col-sm-12 text img-description" disabled>@Model.Caption</textarea>
+    </figure>
+</div>
+
+

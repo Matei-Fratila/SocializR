@@ -1,0 +1,249 @@
+﻿body {
+    color: lightslategrey;
+}
+
+figure {
+    width: 330px;
+}
+
+.user-photo {
+    width: 68px !important;
+    height: 68px !important;
+    object-fit: cover;
+}
+
+.btn:hover {
+    color:steelblue;
+}
+
+.small-margin {
+    margin:10px 15px;
+}
+
+.no-padding-left {
+    padding-left:0px;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.img-description {
+    border:0px;
+    padding-top: 15px;
+}
+
+.img-description:disabled {
+    background-color: white;
+}
+
+textarea {
+    overflow: hidden;
+    padding: 0;
+    resize: none;
+    border-color: #ddd;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.comment-body {
+    overflow-wrap: break-word;
+}
+
+.panel-body {
+    overflow-wrap: break-word;
+}
+
+.nr-of-likes {
+    margin: 3px;
+}
+
+.nr-of-comments {
+    margin: 3px;
+}
+
+input {
+    border: none;
+}
+
+.shadow {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.figure-caption {
+    padding: 15px;
+    width: 330px;
+}
+
+.no-side-padding {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+
+.post {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.comments-container {
+    margin-top: 17px;
+}
+
+.liked {
+    /*background-color: steelblue !important;*/
+    font-weight: bold;
+    color: red !important;
+}
+
+.like {
+    font-weight:bold;
+    background-color: #f5f5f5;
+    color: lightslategrey;
+}
+
+.see-comments {
+    /*font-weight: bold;*/
+    background-color: #f5f5f5;
+}
+
+.see-likes {
+    /*font-weight: bold;*/
+    background-color: #f5f5f5;
+}
+
+.second-col {
+    background-color: #e8edf2;
+}
+
+.border {
+    border: 1px solid #ddd;
+}
+
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    cursor: inherit;
+    display: block;
+}
+
+.widget-area.blank {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.widget-area {
+    background-color: #fff;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 0 16px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0 0 16px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.05);
+    float: left;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    position: relative;
+    width: 100%;
+}
+
+.status-upload {
+    background: none repeat scroll 0 0 #f5f5f5;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    float: left;
+    width: 100%;
+}
+
+.status-upload form {
+    float: left;
+    width: 100%;
+}
+
+.status-upload form textarea {
+    background: none repeat scroll 0 0 #fff;
+    border: medium none;
+    -webkit-border-radius: 4px 4px 0 0;
+    -moz-border-radius: 4px 4px 0 0;
+    border-radius: 4px 4px 0 0;
+    color: #777777;
+    float: left;
+    font-size: 14px;
+    height: 142px;
+    letter-spacing: 0.3px;
+    padding: 10px;
+    width: 100%;
+    resize: vertical;
+    outline: none;
+    border: 1px solid #F2F2F2;
+}
+
+.status-upload ul {
+    float: left;
+    list-style: none outside none;
+    margin: 0;
+    padding: 0 0 0 15px;
+    width: auto;
+}
+
+        .status-upload ul > li {
+            float: left;
+        }
+
+.status-upload ul > li > a {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    color: #777777;
+    float: left;
+    font-size: 14px;
+    height: 30px;
+    line-height: 30px;
+    margin: 10px 0 10px 10px;
+    text-align: center;
+    -webkit-transition: all 0.4s ease 0s;
+    -moz-transition: all 0.4s ease 0s;
+    -o-transition: all 0.4s ease 0s;
+    transition: all 0.4s ease 0s;
+    width: 30px;
+    cursor: pointer;
+}
+
+.status-upload ul > li > a:hover {
+    background: none repeat scroll 0 0 #606060;
+    color: #fff;
+}
+
+.status-upload form button {
+    border: medium none;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    color: #fff;
+    float: right;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    padding: 6px 15px;
+}
+
+.dropdown > a > span.green:before {
+    border-left-color: #2dcb73;
+}
+
+.status-upload form button > i {
+    margin-right: 7px;
+}
