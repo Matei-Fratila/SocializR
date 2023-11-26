@@ -1,33 +1,29 @@
-﻿using Microsoft.AspNetCore.Identity;
-using SocializR.Entities;
+﻿namespace SocializR.DataAccess.Seeds;
 
-namespace SocializR.DataAccess.Seeds
+public static class SeedRoles
 {
-    public static class SeedRoles
+    public static void Seed(RoleManager<Role> roleManager)
     {
-        public static void Seed(RoleManager<Role> roleManager)
+        if (!roleManager.RoleExistsAsync("Administrator").Result)
         {
-            if (!roleManager.RoleExistsAsync("Administrator").Result)
+            Role role = new Role
             {
-                Role role = new Role
-                {
-                    Name = "Administrator",
-                    Description = "Can do anything"
-                };
+                Name = "Administrator",
+                Description = "Can do anything"
+            };
 
-                var result = roleManager.CreateAsync(role).Result;
-            }
+            var result = roleManager.CreateAsync(role).Result;
+        }
 
-            if (!roleManager.RoleExistsAsync("RegularUser").Result)
+        if (!roleManager.RoleExistsAsync("RegularUser").Result)
+        {
+            Role role = new Role
             {
-                Role role = new Role
-                {
-                    Name = "RegularUser",
-                    Description = "Can perform only basic operations"
-                };
+                Name = "RegularUser",
+                Description = "Can perform only basic operations"
+            };
 
-                var result = roleManager.CreateAsync(role).Result;
-            }
+            var result = roleManager.CreateAsync(role).Result;
         }
     }
 }

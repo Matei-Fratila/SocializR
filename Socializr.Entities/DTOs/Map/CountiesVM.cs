@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace SocializR.Entities.DTOs.Map;
 
-namespace SocializR.Entities.DTOs.Map
+public class CountiesVM
 {
-    public class CountiesVM
-    {
-        public List<CountyVM> Counties;
-    }
+    public List<CountyVM> Counties;
 }

@@ -1,9 +1,8 @@
-﻿namespace SocializR.Entities.Enums
+﻿namespace SocializR.Entities.Enums;
+
+public enum GenderTypes
 {
-    public enum GenderTypes
-    {
-        Unspecified = 0,
-        Male = 1,
-        Female = 2
-    }
+    Unspecified = 0,
+    Male = 1,
+    Female = 2
 }

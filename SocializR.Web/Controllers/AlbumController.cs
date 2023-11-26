@@ -1,106 +1,93 @@
-﻿using SocializR.Web.Code.Base;
-using SocializR.Services.AlbumServices;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using SocializR.Entities.DTOs.Album;
-using Microsoft.AspNetCore.Authorization;
-using SocializR.Services.MediaServices;
-using Common.Interfaces;
-using SocializR.Entities.Enums;
-using System.Diagnostics;
-using System.IO;
+﻿namespace SocializR.Web.Controllers;
 
-namespace SocializR.Web.Controllers
+[Authorize]
+public class AlbumController : BaseController
 {
-    [Authorize]
-    public class AlbumController : BaseController
+    private readonly AlbumService albumService;
+    private readonly MediaService mediaService;
+    private readonly IValidationService validationService;
+    private readonly IImageStorage imageStorage;
+
+    public AlbumController(AlbumService albumService, MediaService mediaService, IMapper mapper, IValidationService validationService,
+        IImageStorage imageStorage)
+        : base(mapper)
     {
-        private readonly AlbumService albumService;
-        private readonly MediaService mediaService;
-        private readonly IValidationService validationService;
-        private readonly IImageStorage imageStorage;
+        this.imageStorage = imageStorage;
+        this.validationService = validationService;
+        this.mediaService = mediaService;
+        this.albumService = albumService;
+    }
 
-        public AlbumController(AlbumService albumService, MediaService mediaService, IMapper mapper, IValidationService validationService,
-            IImageStorage imageStorage)
-            : base(mapper)
+    [HttpGet]
+    public IActionResult Index()
+    {
+        var model = new AlbumsVM
         {
-            this.imageStorage = imageStorage;
-            this.validationService = validationService;
-            this.mediaService = mediaService;
-            this.albumService = albumService;
+            Albums = albumService.GetAll()
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public IActionResult Create(CreateAlbumVM model)
+    {
+        if (!ModelState.IsValid)
+        {
+            RedirectToAction("Index", "Album");
         }
 
-        [HttpGet]
-        public IActionResult Index()
-        {
-            var model = new AlbumsVM
-            {
-                Albums = albumService.GetAll()
-            };
+        var result = albumService.Add(model);
 
-            return View(model);
+        if (!result)
+        {
+            return InternalServerErrorView();
         }
 
-        [HttpPost]
-        public IActionResult Create(CreateAlbumVM model)
-        {
-            if (!ModelState.IsValid)
-            {
-                RedirectToAction("Index", "Album");
-            }
+        return RedirectToAction("Index", "Album");
+    }
 
-            var result = albumService.Add(model);
+    [HttpPost]
+    public IActionResult Edit(CreateAlbumVM model)
+    {
+        if (ModelState.IsValid)
+        {
+            var result = albumService.Update(model);
 
             if (!result)
             {
-                return InternalServerErrorView();
+                return RedirectToAction("Index", "Album");
             }
-
-            return RedirectToAction("Index", "Album");
         }
 
-        [HttpPost]
-        public IActionResult Edit(CreateAlbumVM model)
+        return RedirectToAction("Index", "Album");
+    }
+
+    [HttpPost]
+    public IActionResult Delete(string id)
+    {
+        var isSuccessStatusCode = albumService.Delete(id);
+
+        return RedirectToAction("Index", "Album");
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public string RenderCoverPicture(string id)
+    {
+        if (id == null)
         {
-            if (ModelState.IsValid)
-            {
-                var result = albumService.Update(model);
-
-                if (!result)
-                {
-                    return RedirectToAction("Index", "Album");
-                }
-            }
-
-            return RedirectToAction("Index", "Album");
+            return imageStorage.UriFor("default-image.jpg");
         }
 
-        [HttpPost]
-        public IActionResult Delete(string id)
+        var media = mediaService.Get(id);
+
+        if (media == null) 
         {
-            var isSuccessStatusCode = albumService.Delete(id);
-
-            return RedirectToAction("Index", "Album");
+            return imageStorage.UriFor("default-image.jpg");
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public string RenderCoverPicture(string id)
-        {
-            if (id == null)
-            {
-                return imageStorage.UriFor("default-image.jpg");
-            }
+        return imageStorage.UriFor(media);
 
-            var media = mediaService.Get(id);
-
-            if (media == null) 
-            {
-                return imageStorage.UriFor("default-image.jpg");
-            }
-
-            return imageStorage.UriFor(media);
-
-        }
     }
 }

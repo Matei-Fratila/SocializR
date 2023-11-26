@@ -1,20 +1,15 @@
-﻿using Common.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿namespace SocializR.Entities;
 
-namespace SocializR.Entities
+public partial class Permission : IEntity
 {
-    public partial class Permission : IEntity
+    public Permission()
     {
-        public Permission()
-        {
-            RolePermissions = new HashSet<RolePermission>();
-        }
-
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-
-        public ICollection<RolePermission> RolePermissions { get; set; }
+        RolePermissions = new HashSet<RolePermission>();
     }
+
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+
+    public ICollection<RolePermission> RolePermissions { get; set; }
 }

@@ -1,0 +1,17 @@
+﻿global using System;
+global using Common.Interfaces;
+global using SocializR.DataAccess.Base;
+global using SocializR.Entities;
+global using System.Collections.Generic;
+global using System.Linq;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using SocializR.DataAccess.Configuration;
+global using SocializR.DataAccess.Logger;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.AspNetCore.Identity;
+global using Utils;
+global using SocializR.Entities.Enums;
+global using System.Security.Claims;
+global using System.Threading.Tasks;

@@ -1,60 +1,52 @@
-﻿using Microsoft.AspNetCore.Identity;
-using SocializR.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Utils;
+﻿namespace SocializR.DataAccess.Seeds;
 
-namespace SocializR.DataAccess.Seeds
+static class SeedLikes
 {
-    static class SeedLikes
+    public static void Seed(SocializRContext context)
     {
-        public static void Seed(SocializRContext context)
+        if (context.Likes.Any())
         {
-            if (context.Likes.Any())
+            return;
+        }
+
+        var posts = context.Posts.Select(p=>new { p.Id, p.UserId }).ToList();
+        var likes = new List<Like>();
+        var random = new Random();
+
+        foreach (var post in posts)
+        {
+            var friends = context.Users.Where(u => u.Id == post.UserId).SelectMany(u => u.FriendsFirstUser.Select(f => f.SecondUserId)).ToList();
+            var nrOfFriends = friends.Count();
+
+            if (nrOfFriends == 0)
             {
-                return;
+                continue;
             }
 
-            var posts = context.Posts.Select(p=>new { p.Id, p.UserId }).ToList();
-            var likes = new List<Like>();
-            var random = new Random();
+            var nrOfLikes = random.Next(0, nrOfFriends);
 
-            foreach (var post in posts)
+            for (var i = 0; i < nrOfLikes; i++)
             {
-                var friends = context.Users.Where(u => u.Id == post.UserId).SelectMany(u => u.FriendsFirstUser.Select(f => f.SecondUserId)).ToList();
-                var nrOfFriends = friends.Count();
-
-                if (nrOfFriends == 0)
+                if (friends.Any() == false)
                 {
-                    continue;
+                    break;
                 }
 
-                var nrOfLikes = random.Next(0, nrOfFriends);
+                nrOfFriends = friends.Count();
+                var userId = friends[random.Next(nrOfFriends)];
 
-                for (var i = 0; i < nrOfLikes; i++)
+                likes.Add(new Like
                 {
-                    if (friends.Any() == false)
-                    {
-                        break;
-                    }
+                    UserId = userId,
+                    PostId=post.Id
+                });
 
-                    nrOfFriends = friends.Count();
-                    var userId = friends[random.Next(nrOfFriends)];
-
-                    likes.Add(new Like
-                    {
-                        UserId = userId,
-                        PostId=post.Id
-                    });
-
-                    friends.Remove(userId);
-                }
-
-                context.AddRange(likes);
-                likes.Clear();
-                context.SaveChanges();
+                friends.Remove(userId);
             }
+
+            context.AddRange(likes);
+            likes.Clear();
+            context.SaveChanges();
         }
     }
 }

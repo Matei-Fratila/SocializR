@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SocializR.Entities.Enums
+﻿namespace SocializR.Entities.Enums
 {
     public enum RelationTypes
     {

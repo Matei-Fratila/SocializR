@@ -1,21 +1,16 @@
-﻿using Common.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿namespace SocializR.Entities;
 
-namespace SocializR.Entities
+public partial class Album : IEntity
 {
-    public partial class Album : IEntity
+    public Album()
     {
-        public Album()
-        {
-            Media = new HashSet<Media>();
-        }
-
-        public string Id { get; set; }
-        public string UserId { get; set; }
-        public string Name { get; set; }
-
-        public User User { get; set; }
-        public ICollection<Media> Media { get; set; }
+        Media = new HashSet<Media>();
     }
+
+    public string Id { get; set; }
+    public string UserId { get; set; }
+    public string Name { get; set; }
+
+    public User User { get; set; }
+    public ICollection<Media> Media { get; set; }
 }

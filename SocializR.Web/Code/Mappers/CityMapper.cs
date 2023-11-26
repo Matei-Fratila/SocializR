@@ -1,14 +1,9 @@
-﻿using AutoMapper;
-using SocializR.Entities;
-using SocializR.Entities.DTOs.Map;
+﻿namespace SocializR.Web.Code.Mappers;
 
-namespace SocializR.Web.Code.Mappers
+public class CityMapper : Profile
 {
-    public class CityMapper : Profile
+    public CityMapper()
     {
-        public CityMapper()
-        {
-            CreateMap<City, CityVM>();
-        }
+        CreateMap<City, CityVM>();
     }
 }

@@ -1,9 +1,8 @@
-﻿namespace SocializR.Entities.DTOs.Search
-{
-    public class SearchUserVM
-    {
-        public string Id { get; set; }
+﻿namespace SocializR.Entities.DTOs.Search;
 
-        public string Text { get; set; }
-    }
+public class SearchUserVM
+{
+    public string Id { get; set; }
+
+    public string Text { get; set; }
 }

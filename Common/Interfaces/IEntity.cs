@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Common.Interfaces;
 
-namespace Common.Interfaces
+public interface IEntity
 {
-    public interface IEntity
-    {
 
-    }
 }

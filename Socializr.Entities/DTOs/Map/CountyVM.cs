@@ -1,9 +1,8 @@
-﻿namespace SocializR.Entities.DTOs.Map
+﻿namespace SocializR.Entities.DTOs.Map;
+
+public class CountyVM
 {
-    public class CountyVM
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public string ShortName { get; set; }
-    }
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public string ShortName { get; set; }
 }

@@ -1,8 +1,7 @@
-﻿namespace SocializR.Entities.DTOs.Map
+﻿namespace SocializR.Entities.DTOs.Map;
+
+public class CityVM
 {
-    public class CityVM
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-    }
+    public string Id { get; set; }
+    public string Name { get; set; }
 }

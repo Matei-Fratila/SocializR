@@ -1,18 +1,13 @@
-﻿using AutoMapper;
-using SocializR.Entities;
-using SocializR.Entities.DTOs.Interest;
+﻿namespace SocializR.Web.Code.Mappers;
 
-namespace SocializR.Web.Code.Mappers
+public class InterestMapper:Profile
 {
-    public class InterestMapper:Profile
+    public InterestMapper()
     {
-        public InterestMapper()
-        {
-            CreateMap<Interest, InterestVM>();
+        CreateMap<Interest, InterestVM>();
 
-            CreateMap<Interest, EditInterestVM>();
+        CreateMap<Interest, EditInterestVM>();
 
-            CreateMap<EditInterestVM, Interest>();
-        }
+        CreateMap<EditInterestVM, Interest>();
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace SocializR.Entities.Enums
+﻿namespace SocializR.Entities.Enums;
+
+public enum RoleTypes
 {
-    public enum RoleTypes
-    {
-        User = 1,
-        Administrator = 2
-    }
+    User = 1,
+    Administrator = 2
 }

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Common.Interfaces;
 
-namespace Common.Interfaces
+class IService
 {
-    class IService
-    {
-    }
 }

@@ -1,13 +1,11 @@
-﻿
-namespace SocializR.Web.Models.Profile
+﻿namespace SocializR.Web.Models.Profile;
+
+public class AvatarVM
 {
-    public class AvatarVM
-    {
-        public byte[] ProfilePicture { get; set; }
+    public byte[] ProfilePicture { get; set; }
 
-        public string FirstName { get; set; }
+    public string FirstName { get; set; }
 
-        public string LastName { get; set; }
+    public string LastName { get; set; }
 
-    }
 }

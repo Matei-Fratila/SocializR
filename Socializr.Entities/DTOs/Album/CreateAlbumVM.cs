@@ -1,32 +1,27 @@
-﻿using Common.Interfaces;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿namespace SocializR.Entities.DTOs.Album;
 
-namespace SocializR.Entities.DTOs.Album
+public class CreateAlbumVM : IValidatableObject
 {
-    public class CreateAlbumVM : IValidatableObject
+    public bool IsDataInvalid { get; set; }
+
+    public string Id { get; set; }
+
+    [Required(ErrorMessage = "Campul este obligatoriu!")]
+    [MaxLength(100, ErrorMessage = "Campul trebuie sa aiba maximum 100 de caracatere")]
+    public string Name { get; set; }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        public bool IsDataInvalid { get; set; }
+        var result = new List<ValidationResult>();
 
-        public string Id { get; set; }
+        var service = validationContext.GetService(typeof(IValidationService)) as IValidationService;
+        var albumExists = service.AlbumExists(Name, Id);
 
-        [Required(ErrorMessage = "Campul este obligatoriu!")]
-        [MaxLength(100, ErrorMessage = "Campul trebuie sa aiba maximum 100 de caracatere")]
-        public string Name { get; set; }
-
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        if (albumExists)
         {
-            var result = new List<ValidationResult>();
-
-            var service = validationContext.GetService(typeof(IValidationService)) as IValidationService;
-            var albumExists = service.AlbumExists(Name, Id);
-
-            if (albumExists)
-            {
-                result.Add(new ValidationResult("Numele exista deja", new List<string> { nameof(Name) }));
-            }
-
-            return result;
+            result.Add(new ValidationResult("Numele exista deja", new List<string> { nameof(Name) }));
         }
+
+        return result;
     }
 }

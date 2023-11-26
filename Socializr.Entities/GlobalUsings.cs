@@ -1,0 +1,10 @@
+﻿global using System.ComponentModel.DataAnnotations;
+global using Common.Interfaces;
+global using Microsoft.AspNetCore.Mvc.Rendering;
+global using System;
+global using System.Collections.Generic;
+global using SocializR.Entities.DTOs.Media;
+global using Microsoft.AspNetCore.Http;
+global using SocializR.Entities.DTOs.Album;
+global using SocializR.Entities.Enums;
+global using Microsoft.AspNetCore.Identity;

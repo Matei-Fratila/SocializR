@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
+﻿namespace SocializR.Entities.DTOs.Media;
 
-namespace SocializR.Entities.DTOs.Media
+public class EditedMediaModel
 {
-    public class EditedMediaModel
-    {
-        public string Id { get; set; }
-        public List<MediaModel> Media { get; set; }
-    }
+    public string Id { get; set; }
+    public List<MediaModel> Media { get; set; }
 }

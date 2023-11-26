@@ -1,7 +1,6 @@
-﻿namespace Common.Interfaces
+﻿namespace Common.Interfaces;
+
+public interface IUnitOfWork
 {
-    public interface IUnitOfWork
-    {
-        int SaveChanges();
-    }
+    int SaveChanges();
 }

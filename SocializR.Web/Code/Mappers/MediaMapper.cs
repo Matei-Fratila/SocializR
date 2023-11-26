@@ -1,14 +1,9 @@
-﻿using AutoMapper;
-using SocializR.Entities.DTOs.Media;
-using SocializR.Entities;
+﻿namespace SocializR.Web.Code.Mappers;
 
-namespace SocializR.Web.Code.Mappers
+public class MediaMapper : Profile
 {
-    public class MediaMapper : Profile
+    public MediaMapper()
     {
-        public MediaMapper()
-        {
-            CreateMap<Media, MediaModel>();
-        }
+        CreateMap<Media, MediaModel>();
     }
 }

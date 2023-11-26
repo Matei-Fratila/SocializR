@@ -1,21 +1,16 @@
-﻿using Common.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿namespace SocializR.Entities;
 
-namespace SocializR.Entities
+public partial class City : IEntity
 {
-    public partial class City : IEntity
+    public City()
     {
-        public City()
-        {
-            Users = new HashSet<User>();
-        }
-
-        public string Id { get; set; }
-        public string CountyId { get; set; }
-        public string Name { get; set; }
-
-        public County County { get; set; }
-        public ICollection<User> Users { get; set; }
+        Users = new HashSet<User>();
     }
+
+    public string Id { get; set; }
+    public string CountyId { get; set; }
+    public string Name { get; set; }
+
+    public County County { get; set; }
+    public ICollection<User> Users { get; set; }
 }

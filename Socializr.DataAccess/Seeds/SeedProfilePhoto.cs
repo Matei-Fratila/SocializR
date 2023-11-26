@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace SocializR.DataAccess.Seeds;
 
-namespace SocializR.DataAccess.Seeds
+class SeedProfilePhoto
 {
-    class SeedProfilePhoto
-    {
-    }
 }

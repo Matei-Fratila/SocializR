@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Common.Interfaces
+﻿namespace Common.Interfaces
 {
     public interface IValidationService
     {
