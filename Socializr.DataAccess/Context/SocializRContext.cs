@@ -30,10 +30,11 @@ public partial class SocializRContext : IdentityDbContext<User, Role, Guid>
     //public virtual DbSet<UserRole> UserRoles { get; set; }
     //public new virtual DbSet<User> Users { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseLoggerFactory(new SocializRConsoleLoggerFactory());
-    }
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    optionsBuilder.UseSqlServer(@"server=MATEI\\MSSQLSERVER01;initial catalog=SocializR;Integrated Security=true;Encrypt=False;");
+    //    optionsBuilder.UseLoggerFactory(new SocializRConsoleLoggerFactory());
+    //}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
