@@ -25,7 +25,7 @@ public class AdminService : BaseService
     public bool DeleteUser(string id)
     {
         var user = UnitOfWork.Users.Query
-            .Where(u => u.Id == id)
+            .Where(u => u.Id.ToString() == id)
             .FirstOrDefault();
 
         if (user == null)
@@ -41,7 +41,7 @@ public class AdminService : BaseService
     public bool ActivateUser(string id)
     {
         var user = UnitOfWork.Users.Query
-            .Where(u => u.Id == id)
+            .Where(u => u.Id.ToString() == id)
             .FirstOrDefault();
 
         if (user == null)

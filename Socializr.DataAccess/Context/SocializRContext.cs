@@ -1,6 +1,6 @@
 ﻿namespace SocializR.DataAccess;
 
-public partial class SocializRContext : IdentityDbContext<User>
+public partial class SocializRContext : IdentityDbContext<User, Role, Guid>
 {
     public SocializRContext()
     {

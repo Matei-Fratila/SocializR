@@ -25,9 +25,9 @@ public class ProfileService : BaseService
     {
         var user = UnitOfWork.Users.Query
             .Include(u => u.ProfilePhoto)
-            .FirstOrDefault(u => u.Id == userId);
+            .FirstOrDefault(u => u.Id.ToString() == userId);
 
-        user.ProfilePhotoId = id;
+        user.ProfilePhotoId = new Guid(id);
 
         UnitOfWork.Users.Update(user);
 
@@ -37,21 +37,21 @@ public class ProfileService : BaseService
     public string GetUserPhoto(string id)
     {
         return UnitOfWork.Users.Query
-            .Where(u => u.Id == id)
+            .Where(u => u.Id.ToString() == id)
             .Select(u => u.ProfilePhoto.FilePath)
             .FirstOrDefault();
     }
 
     public ProfileVM GetEditProfileVM() =>
         UnitOfWork.Users.Query
-            .Where(u => u.Id == currentUser.Id)
+            .Where(u => u.Id.ToString() == currentUser.Id)
             .ProjectTo<ProfileVM>(mapper.ConfigurationProvider)
             .FirstOrDefault();
 
     public ProfileVM GetEditProfileVM(string id)
     {
         var profile = UnitOfWork.Users.Query
-            .Where(u => u.Id == id && u.IsDeleted == false)
+            .Where(u => u.Id.ToString() == id && u.IsDeleted == false)
             .ProjectTo<ProfileVM>(mapper.ConfigurationProvider)
             .FirstOrDefault();
 
@@ -61,7 +61,7 @@ public class ProfileService : BaseService
     public ViewProfileVM GetViewProfileVM(string id)
     {
         var result = UnitOfWork.Users.Query
-           .Where(u => u.Id == id && u.IsDeleted == false)
+           .Where(u => u.Id.ToString() == id && u.IsDeleted == false)
            .ProjectTo<ViewProfileVM>(mapper.ConfigurationProvider)
            .FirstOrDefault();
 
@@ -74,7 +74,7 @@ public class ProfileService : BaseService
             .Include(u => u.City)
             .Include(u => u.UserInterests)
                 .ThenInclude(i => i.Interest)
-            .Where(u => u.Id == model.Id)
+            .Where(u => u.Id.ToString() == model.Id)
             .FirstOrDefault();
 
         if (user == null)
@@ -92,7 +92,7 @@ public class ProfileService : BaseService
     public bool UpdateCurrentUser(ProfileVM model)
     {
         var user = UnitOfWork.Users.Query
-            .Where(u => u.Id == currentUser.Id)
+            .Where(u => u.Id.ToString() == currentUser.Id)
             .FirstOrDefault();
 
         mapper.Map<ProfileVM, User>(model, user);
@@ -115,7 +115,7 @@ public class ProfileService : BaseService
         }
 
         var hasEntries = UnitOfWork.Friendships.Query
-            .Where(f => f.FirstUserId == id && f.SecondUserId == currentUser.Id)
+            .Where(f => f.FirstUserId.ToString() == id && f.SecondUserId.ToString() == currentUser.Id)
             .Any();
 
         if (hasEntries)
@@ -124,7 +124,7 @@ public class ProfileService : BaseService
         }
 
         hasEntries = UnitOfWork.Friendships.Query
-            .Where(f => f.SecondUserId == id && f.FirstUserId == currentUser.Id)
+            .Where(f => f.SecondUserId.ToString() == id && f.FirstUserId.ToString() == currentUser.Id)
             .Any();
 
         if (hasEntries)
@@ -133,7 +133,7 @@ public class ProfileService : BaseService
         }
 
         hasEntries = UnitOfWork.FriendRequests.Query
-            .Where(f => f.RequesterUserId == id && f.RequestedUserId == currentUser.Id)
+            .Where(f => f.RequesterUserId.ToString() == id && f.RequestedUserId.ToString() == currentUser.Id)
             .Any();
 
         if (hasEntries)
@@ -142,7 +142,7 @@ public class ProfileService : BaseService
         }
 
         hasEntries = UnitOfWork.FriendRequests.Query
-            .Where(f => f.RequestedUserId == id && f.RequesterUserId == currentUser.Id)
+            .Where(f => f.RequestedUserId.ToString() == id && f.RequesterUserId.ToString() == currentUser.Id)
             .Any();
 
         if (hasEntries)

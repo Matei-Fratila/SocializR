@@ -48,7 +48,7 @@ public class InterestService : BaseService
     public EditInterestVM GetEditModel(string id)
     {
         var model = UnitOfWork.Interests.Query
-            .Where(i => i.Id == id)
+            .Where(i => i.Id.ToString() == id)
             .ProjectTo<EditInterestVM>(mapper.ConfigurationProvider)
             .FirstOrDefault();
 
@@ -65,8 +65,8 @@ public class InterestService : BaseService
         }
 
         var interests = UnitOfWork.UserInterests.Query
-            .Where(i => i.UserId == id)
-            .Select(i => i.Interest.Id)
+            .Where(i => i.UserId.ToString() == id)
+            .Select(i => i.Interest.Id.ToString())
             .ToList();
 
         return interests;
@@ -75,7 +75,7 @@ public class InterestService : BaseService
     public List<string> GetByUserId(string id)
     {
         var interests = UnitOfWork.UserInterests.Query
-            .Where(i => i.UserId == id)
+            .Where(i => i.UserId.ToString() == id)
             .Select(i => i.Interest.Name)
             .ToList();
 
@@ -85,14 +85,14 @@ public class InterestService : BaseService
     public bool EditInterest(EditInterestVM model)
     {
         var interest = UnitOfWork.Interests.Query
-            .Where(i => i.Id == model.Id)
+            .Where(i => i.Id.ToString() == model.Id)
             .FirstOrDefault();
 
         mapper.Map(model, interest);
 
         if (model.ParentId == null)
         {
-            interest.ParentId = null;
+            interest.ParentId = Guid.Empty;
         }
 
         UnitOfWork.Interests.Update(interest);
@@ -105,7 +105,7 @@ public class InterestService : BaseService
         var interest = new Interest
         {
             Name = model.Name,
-            ParentId = model.ParentId
+            ParentId = new Guid(model.ParentId)
         };
 
         UnitOfWork.Interests.Add(interest);
@@ -116,11 +116,11 @@ public class InterestService : BaseService
     public bool DeleteInterest(string id)
     {
         var interest = UnitOfWork.Interests.Query
-            .Where(i => i.Id == id)
+            .Where(i => i.Id.ToString() == id)
             .FirstOrDefault();
 
         var children = UnitOfWork.Interests.Query
-            .Where(i => i.ParentId == id)
+            .Where(i => i.ParentId.ToString() == id)
             .ToList();
 
         children.ForEach(c => c.ParentId = interest.ParentId);

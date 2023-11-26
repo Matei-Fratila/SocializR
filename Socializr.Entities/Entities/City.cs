@@ -7,10 +7,10 @@ public partial class City : IEntity
         Users = new HashSet<User>();
     }
 
-    public string Id { get; set; }
-    public string CountyId { get; set; }
+    public Guid Id { get; set; }
+    public Guid CountyId { get; set; }
     public string Name { get; set; }
 
-    public County County { get; set; }
-    public ICollection<User> Users { get; set; }
+    public virtual County County { get; set; }
+    public virtual ICollection<User> Users { get; set; }
 }

@@ -17,7 +17,9 @@ public class PostService : BaseService
     public List<PostVM> GetNextPosts(string currentUserId, int page, int postsPerPage, int commentsPerPage)
     {
         var posts = UnitOfWork.Posts.Query
-            .Where(p => p.User.FriendsFirstUser.FirstOrDefault(f => f.SecondUserId == currentUser.Id && f.FirstUser.IsDeleted == false) != null || p.UserId == currentUserId)
+            .Where(p => p.User.FriendsFirstUser.FirstOrDefault(f => f.SecondUserId.ToString() == currentUser.Id 
+            && f.FirstUser.IsDeleted == false) != null 
+            || p.UserId.ToString() == currentUserId)
             .OrderByDescending(p => p.CreatedOn)
             .Skip(page * postsPerPage)
             .Take(postsPerPage)
@@ -43,7 +45,7 @@ public class PostService : BaseService
     {
         var post = new Post
         {
-            UserId = userId,
+            UserId = new Guid(userId),
             Title = "added a new profile photo",
             Body = "",
             CreatedOn = DateTime.Now,
@@ -65,7 +67,7 @@ public class PostService : BaseService
             .Include(c => c.Likes)
             .Include(c => c.Comments)
             .Include(c => c.Media)
-            .Where(p => p.Id == postId)
+            .Where(p => p.Id.ToString() == postId)
             .FirstOrDefault();
 
         if (post == null)

@@ -2,9 +2,9 @@
 
 public partial class UserRole : IEntity
 {
-    public string UserId { get; set; }
-    public string RoleId { get; set; }
+    public Guid UserId { get; set; }
+    public Guid RoleId { get; set; }
 
-    public Role Role { get; set; }
-    public User User { get; set; }
+    public virtual Role Role { get; set; }
+    public virtual User User { get; set; }
 }

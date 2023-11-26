@@ -47,7 +47,7 @@ public class ProfileController : BaseController
 
         if (id == null)
         {
-            id = currentUser.Id;
+            id = currentUser.Id.ToString();
         }
 
         model = profileService.GetViewProfileVM(id);
@@ -58,13 +58,13 @@ public class ProfileController : BaseController
             return UserNotFoundView();
         }
 
-        if (id != currentUser.Id)
+        if (id != currentUser.Id.ToString())
         {
             model.MutualFriends = friendshipService.CountMutualFriends(id);
         }
 
         model.Interests = interestService.GetAll();
-        model.RelationToCurrentUser = profileService.GetRelationToCurrentUser(currentUser.Id, id);
+        model.RelationToCurrentUser = profileService.GetRelationToCurrentUser(currentUser.Id.ToString(), id);
 
         if (model.IsPrivate && model.RelationToCurrentUser == RelationTypes.Strangers && await userManager.IsInRoleAsync(currentUser, "Administrator") == false)
         {
@@ -84,11 +84,11 @@ public class ProfileController : BaseController
 
         if (id == null)
         {
-            id = currentUser.Id;
+            id = currentUser.Id.ToString();
         }
         else
         {
-            if (id == currentUser.Id)
+            if (id == currentUser.Id.ToString())
             {
                 model = profileService.GetEditProfileVM(id);
             }
@@ -182,7 +182,7 @@ public class ProfileController : BaseController
             return InternalServerErrorView();
         }
 
-        if (await userManager.IsInRoleAsync(currentUser, "Administrator") && model.Id != currentUser.Id)
+        if (await userManager.IsInRoleAsync(currentUser, "Administrator") && model.Id != currentUser.Id.ToString())
         {
             return RedirectToAction("Index", "User");
         }

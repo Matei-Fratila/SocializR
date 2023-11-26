@@ -2,9 +2,9 @@
 
 public partial class UserInterest : IEntity
 {
-    public string UserId { get; set; }
-    public string InterestId { get; set; }
+    public Guid UserId { get; set; }
+    public Guid InterestId { get; set; }
 
-    public Interest Interest { get; set; }
-    public User User { get; set; }
+    public virtual Interest Interest { get; set; }
+    public virtual User User { get; set; }
 }

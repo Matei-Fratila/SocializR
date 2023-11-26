@@ -1,6 +1,6 @@
 ﻿namespace SocializR.Entities;
 
-public partial class User : IdentityUser, IEntity
+public partial class User : IdentityUser<Guid>, IEntity
 {
     public User()
     {
@@ -15,8 +15,8 @@ public partial class User : IdentityUser, IEntity
         Posts = new HashSet<Post>();
         UserInterests = new HashSet<UserInterest>();
     }
-    public string CityId { get; set; }
-    public string ProfilePhotoId { get; set; }
+    public Guid? CityId { get; set; }
+    public Guid? ProfilePhotoId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public DateTime? BirthDate { get; set; }
@@ -26,16 +26,16 @@ public partial class User : IdentityUser, IEntity
     public bool IsDeleted { get; set; }
     public DateTime CreatedOn { get; set; }
 
-    public City City { get; set; }
-    public Media ProfilePhoto { get; set; }
-    public ICollection<Album> Albums { get; set; }
-    public ICollection<Comment> Comments { get; set; }
-    public ICollection<FriendRequest> FriendRequestsRequestedUser { get; set; }
-    public ICollection<FriendRequest> FriendRequestsRequesterUser { get; set; }
-    public ICollection<Friendship> FriendsFirstUser { get; set; }
-    public ICollection<Friendship> FriendsSecondUser { get; set; }
-    public ICollection<Like> Likes { get; set; }
-    public ICollection<Media> Media { get; set; }
-    public ICollection<Post> Posts { get; set; }
-    public ICollection<UserInterest> UserInterests { get; set; }
+    public virtual City City { get; set; }
+    public virtual Media ProfilePhoto { get; set; }
+    public virtual ICollection<Album> Albums { get; set; }
+    public virtual ICollection<Comment> Comments { get; set; }
+    public virtual ICollection<FriendRequest> FriendRequestsRequestedUser { get; set; }
+    public virtual ICollection<FriendRequest> FriendRequestsRequesterUser { get; set; }
+    public virtual ICollection<Friendship> FriendsFirstUser { get; set; }
+    public virtual ICollection<Friendship> FriendsSecondUser { get; set; }
+    public virtual ICollection<Like> Likes { get; set; }
+    public virtual ICollection<Media> Media { get; set; }
+    public virtual ICollection<Post> Posts { get; set; }
+    public virtual ICollection<UserInterest> UserInterests { get; set; }
 }

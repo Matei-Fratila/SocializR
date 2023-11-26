@@ -15,7 +15,7 @@ static class SeedLikes
 
         foreach (var post in posts)
         {
-            var friends = context.Users.Where(u => u.Id == post.UserId).SelectMany(u => u.FriendsFirstUser.Select(f => f.SecondUserId)).ToList();
+            var friends = context.Users.Where(u => u.Id.ToString() == post.UserId.ToString()).SelectMany(u => u.FriendsFirstUser.Select(f => f.SecondUserId)).ToList();
             var nrOfFriends = friends.Count();
 
             if (nrOfFriends == 0)

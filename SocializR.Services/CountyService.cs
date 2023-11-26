@@ -38,7 +38,7 @@ public class CountyService : BaseService
     public bool EditCounty(string id, string name, string shortname)
     {
         var city = unitOfWork.Counties.Query
-            .FirstOrDefault(c => c.Id == id);
+            .FirstOrDefault(c => c.Id.ToString() == id);
 
         if (city == null)
         {
@@ -56,7 +56,7 @@ public class CountyService : BaseService
     {
         var county = unitOfWork.Counties.Query
             .Include(c=>c.Cities)
-            .Where(c => c.Id == id)
+            .Where(c => c.Id.ToString() == id)
             .FirstOrDefault();
 
         if (county == null)

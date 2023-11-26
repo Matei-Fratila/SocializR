@@ -19,6 +19,8 @@ internal class InterestConfiguration : IEntityTypeConfiguration<Interest>
         builder.HasOne(d => d.Parent)
             .WithMany(p => p.ChildInterests)
             .HasForeignKey(d => d.ParentId)
-            .HasConstraintName("FK_Interests_Interests");
+            .HasConstraintName("FK_Interests_Interests")
+            .OnDelete(DeleteBehavior.NoAction)
+            .IsRequired(false);
     }
 }

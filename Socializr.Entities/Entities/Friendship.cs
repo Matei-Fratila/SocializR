@@ -2,10 +2,10 @@
 
 public partial class Friendship : IEntity
 {
-    public string FirstUserId { get; set; }
-    public string SecondUserId { get; set; }
+    public Guid FirstUserId { get; set; }
+    public Guid SecondUserId { get; set; }
     public DateTime CreatedDate { get; set; }
 
-    public User FirstUser { get; set; }
-    public User SecondUser { get; set; }
+    public virtual User FirstUser { get; set; }
+    public virtual User SecondUser { get; set; }
 }

@@ -15,7 +15,7 @@ public class AlbumService : BaseService
     public string GetPostsAlbum()
     {
         var album = UnitOfWork.Albums.Query
-            .Where(a => a.Name == "Posts Photos" && a.UserId == currentUser.Id)
+            .Where(a => a.Name == "Posts Photos" && a.UserId.ToString() == currentUser.Id)
             .FirstOrDefault();
 
         if (album == null)
@@ -23,7 +23,7 @@ public class AlbumService : BaseService
             album = new Album
             {
                 Name = "Posts Photos",
-                UserId = currentUser.Id
+                UserId = new Guid(currentUser.Id)
             };
 
             UnitOfWork.Albums.Add(album);
@@ -31,13 +31,13 @@ public class AlbumService : BaseService
             UnitOfWork.SaveChanges();
         }
 
-        return album.Id;
+        return album.Id.ToString();
     }
 
     public List<AlbumVM> GetAll()
     {
         var albums = UnitOfWork.Albums.Query
-            .Where(u => u.UserId == currentUser.Id)
+            .Where(u => u.UserId.ToString() == currentUser.Id)
             .ProjectTo<AlbumVM>(mapper.ConfigurationProvider)
             .OrderBy(i => i.Name)
             .ToList();
@@ -48,7 +48,7 @@ public class AlbumService : BaseService
     public EditAlbumVM GetEditAlbumVM(string id)
     {
         return UnitOfWork.Albums.Query
-            .Where(a => a.Id == id)
+            .Where(a => a.Id.ToString() == id)
             .ProjectTo<EditAlbumVM>(mapper.ConfigurationProvider)
             .FirstOrDefault();
     }
@@ -57,7 +57,7 @@ public class AlbumService : BaseService
     {
         UnitOfWork.Albums.Add(new Album
         {
-            UserId = currentUser.Id,
+            UserId = new Guid(currentUser.Id),
             Name = model.Name
         });
 
@@ -68,7 +68,7 @@ public class AlbumService : BaseService
     {
         var album = new Album
         {
-            UserId = id,
+            UserId = new Guid(id),
             Name = name
         };
 
@@ -76,13 +76,13 @@ public class AlbumService : BaseService
 
         UnitOfWork.SaveChanges();
 
-        return album.Id;
+        return album.Id.ToString();
     }
 
     public bool Delete(string albumId)
     {
         var album = UnitOfWork.Albums.Query
-            .Where(a => a.Id == albumId)
+            .Where(a => a.Id.ToString() == albumId)
             .Include(a => a.Media)
             .FirstOrDefault();
 
@@ -99,7 +99,7 @@ public class AlbumService : BaseService
     public bool Update(CreateAlbumVM model)
     {
         var album = UnitOfWork.Albums.Query
-            .Where(a => a.Id == model.Id)
+            .Where(a => a.Id.ToString() == model.Id)
             .FirstOrDefault();
 
         if (album == null)
@@ -117,8 +117,8 @@ public class AlbumService : BaseService
     public string GetId(string name, string id)
     {
         return UnitOfWork.Albums.Query
-            .Where(u => u.UserId == id && u.Name == "Profile Pictures")
-            .Select(u => u.Id)
+            .Where(u => u.UserId.ToString() == id && u.Name == "Profile Pictures")
+            .Select(u => u.Id.ToString())
             .FirstOrDefault();
     }
 }

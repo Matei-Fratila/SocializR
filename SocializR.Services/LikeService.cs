@@ -12,7 +12,7 @@ public class LikeService : BaseService
         using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
         {
             var like = UnitOfWork.Likes.Query
-                .Where(l => l.PostId == postId && l.UserId == currentUserId)
+                .Where(l => l.PostId.ToString() == postId && l.UserId.ToString() == currentUserId)
                 .FirstOrDefault();
 
             if (like != null)
@@ -22,8 +22,8 @@ public class LikeService : BaseService
 
             like = new Like
             {
-                PostId = postId,
-                UserId = currentUserId
+                PostId = new Guid(postId),
+                UserId = new Guid(currentUserId)
             };
 
             UnitOfWork.Likes.Add(like);
@@ -41,7 +41,7 @@ public class LikeService : BaseService
         using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
         {
             var like = UnitOfWork.Likes.Query
-                .Where(l => l.PostId == postId && l.UserId == currentUserId)
+                .Where(l => l.PostId.ToString() == postId && l.UserId.ToString() == currentUserId)
                 .FirstOrDefault();
 
             if (like != null)

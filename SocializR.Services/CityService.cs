@@ -17,7 +17,7 @@ public class CityService : BaseService
         var city = new City
         {
             Name = name,
-            CountyId = countyId
+            CountyId = Guid.Parse(countyId)
         };
 
         UnitOfWork.Cities.Add(city);
@@ -28,7 +28,7 @@ public class CityService : BaseService
     public bool EditCity(string id, string name)
     {
         var city = UnitOfWork.Cities.Query
-            .FirstOrDefault(c => c.Id == id);
+            .FirstOrDefault(c => c.Id.ToString() == id);
 
         if (city == null)
         {
@@ -44,7 +44,7 @@ public class CityService : BaseService
     public List<CityVM> GetCitiesByCountyId(string countyId)
     {
         return UnitOfWork.Cities.Query
-            .Where(u => u.CountyId == countyId)
+            .Where(u => u.CountyId.ToString() == countyId)
             .OrderBy(u => u.Name)
             .ProjectTo<CityVM>(mapper.ConfigurationProvider)
             .ToList();
@@ -75,14 +75,14 @@ public class CityService : BaseService
         }
 
         return UnitOfWork.Cities.Query
-            .Where(c => c.CountyId == countyId)
+            .Where(c => c.CountyId.ToString() == countyId)
             .ToList();
     }
 
     public bool Delete(string cityId)
     {
         var city = UnitOfWork.Cities.Query
-            .Where(c => c.Id == cityId)
+            .Where(c => c.Id.ToString() == cityId)
             .FirstOrDefault();
 
         if (city == null)

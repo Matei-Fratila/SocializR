@@ -7,10 +7,10 @@ public partial class Album : IEntity
         Media = new HashSet<Media>();
     }
 
-    public string Id { get; set; }
-    public string UserId { get; set; }
+    public Guid Id { get; set; }
+    public Guid UserId { get; set; }
     public string Name { get; set; }
 
-    public User User { get; set; }
-    public ICollection<Media> Media { get; set; }
+    public virtual User User { get; set; }
+    public virtual ICollection<Media> Media { get; set; }
 }

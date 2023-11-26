@@ -2,11 +2,11 @@
 
 public partial class FriendRequest : IEntity
 {
-    public string RequesterUserId { get; set; }
-    public string RequestedUserId { get; set; }
+    public Guid RequesterUserId { get; set; }
+    public Guid RequestedUserId { get; set; }
     public string RequestMessage { get; set; }
     public DateTime CreatedOn { get; set; }
 
-    public User RequestedUser { get; set; }
-    public User RequesterUser { get; set; }
+    public virtual User RequestedUser { get; set; }
+    public virtual User RequesterUser { get; set; }
 }

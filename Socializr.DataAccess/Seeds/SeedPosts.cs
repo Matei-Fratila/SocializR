@@ -14,7 +14,7 @@ static class SeedPosts
         var random = new Random();
         var posts = new List<Post>();
 
-        for (int i = 0; i < 50000; i++)
+        for (int i = 0; i < 50; i++)
         {
             var userId = ids[random.Next(nrOfUsers)];
             var date = context.Users.Where(u=>u.Id==userId).Select(u=>u.CreatedOn).FirstOrDefault();
@@ -24,7 +24,8 @@ static class SeedPosts
             {
                 Body = "Hello!" + i,
                 CreatedOn = dateGenerator.GetRandomDay(),
-                UserId = userId
+                UserId = userId,
+                
             });
         };
 

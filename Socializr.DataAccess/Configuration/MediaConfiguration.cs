@@ -27,7 +27,8 @@ internal class MediaConfiguration : IEntityTypeConfiguration<Media>
         builder.HasOne(d => d.Post)
             .WithMany(p => p.Media)
             .HasForeignKey(d => d.PostId)
-            .HasConstraintName("FK_Media_Posts");
+            .HasConstraintName("FK_Media_Posts")
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(d => d.User)
             .WithMany(p => p.Media)

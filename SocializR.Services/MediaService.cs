@@ -17,7 +17,7 @@ public class MediaService : BaseService
     public bool IsAllowed(bool isAdmin, string id)
     {
         var owner = UnitOfWork.Media.Query
-            .Where(m => m.Id == id)
+            .Where(m => m.Id.ToString() == id)
             .Select(m => new
             {
                 m.Album.User.Id,
@@ -31,7 +31,7 @@ public class MediaService : BaseService
             return false;
         }
 
-        if (owner.Id == currentUser.Id)
+        if (owner.Id.ToString() == currentUser.Id)
         {
             return true;
         }
@@ -41,7 +41,7 @@ public class MediaService : BaseService
             return true;
         }
 
-        if (friendshipService.AreFriends(currentUser.Id, owner.Id) == true)
+        if (friendshipService.AreFriends(currentUser.Id, owner.Id.ToString()) == true)
         {
             return true;
         }
@@ -52,7 +52,7 @@ public class MediaService : BaseService
     public List<MediaModel> GetAll(string id)
     {
         var images = UnitOfWork.Media.Query
-            .Where(u => u.AlbumId == id)
+            .Where(u => u.AlbumId.ToString() == id)
             .OrderByDescending(u => u.Id)
             .ProjectTo<MediaModel>(mapper.ConfigurationProvider)
             .ToList();
@@ -68,7 +68,7 @@ public class MediaService : BaseService
         }
 
         var result = UnitOfWork.Media.Query
-            .Where(m => m.Id == id)
+            .Where(m => m.Id.ToString() == id)
             .Select(m => m.FilePath)
             .FirstOrDefault();
 
@@ -84,11 +84,11 @@ public class MediaService : BaseService
 
         var media = new Media
         {
-            Id = imageId,
+            Id = new Guid(imageId),
             FilePath = imageId,
-            AlbumId = id,
+            AlbumId = new Guid(id),
             Type = type,
-            UserId = currentUser.Id
+            UserId = new Guid(currentUser.Id)
         };
 
         UnitOfWork.Media.Add(media);
@@ -103,12 +103,12 @@ public class MediaService : BaseService
         if (model.Media.Any())
         {
             var images = UnitOfWork.Media.Query
-              .Where(a => a.AlbumId == model.Id)
+              .Where(a => a.AlbumId.ToString() == model.Id)
               .ToList();
 
             foreach (var image in model.Media)
             {
-                var picture = images.Find(i => i.Id == image.Id);
+                var picture = images.Find(i => i.Id.ToString() == image.Id);
                 picture.Caption = image.Caption;
             }
 
@@ -119,7 +119,7 @@ public class MediaService : BaseService
     public bool Delete(string id)
     {
         var media = UnitOfWork.Media.Query
-            .Where(a => a.Id == id)
+            .Where(a => a.Id.ToString() == id)
             .FirstOrDefault();
 
         if (media == null)

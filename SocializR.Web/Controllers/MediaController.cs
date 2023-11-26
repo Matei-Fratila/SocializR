@@ -37,7 +37,7 @@ public class MediaController : BaseController
             return NotFoundView();
         }
 
-        if (album.UserId != currentUser.Id && await userManager.IsInRoleAsync(currentUser, "Administrator") == false)
+        if (album.UserId.ToString() != currentUser.Id.ToString() && await userManager.IsInRoleAsync(currentUser, "Administrator") == false)
         {
             return ForbidView();
         }
@@ -115,7 +115,7 @@ public class MediaController : BaseController
                             return Json(false);
                         }
 
-                        ids.Add(result.Id);
+                        ids.Add(result.Id.ToString());
                     }
                     catch(Exception e)
                     {

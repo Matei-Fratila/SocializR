@@ -17,7 +17,7 @@ public static class SeedFriendship
         var index2 = 0;
         var index1 = 0;
 
-        for (int i = 0; i < 20000; i++)
+        for (int i = 0; i < 20; i++)
         {
             do
             {

@@ -21,7 +21,7 @@ public class FeedService : BaseService
     {
         var newPost = new Post
         {
-            UserId = userId,
+            UserId = new Guid(userId),
             Title = title,
             Body = body,
             CreatedOn = DateTime.Now,
@@ -44,10 +44,10 @@ public class FeedService : BaseService
     {
         var comment = new Comment
         {
-            UserId = currentUserId,
+            UserId = new Guid(currentUserId),
             Body = body,
             CreatedOn = DateTime.Now,
-            PostId = postId
+            PostId = new Guid(postId)
         };
 
         return commentService.AddComment(comment);

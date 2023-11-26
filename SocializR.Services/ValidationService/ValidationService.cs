@@ -19,6 +19,6 @@ public class ValidationService : BaseService, IValidationService
     public bool AlbumExists(string name, string id)
     {
         return UnitOfWork.Albums.Query
-            .Any(a => a.Name == name && a.Id != id);
+            .Any(a => a.Name == name && a.Id.ToString() != id);
     }
 }

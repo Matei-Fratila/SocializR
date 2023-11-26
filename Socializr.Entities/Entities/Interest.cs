@@ -8,11 +8,11 @@ public partial class Interest : IEntity
         UserInterests = new HashSet<UserInterest>();
     }
 
-    public string Id { get; set; }
-    public string ParentId { get; set; }
+    public Guid Id { get; set; }
+    public Guid? ParentId { get; set; }
     public string Name { get; set; }
 
-    public Interest Parent { get; set; }
-    public ICollection<Interest> ChildInterests { get; set; }
-    public ICollection<UserInterest> UserInterests { get; set; }
+    public virtual Interest Parent { get; set; }
+    public virtual ICollection<Interest> ChildInterests { get; set; }
+    public virtual ICollection<UserInterest> UserInterests { get; set; }
 }

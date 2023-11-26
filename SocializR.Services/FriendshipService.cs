@@ -15,14 +15,14 @@ public class FriendshipService : BaseService
     public int CountMutualFriends(string id)
     {
         return UnitOfWork.Friendships.Query
-            .Where(u => u.FirstUserId == currentUser.Id && u.SecondUser.FriendsFirstUser.Where(f => f.SecondUserId == id).Any())
+            .Where(u => u.FirstUserId.ToString() == currentUser.Id && u.SecondUser.FriendsFirstUser.Where(f => f.SecondUserId.ToString() == id).Any())
             .Count();
     }
 
     public List<UserVM> GetAllFriends()
     {
         var friends = UnitOfWork.Friendships.Query
-            .Where(u => u.FirstUserId == currentUser.Id && u.SecondUser.IsDeleted == false)
+            .Where(u => u.FirstUserId.ToString() == currentUser.Id && u.SecondUser.IsDeleted == false)
             .ProjectTo<UserVM>(mapper.ConfigurationProvider)
             .ToList();
 
@@ -33,10 +33,10 @@ public class FriendshipService : BaseService
     {
         totalFriendsCount = UnitOfWork.Friendships.Query
             .Include(u => u.SecondUser)
-            .Where(u => u.FirstUserId == currentUser.Id && u.SecondUser.IsDeleted == false).Count();
+            .Where(u => u.FirstUserId.ToString() == currentUser.Id && u.SecondUser.IsDeleted == false).Count();
 
         return UnitOfWork.Friendships.Query
-            .Where(u => u.FirstUserId == currentUser.Id && u.SecondUser.IsDeleted == false)
+            .Where(u => u.FirstUserId.ToString() == currentUser.Id && u.SecondUser.IsDeleted == false)
             .ProjectTo<UserVM>(mapper.ConfigurationProvider)
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
@@ -46,8 +46,8 @@ public class FriendshipService : BaseService
     public bool AreFriends(string firstUserId, string secondUserId)
     {
         return UnitOfWork.Friendships.Query
-            .Where(f => (f.FirstUserId == firstUserId && f.SecondUserId == secondUserId ||
-            f.FirstUserId == secondUserId && f.SecondUserId == firstUserId) &&
+            .Where(f => (f.FirstUserId.ToString() == firstUserId && f.SecondUserId.ToString() == secondUserId ||
+            f.FirstUserId.ToString() == secondUserId && f.SecondUserId.ToString() == firstUserId) &&
             f.FirstUser.IsDeleted == false && f.SecondUser.IsDeleted == false)
             .Any();
     }
@@ -58,15 +58,15 @@ public class FriendshipService : BaseService
         {
             new Friendship
             {
-                FirstUserId = id,
-                SecondUserId = currentUser.Id,
+                FirstUserId = new Guid(id),
+                SecondUserId = new Guid(currentUser.Id),
                 CreatedDate=DateTime.Now
 
             },
             new Friendship
             {
-                FirstUserId = currentUser.Id,
-                SecondUserId = id,
+                FirstUserId = new Guid(currentUser.Id),
+                SecondUserId = new Guid(id),
                 CreatedDate=DateTime.Now
             }
 
@@ -80,8 +80,8 @@ public class FriendshipService : BaseService
     public bool Unfriend(string id)
     {
         var requests = UnitOfWork.Friendships.Query
-            .Where(f => f.FirstUserId == id && f.SecondUserId == currentUser.Id ||
-            f.SecondUserId == id && f.FirstUserId == currentUser.Id)
+            .Where(f => f.FirstUserId.ToString() == id && f.SecondUserId.ToString() == currentUser.Id ||
+            f.SecondUserId.ToString() == id && f.FirstUserId.ToString() == currentUser.Id)
             .ToList();
 
         if (requests != null)

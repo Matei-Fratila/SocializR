@@ -18,7 +18,7 @@ public class FriendRequestService : BaseService
     {
         var friends1 = UnitOfWork.FriendRequests.Query
             //.Include(u => u.RequesterUser)
-            .Where(u => u.RequestedUserId == currentUser.Id && u.RequesterUser.IsDeleted==false)
+            .Where(u => u.RequestedUserId.ToString() == currentUser.Id && u.RequesterUser.IsDeleted==false)
                 .ProjectTo<FriendrequestVM>(mapper.ConfigurationProvider)
             .ToList();
 
@@ -29,11 +29,11 @@ public class FriendRequestService : BaseService
     {
         totalRequestsCount = UnitOfWork.FriendRequests.Query
             .Include(u => u.RequesterUser)
-            .Where(u => u.RequestedUserId == currentUser.Id && u.RequesterUser.IsDeleted == false).Count();
+            .Where(u => u.RequestedUserId.ToString() == currentUser.Id && u.RequesterUser.IsDeleted == false).Count();
 
         return UnitOfWork.FriendRequests.Query
             //.Include(u => u.RequesterUser)
-            .Where(u => u.RequestedUserId == currentUser.Id && u.RequesterUser.IsDeleted == false)
+            .Where(u => u.RequestedUserId.ToString() == currentUser.Id && u.RequesterUser.IsDeleted == false)
                 .ProjectTo<FriendrequestVM>(mapper.ConfigurationProvider)
                 .Skip(pageSize * pageIndex)
             .Take(pageSize)
@@ -43,8 +43,10 @@ public class FriendRequestService : BaseService
     public bool DeleteFriendRequest(string id)
     {
         var friendrequest = UnitOfWork.FriendRequests.Query
-            .Where(f => f.RequesterUserId == id && f.RequestedUserId == currentUser.Id ||
-            f.RequesterUserId == currentUser.Id && f.RequestedUserId == id)
+            .Where(f => f.RequesterUserId.ToString() == id 
+            && f.RequestedUserId.ToString() == currentUser.Id 
+            || f.RequesterUserId.ToString() == currentUser.Id 
+            && f.RequestedUserId.ToString() == id)
             .FirstOrDefault();
 
         if (friendrequest == null)
@@ -61,8 +63,8 @@ public class FriendRequestService : BaseService
     {
         var friendRequest = new FriendRequest
         {
-            RequestedUserId = id,
-            RequesterUserId = currentUser.Id,
+            RequestedUserId = new Guid(id),
+            RequesterUserId = new Guid(currentUser.Id),
             CreatedOn = DateTime.Now
         };
 

@@ -15,7 +15,7 @@ public static class SeedUsers
 
         var admin = new User
         {
-            CityId = cities[random.Next(0, cities.Count)],
+            CityId = cities.FirstOrDefault(),
             FirstName = "Matei",
             LastName = "Fratila",
             UserName = "matei.fratila@essensys.ro",
@@ -28,46 +28,46 @@ public static class SeedUsers
             CreatedOn = generator.GetRandomDay()
         };
 
-        var result = userManager.CreateAsync(admin, admin.FirstName + admin.LastName + "8").Result;
+        var result = await userManager.CreateAsync(admin, admin.FirstName + admin.LastName + "8");
         if (result.Succeeded)
         {
-            userManager.AddToRoleAsync(admin, "administrator").Wait();
+            await userManager.AddToRoleAsync(admin, "administrator");
             await userManager.AddClaimAsync(admin, new Claim(ClaimTypes.Email, admin.Email));
         }
 
-        //for (int i = 0; i < 10000; i++)
-        //{
-        //    var firstname = "alexandru" + i.ToString();
-        //    var lastname = "popescu" + i.ToString();
+        for (int i = 0; i < 10; i++)
+        {
+            var firstname = "alexandru" + i.ToString();
+            var lastname = "popescu" + i.ToString();
 
-        //    GenderTypes gender;
-        //    bool privacy;
-        //    gender = (GenderTypes)random.Next(3);
-        //    privacy = random.Next(0, 2) == 0 ? false : true;
+            GenderTypes gender;
+            bool privacy;
+            gender = (GenderTypes)random.Next(3);
+            privacy = random.Next(0, 2) == 0 ? false : true;
 
-        //    var user = new User
-        //    {
-        //        CityId = cities[random.Next(0, cities.Count)],
-        //        FirstName = firstname,
-        //        LastName = lastname,
-        //        UserName = firstname + lastname,
-        //        Email = firstname + lastname + "@essensys.ro",
-        //        Gender = gender,
-        //        IsPrivate = privacy,
-        //        IsDeleted = false,
-        //        IsActive = true,
-        //        BirthDate = Convert.ToDateTime("1997-06-23"),
-        //        CreatedOn = generator.GetRandomDay()
-        //    };
+            var user = new User
+            {
+                CityId = cities[random.Next(0, cities.Count)],
+                FirstName = firstname,
+                LastName = lastname,
+                UserName = firstname + lastname,
+                Email = firstname + lastname + "@essensys.ro",
+                Gender = gender,
+                IsPrivate = privacy,
+                IsDeleted = false,
+                IsActive = true,
+                BirthDate = Convert.ToDateTime("1997-06-23"),
+                CreatedOn = generator.GetRandomDay()
+            };
 
-        //    result = userManager.CreateAsync(user, firstname + lastname + i).Result;
+            result = await userManager.CreateAsync(user, firstname + lastname.ToUpper() + i);
 
-        //    if (result.Succeeded)
-        //    {
-        //        await userManager.AddToRoleAsync(user, "regularuser");
-        //        await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Email, user.Email));
-        //    }
-        //}
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(user, "regularuser");
+                await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Email, user.Email));
+            }
+        }
 
         return;
     }

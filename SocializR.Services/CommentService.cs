@@ -18,13 +18,13 @@ public class CommentService : BaseService
 
         UnitOfWork.SaveChanges();
 
-        return comment.Id;
+        return comment.Id.ToString();
     }
 
     public List<CommentVM> GetComments(string postId, int commentsPerPage, int page)
     {
         return UnitOfWork.Comments.Query
-            .Where(c => c.PostId == postId)
+            .Where(c => c.PostId.ToString() == postId)
             .OrderByDescending(c => c.CreatedOn)
             .Skip(page * commentsPerPage)
             .Take(commentsPerPage)
@@ -35,7 +35,7 @@ public class CommentService : BaseService
     public bool DeleteComment(string commentId)
     {
         var comment = UnitOfWork.Comments.Query
-            .Where(c => c.Id == commentId)
+            .Where(c => c.Id.ToString() == commentId)
             .FirstOrDefault();
 
         if (comment == null)
@@ -55,7 +55,7 @@ public class CommentService : BaseService
             Body = body,
             FirstName = currentUser.FirstName,
             LastName = currentUser.LastName,
-            UserPhoto = UnitOfWork.Users.Query.Where(u => u.Id == currentUser.Id).Select(u => u.ProfilePhotoId).FirstOrDefault(),
+            UserPhoto = UnitOfWork.Users.Query.Where(u => u.Id.ToString() == currentUser.Id).Select(u => u.ProfilePhotoId).FirstOrDefault().ToString(),
             CreatedOn = DateTime.Now
         };
     }

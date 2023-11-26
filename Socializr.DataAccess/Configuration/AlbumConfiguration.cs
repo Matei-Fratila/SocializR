@@ -19,7 +19,7 @@ internal class AlbumConfiguration : IEntityTypeConfiguration<Album>
         builder.HasOne(d => d.User)
             .WithMany(p => p.Albums)
             .HasForeignKey(d => d.UserId)
-            .HasConstraintName("FK_Albums_Users");
-        
+            .HasConstraintName("FK_Albums_Users")
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

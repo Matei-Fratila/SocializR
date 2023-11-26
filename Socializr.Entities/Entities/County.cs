@@ -7,9 +7,9 @@ public partial class County : IEntity
         Cities = new HashSet<City>();
     }
 
-    public string Id { get; set; }
+    public Guid Id { get; set; }
     public string Name { get; set; }
     public string ShortName { get; set; }
 
-    public ICollection<City> Cities { get; set; }
+    public virtual ICollection<City> Cities { get; set; }
 }
