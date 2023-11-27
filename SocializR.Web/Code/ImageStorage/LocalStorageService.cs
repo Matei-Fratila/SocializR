@@ -25,6 +25,6 @@ public class LocalStorageService : IImageStorage
 
     public string UriFor(string imageId)
     {
-        return "\\images\\uploads\\" + imageId;
+        return @"~\images\" + imageId;
     }
 }

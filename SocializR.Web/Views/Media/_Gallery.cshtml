@@ -1,13 +1,12 @@
 ﻿@using SocializR.Entities.Enums
 @model List<MediaModel>
 
-@{
-
+@section Styles{
+    <link href="~/css/gallery.css" rel="stylesheet" />
 }
 
-@section scripts{
-    <link href="~/css/gallery.css" rel="stylesheet" />
-    <script src="~/js/app/gallery.js"></script>
+@section Scripts{
+    <script src="~/js/gallery.js"></script>
 }
 
 <!-- Carousel -->
@@ -43,5 +42,3 @@
         <span class="sr-only">Next</span>
     </a>
 </div>
-
-<script src="~/js/app/gallery.js"></script>

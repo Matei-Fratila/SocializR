@@ -10,18 +10,19 @@
 <hr />
 <form asp-action="Login">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group row">
-        <label asp-for="Email" class="col-sm-2 col-form-label">Email</label>
+    <div class="mb-3 row">
+        <label asp-for="Email" class="col-sm-2">Email</label>
         <div class="col-sm-10">
             <input asp-for="Email" class="form-control" />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
+
     </div>
 
-    <input type="hidden" asp-for=@Model.ReturnUrl/>
+    <input type="hidden" asp-for=@Model.ReturnUrl />
 
-    <div class="form-group row">
-        <label asp-for="Password" class="col-sm-2 col-form-label">Parola</label>
+    <div class="mb-3 row">
+        <label asp-for="Password" class="col-sm-2">Parola</label>
         <div class="col-sm-10">
             <input type="password" asp-for="Password" class="form-control" />
             <span asp-validation-for="Password" class="text-danger"></span>
@@ -33,8 +34,6 @@
         <span class="text-danger">Email sau parola incorecte</span>
     }
 
-    <div class="form-group">
-        <input type="submit" value="Login" class="btn btn-default" />
-    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
 </form>
 

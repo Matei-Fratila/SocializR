@@ -190,18 +190,18 @@ public class ProfileController : BaseController
         return RedirectToAction("Get", "Profile", new { id = currentUser.Id });
     }
 
-    //[HttpGet]
-    //[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-    //[AllowAnonymous]
-    //public string RenderProfilePicture(string id)
-    //{
-    //    var media = profileService.GetUserPhoto(id);
+    [HttpGet]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+    [AllowAnonymous]
+    public IActionResult RenderProfilePicture(string id)
+    {
+        var media = profileService.GetUserPhoto(id);
 
-    //    if (media == null)
-    //    {
-    //        return imageStorage.UriFor("no-profile.png");
-    //    }
+        if (media == null)
+        {
+            return Ok(imageStorage.UriFor("noprofile.png"));
+        }
 
-    //    return imageStorage.UriFor(media);
-    //}
+        return Ok(imageStorage.UriFor(media));
+    }
 }

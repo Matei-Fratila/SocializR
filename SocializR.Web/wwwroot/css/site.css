@@ -2,9 +2,11 @@
     margin-top: 51px;
 }
 
-/** {
-    color: #2a4e6c;
-}*/
+.form-control-dark {
+    color: #fff;
+    background-color: rgba(255, 255, 255, .1);
+    border-color: rgba(255, 255, 255, .1);
+}
 
 .no-margin {
     margin: 0;
@@ -74,11 +76,6 @@ h3 {
     background-color: inherit;
 }
 
-.second-col {
-    display: inline-block;
-    margin-left: 300px;
-}
-
 .small-user-photo {
     width: 50px !important;
     height: 50px !important;
@@ -124,9 +121,8 @@ h3 {
 }
 
 #brand {
-    font-size: 2.5em;
-    color: whitesmoke;
-    font-family: 'Script MT';
+/*    color: whitesmoke;*/
+/*    font-family: 'Script MT';*/
 }
 
 .float-right {
@@ -194,11 +190,6 @@ nav {
 
 .info {
     height: auto;
-}
-
-.background-pattern {
-    background-image: url('../images/canvas-social-media.png');
-    height: 700px;
 }
 
 .first-col {

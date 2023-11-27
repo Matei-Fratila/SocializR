@@ -35,6 +35,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="LigerShark.WebOptimizer.Core" Version="3.0.396" />
     <PackageReference Include="X.PagedList" Version="8.4.7" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.7" />
   </ItemGroup>

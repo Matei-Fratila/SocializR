@@ -41,6 +41,28 @@ builder.Services.AddCurrentUser();
 builder.Services.AddScoped<SocializRUnitOfWork>();
 builder.Services.AddBusinessLogic(builder.Environment);
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddWebOptimizer(false, false);
+    //builder.Services.AddWebOptimizer(options =>
+    //{
+    //    options.MinifyCssFiles("AutoLot.Mvc.styles.css");
+    //    options.MinifyCssFiles("css/site.css");
+    //    options.MinifyJsFiles("js/site.js");
+    //});
+}
+else
+{
+    builder.Services.AddWebOptimizer(options =>
+    {
+        options.MinifyCssFiles("SocializR.Web.styles.css");
+        options.MinifyCssFiles("css/site.css");
+        options.MinifyJsFiles("js/site.js");
+        options.AddJavaScriptBundle("js/validationCode.js",
+            "js/validations/validators.js", "js/validations/errorFormatting.js");
+    });
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -70,7 +92,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-//app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

@@ -1,6 +1,6 @@
 ﻿namespace SocializR.Web.Controllers;
 
-//[Authorize]
+[Authorize]
 public class HomeController : BaseController
 {
     private readonly UserManager<User> userManager;

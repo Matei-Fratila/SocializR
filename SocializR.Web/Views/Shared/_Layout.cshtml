@@ -1,102 +1,60 @@
-﻿<!DOCTYPE html>
+﻿@inject IAuthorizationService AuthorizationService
+@using SocializR.Entities.Enums
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@inject CurrentUser CurrentUser
+
+@* @inject RouteJs.IRouteJsHelper RouteJs *@
+@* @RouteJs.Render() *@
+
+<!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SocializR</title>
-    @inject SignInManager<User> SignInManager
-    @inject IAuthorizationService AuthorizationService
-    @inject UserManager<User> UserManager
-    @inject CurrentUser CurrentUser
-    @* @inject RouteJs.IRouteJsHelper RouteJs *@
-    @* @RouteJs.Render() *@
-    @using SocializR.Entities.Enums
-
-    @*<environment include="Development">*@
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-    @*</environment>*@
-
-    @*<environment exclude="Development">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-    </environment>*@
+    <partial name="Partials/_Head" />
+    @RenderSection("Styles", required: false)
 </head>
-
 <body>
-    <nav class="navbar navbar-fixed-top custom-padding">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" id="brand" href="#">SocializR</a>
-            </div>
-            <ul class="nav navbar-nav navbar-right">
-                @if (SignInManager.IsSignedIn(User))
-                {
-                    <li>
-                        <a asp-controller="Profile" asp-action="Get" asp-route-id="@UserManager.GetUserId(User)"><i class="glyphicon glyphicon-user"></i> @CurrentUser.FirstName</a>
-                    </li>
-
-                    <li class="active">
-                        <a asp-controller="Account" asp-action="Logout"><i class="glyphicon glyphicon-log-out"></i> Log Out</a>
-                    </li>
-
-                }
-            </ul>
-            <form class="navbar-form navbar-right">
-                <div class="input-group">
-                    @*<input type="text" class="form-control" placeholder="Search" name="search">*@
-                    <div class="collapse input-group stylish-input-group search-bar col-sm-4">
-                        <select id="search-bar" class="form-control"></select>
-                    </div>
-                    <i class="btn glyphicon glyphicon-search"></i>
-                </div>
-            </form>
-        </div>
-    </nav>
-
-    <main class="custom-margin container body-content row">
+    <header>
+        <partial name="Partials/_Menu" />
+    </header>
+    <main>
         @if (SignInManager.IsSignedIn(User))
         {
-        <ul class="column first-col nav">
-            <li>
-                <a asp-controller="Profile" asp-action="Get" asp-route-id=@UserManager.GetUserId(User) class="UserName side-menu-item">
-                    <img class="img-responsive img-circle img-thumbnail" id="avatar-photo" src="@Url.Action("RenderProfilePicture", "Profile", new { id=UserManager.GetUserId(User)})">
-                    @CurrentUser.FirstName @CurrentUser.LastName
-                </a>
-            </li>
-            <li>
-                <a href="/Profile/Edit/@UserManager.GetUserId(User)" class="side-menu-item"><i class="glyphicon glyphicon-eye-open"></i> Edit Profile</a>
-            </li>
-            <li>
-                <a asp-controller="Album" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-picture"></i> Edit Photos</a>
-            </li>
-            <li>
-                <a asp-controller="Home" asp-action="Index" asp-route-id=1 class="side-menu-item"><i class="glyphicon glyphicon-list-alt"></i> Feed</a>
-            </li>
-            <li>
-                <a asp-controller="Friendship" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-sunglasses"></i> Friends</a>
-            </li>
-            @if (User.IsInRole("Administrator"))
-            {
+            <ul class="column first-col nav">
                 <li>
-                    <a asp-controller="County" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-globe"></i> Map</a>
+                    <a asp-controller="Profile" asp-action="Get" asp-route-id=@UserManager.GetUserId(User) class="UserName side-menu-item">
+                        <img class="img-responsive img-circle img-thumbnail" id="avatar-photo" src="@Url.Action("RenderProfilePicture", "Profile", new { id=UserManager.GetUserId(User)})" />
+                        @CurrentUser.FirstName @CurrentUser.LastName
+                    </a>
                 </li>
                 <li>
-                    <a asp-controller="Interest" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-music"></i> Interests</a>
+                    <a href="/Profile/Edit/@UserManager.GetUserId(User)" class="side-menu-item"><i class="glyphicon glyphicon-eye-open"></i> Edit Profile</a>
                 </li>
                 <li>
-                    <a asp-controller="User" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-user"></i> Users</a>
+                    <a asp-controller="Album" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-picture"></i> Edit Photos</a>
                 </li>
                 <li>
-                    <a asp-controller="Statistics" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-stats"></i> Statistics</a>
+                    <a asp-controller="Home" asp-action="Index" asp-route-id=1 class="side-menu-item"><i class="glyphicon glyphicon-list-alt"></i> Feed</a>
                 </li>
-            }
-        </ul>
+                <li>
+                    <a asp-controller="Friendship" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-sunglasses"></i> Friends</a>
+                </li>
+                @if (User.IsInRole("Administrator"))
+                {
+                    <li>
+                        <a asp-controller="County" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-globe"></i> Map</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Interest" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-music"></i> Interests</a>
+                    </li>
+                    <li>
+                        <a asp-controller="User" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-user"></i> Users</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Statistics" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-stats"></i> Statistics</a>
+                    </li>
+                }
+            </ul>
 
             <div class="col-sm-9 column content container second-col">
                 @RenderBody()
@@ -104,48 +62,26 @@
         }
         else
         {
-            <div class="first-col background-pattern">
-
+            <div class="row"></div>
+            <div class="row">
+                <div class="col"></div>
+                <div class="col">
+                    @RenderBody()
+                </div>
+                <div class="col"></div>
             </div>
-
-            <div class="col-sm-9 column second-col">
-                @RenderBody()
-            </div>
+            <div class="row"></div>
         }
-
-        <hr />
-        <footer>
-            <p>&copy; 2018 - SocializR.Web</p>
-        </footer>
     </main>
+    <footer class="footer mt-auto py-3 bg-dark-subtle">
+        <div class="container">
+            <span class="text-muted">&copy; @DateTime.Now.Year - SocializR</span>
+        </div>
+    </footer>
 
-    @*<environment include="Development">*@
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/linkify/linkify.js"></script>
-        <script src="~/lib/linkify/linkify-jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    @*</environment>*@
-    @*<environment exclude="Development">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
-        </script>
-        <script src="~/lib/linkify.min.js"></script>
-        <script src="~/lib/linkify-jquery.min.js"></script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>*@
-
-    @Html.Partial("_ValidationScriptsPartial")
+    @*     @Html.Partial("_ValidationScriptsPartial") *@
+    <partial name="Partials/_JavaScriptFiles" />
+    <partial name="_ValidationScriptsPartial" />
     @RenderSection("Scripts", required: false)
 </body>
 </html>

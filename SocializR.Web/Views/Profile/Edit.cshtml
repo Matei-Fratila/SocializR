@@ -5,12 +5,9 @@
     ViewData["Title"] = "Edit";
 }
 
-@section scripts{
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="~/js/app/profile.js"></script>
-    <script src="~/js/app/editProfile.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+@section Scripts{
+    <script src="~/js/profile.js"></script>
+    <script src="~/js/editProfile.js"></script>
 }
 <form method="post" enctype="multipart/form-data" asp-controller="Profile" asp-action="Edit">
     <div class="row avatar sections-layout">
