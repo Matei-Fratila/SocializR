@@ -17,69 +17,111 @@
     <header>
         <partial name="Partials/_Menu" />
     </header>
-    <main>
+    <main class="flex-shrink-0">
         @if (SignInManager.IsSignedIn(User))
         {
-            <ul class="column first-col nav">
-                <li>
-                    <a asp-controller="Profile" asp-action="Get" asp-route-id=@UserManager.GetUserId(User) class="UserName side-menu-item">
-                        <img class="img-responsive img-circle img-thumbnail" id="avatar-photo" src="@Url.Action("RenderProfilePicture", "Profile", new { id=UserManager.GetUserId(User)})" />
-                        @CurrentUser.FirstName @CurrentUser.LastName
-                    </a>
-                </li>
-                <li>
-                    <a href="/Profile/Edit/@UserManager.GetUserId(User)" class="side-menu-item"><i class="glyphicon glyphicon-eye-open"></i> Edit Profile</a>
-                </li>
-                <li>
-                    <a asp-controller="Album" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-picture"></i> Edit Photos</a>
-                </li>
-                <li>
-                    <a asp-controller="Home" asp-action="Index" asp-route-id=1 class="side-menu-item"><i class="glyphicon glyphicon-list-alt"></i> Feed</a>
-                </li>
-                <li>
-                    <a asp-controller="Friendship" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-sunglasses"></i> Friends</a>
-                </li>
-                @if (User.IsInRole("Administrator"))
-                {
-                    <li>
-                        <a asp-controller="County" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-globe"></i> Map</a>
-                    </li>
-                    <li>
-                        <a asp-controller="Interest" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-music"></i> Interests</a>
-                    </li>
-                    <li>
-                        <a asp-controller="User" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-user"></i> Users</a>
-                    </li>
-                    <li>
-                        <a asp-controller="Statistics" asp-action="Index" class="side-menu-item"><i class="glyphicon glyphicon-stats"></i> Statistics</a>
-                    </li>
-                }
-            </ul>
+            <div class="container-fluid">
+                <div class="row">
+                    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse shadow">
+                        <div class="position-sticky pt-3">
+                            <ul class="nav flex-column">
+                                <li class="nav-item">
+                                    <a asp-controller="Profile" asp-action="Get" asp-route-id=@UserManager.GetUserId(User) class="nav-link active" aria-current="page">
+                                        <img class="img-responsive img-circle img-thumbnail" id="avatar-photo" src="~/images/noprofile.png" />
+                                        @* @Url.Action("RenderProfilePicture", "Profile", new { id=UserManager.GetUserId(User)}) *@
+                                        @CurrentUser.FirstName @CurrentUser.LastName
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="Profile" asp-action="Get" asp-route-id=@UserManager.GetUserId(User) class="nav-link">
+                                        <i class="fa fa-fw fa-eye"></i> Edit Profile
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="Album" asp-action="Index" class="nav-link">
+                                        <i class="fa fa-fw fa-image-portrait"></i> Edit Photos
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="Home" asp-action="Index" class="nav-link">
+                                        <i class="fa fa-fw fa-list-alt"></i> Feed
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-controller="Friendship" asp-action="Index" class="nav-link">
+                                        <i class="fa fa-fw fa-user-friends"></i> Friends
+                                    </a>
+                                </li>
+                            </ul>
 
-            <div class="col-sm-9 column content container second-col">
-                @RenderBody()
+                            @if (User.IsInRole("Administrator"))
+                            {
+                                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                                    <span>Administrator</span>
+                                </h6>
+                                <ul class="nav flex-column mb-2">
+                                    <li class="nav-item">
+                                        <a asp-controller="County" asp-action="Index" class="nav-link">
+                                            <i class="fa fa-fw fa-globe-europe"></i> Map
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="Interest" asp-action="Index" class="nav-link">
+                                            <i class="fa fa-fw fa-music"></i> Interests
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="User" asp-action="Index" class="nav-link">
+                                            <i class="fa fa-fw fa-user"></i> Users
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a asp-controller="Statistics" asp-action="Index" class="nav-link">
+                                            <i class="fa fa-fw fa-bar-chart"></i> Statistics
+                                        </a>
+                                    </li>
+                                </ul>
+                            }
+                        </div>
+                    </nav>
+
+                    <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                            <h1 class="h2">Feed</h1>
+@*                             <div class="btn-toolbar mb-2 mb-md-0">
+                                <div class="btn-group me-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                                    <span data-feather="calendar"></span>
+                                    This week
+                                </button>
+                            </div> *@
+                        </div>
+                        @* <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> *@
+                        @RenderBody()
+                    </div>
+                </div>
             </div>
+
+@*             <div class="col-sm-9 column content container second-col">
+                @RenderBody()
+            </div> *@
         }
         else
         {
-            <div class="row"></div>
-            <div class="row">
-                <div class="col"></div>
-                <div class="col">
-                    @RenderBody()
-                </div>
-                <div class="col"></div>
+            <div class="container col-sm-5 shadow-lg bg-white px-4 py-4">
+                @RenderBody()
             </div>
-            <div class="row"></div>
         }
     </main>
-    <footer class="footer mt-auto py-3 bg-dark-subtle">
+@*     <footer class="footer mt-auto py-3 bg-dark-subtle">
         <div class="container">
             <span class="text-muted">&copy; @DateTime.Now.Year - SocializR</span>
         </div>
-    </footer>
+    </footer> *@
 
-    @*     @Html.Partial("_ValidationScriptsPartial") *@
     <partial name="Partials/_JavaScriptFiles" />
     <partial name="_ValidationScriptsPartial" />
     @RenderSection("Scripts", required: false)

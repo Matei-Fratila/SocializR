@@ -2,7 +2,7 @@
 
 public class ViewProfileVM
 {
-    public string Id { get; set; }
+    public Guid Id { get; set; }
 
     public RelationTypes RelationToCurrentUser { get; set; }
 
@@ -26,7 +26,7 @@ public class ViewProfileVM
 
     public List<AlbumVM> Albums { get; set; }
 
-    public List<string> MyInterests { get; set; }
+    public List<Guid> MyInterests { get; set; }
 
     public List<SelectListItem> Interests { get; set; }
 }

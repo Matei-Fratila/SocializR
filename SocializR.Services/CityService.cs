@@ -50,7 +50,7 @@ public class CityService : BaseService
             .ToList();
     }
 
-    public List<SelectListItem> GetCities(string id)
+    public List<SelectListItem> GetCities(Guid id)
     {
         //if (id == null)
         //{
@@ -67,7 +67,7 @@ public class CityService : BaseService
         .ToList();
     }
 
-    public List<City> GetAll(string countyId)
+    public List<City> GetAll(Guid countyId)
     {
         if (countyId == null)
         {
@@ -75,7 +75,7 @@ public class CityService : BaseService
         }
 
         return UnitOfWork.Cities.Query
-            .Where(c => c.CountyId.ToString() == countyId)
+            .Where(c => c.CountyId == countyId)
             .ToList();
     }
 

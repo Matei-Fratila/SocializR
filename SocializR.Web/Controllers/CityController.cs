@@ -19,7 +19,7 @@ public class CityController : BaseController
 
     [HttpGet]
     [AllowAnonymous]
-    public List<SelectListItem> GetAllByCounty(string id)
+    public List<SelectListItem> GetAllByCounty(Guid id)
     {
         return cityService.GetCities(id);
     }

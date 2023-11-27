@@ -45,7 +45,7 @@
             break;
     }
 
-    @if (Model.Id != UserManager.GetUserId(User))
+    @if (Model.Id.ToString() != UserManager.GetUserId(User))
     {
         <span>@Model.MutualFriends mutual friends</span>
 
@@ -123,7 +123,7 @@
 </div>
 
 
-@if (Model.IsPrivate == false || Model.Id == UserManager.GetUserId(User) || (Model.IsPrivate == true && Model.RelationToCurrentUser == RelationTypes.Friends))
+@if (Model.IsPrivate == false || Model.Id.ToString() == UserManager.GetUserId(User) || (Model.IsPrivate == true && Model.RelationToCurrentUser == RelationTypes.Friends))
 {
     <div>
         <h3>Albums</h3>

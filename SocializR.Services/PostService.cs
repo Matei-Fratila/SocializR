@@ -41,11 +41,11 @@ public class PostService : BaseService
         return UnitOfWork.SaveChanges() != 0;
     }
 
-    public bool NotifyProfilePhotoChanged(Media photo, string userId)
+    public bool NotifyProfilePhotoChanged(Media photo, Guid userId)
     {
         var post = new Post
         {
-            UserId = new Guid(userId),
+            UserId = userId,
             Title = "added a new profile photo",
             Body = "",
             CreatedOn = DateTime.Now,

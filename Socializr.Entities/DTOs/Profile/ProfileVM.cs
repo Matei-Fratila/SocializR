@@ -4,7 +4,7 @@ public class ProfileVM
 {
     public bool IsDataInvalid { get; set; }
 
-    public string Id { get; set; }
+    public Guid Id { get; set; }
 
     public string FilePath { get; set; }
 
@@ -19,11 +19,11 @@ public class ProfileVM
     [DataType(DataType.Date)]
     public DateTime? BirthDate { get; set; }
 
-    public string CityId { get; set; }
+    public Guid CityId { get; set; }
 
     public List<SelectListItem> Cities { get; set; }
 
-    public string CountyId { get; set; }
+    public Guid CountyId { get; set; }
 
     public List<SelectListItem> Counties { get; set; }
 

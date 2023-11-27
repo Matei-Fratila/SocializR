@@ -21,11 +21,11 @@ public class ProfileService : BaseService
         }
     }
 
-    public bool ChangeProfilePhoto(string id, string userId)
+    public bool ChangeProfilePhoto(string id, Guid userId)
     {
         var user = UnitOfWork.Users.Query
             .Include(u => u.ProfilePhoto)
-            .FirstOrDefault(u => u.Id.ToString() == userId);
+            .FirstOrDefault(u => u.Id == userId);
 
         user.ProfilePhotoId = new Guid(id);
 
@@ -58,10 +58,10 @@ public class ProfileService : BaseService
         return profile;
     }
 
-    public ViewProfileVM GetViewProfileVM(string id)
+    public ViewProfileVM GetViewProfileVM(Guid id)
     {
         var result = UnitOfWork.Users.Query
-           .Where(u => u.Id.ToString() == id && u.IsDeleted == false)
+           .Where(u => u.Id == id && u.IsDeleted == false)
            .ProjectTo<ViewProfileVM>(mapper.ConfigurationProvider)
            .FirstOrDefault();
 
@@ -74,7 +74,7 @@ public class ProfileService : BaseService
             .Include(u => u.City)
             .Include(u => u.UserInterests)
                 .ThenInclude(i => i.Interest)
-            .Where(u => u.Id.ToString() == model.Id)
+            .Where(u => u.Id == model.Id)
             .FirstOrDefault();
 
         if (user == null)

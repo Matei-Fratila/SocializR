@@ -9,7 +9,7 @@ public class ProfileMapper : Profile
             .ForMember(p => p.ProfilePhoto, opt => opt.Ignore())
             .ForMember(p=>p.FilePath, opt =>opt.MapFrom(u=>u.ProfilePhoto.FilePath));
 
-        CreateMap<string, UserInterest>()
+        CreateMap<Guid, UserInterest>()
             .ForMember(dest => dest.InterestId, opt => opt.MapFrom(src => src));
 
         CreateMap<ProfileVM, User>()

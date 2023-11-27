@@ -19,18 +19,18 @@
         <div class="col-sm-7">
             <div class="widget-area blank">
                 <h3>
-                    <i class="glyphicon glyphicon-pencil"></i>
+                    <i class="fa fa-pencil"></i>
                     Write Post
                 </h3>
                 <div class="status-upload">
-                    <form id="post-form" class="border">
+                    <form id="post-form" class="border shadow-lg">
                         @Html.AntiForgeryToken()
                         <input id="post-title" class="col-sm-12 textarea-padding" placeholder="Give your post a title" />
                         <textarea id="post-body" class="textarea-padding" placeholder="What are you doing right now?"></textarea>
 
                         <div class="col-sm-2 small-margin">
                             <span class="btn btn-primary btn-file">
-                                <i class="glyphicon glyphicon-camera"></i>
+                                <i class="fa fa-camera"></i>
                                 add photos
                                 <input title="add photos" multiple data-toggle="tooltip" data-placement="bottom" type="file" accept="image/*, video/*" text="add photos" id="files" />
                             </span>
@@ -38,7 +38,7 @@
 
                         <div class="col-sm-2 small-margin float-right">
                             <button id="share" type="button" class="btn btn-success">
-                                <i class="glyphicon glyphicon-ok"></i>
+                                <i class="fa fa-ok"></i>
                                 Share
                             </button>
                         </div>

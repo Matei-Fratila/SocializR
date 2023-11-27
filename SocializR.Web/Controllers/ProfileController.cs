@@ -40,14 +40,14 @@ public class ProfileController : BaseController
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> Get(string id)
+    public async Task<IActionResult> Get(Guid id)
     {
         ViewProfileVM model = null;
         var currentUser = await userManager.GetUserAsync(User);
 
         if (id == null)
         {
-            id = currentUser.Id.ToString();
+            id = currentUser.Id;
         }
 
         model = profileService.GetViewProfileVM(id);
@@ -58,13 +58,13 @@ public class ProfileController : BaseController
             return UserNotFoundView();
         }
 
-        if (id != currentUser.Id.ToString())
+        if (id != currentUser.Id)
         {
             model.MutualFriends = friendshipService.CountMutualFriends(id);
         }
 
         model.Interests = interestService.GetAll();
-        model.RelationToCurrentUser = profileService.GetRelationToCurrentUser(currentUser.Id.ToString(), id);
+        model.RelationToCurrentUser = profileService.GetRelationToCurrentUser(currentUser.Id.ToString(), id.ToString());
 
         if (model.IsPrivate && model.RelationToCurrentUser == RelationTypes.Strangers && await userManager.IsInRoleAsync(currentUser, "Administrator") == false)
         {
@@ -127,7 +127,7 @@ public class ProfileController : BaseController
             model.Counties = countyService.GetSelectCounties();
             model.Cities = cityService.GetCities(model.CountyId);
             model.Interests = interestService.GetAll();
-            model.MyInterests = interestService.GetByUser(model.Id);
+            model.MyInterests = interestService.GetByUser(model.Id.ToString());
 
             return View(model);
         }
@@ -182,7 +182,7 @@ public class ProfileController : BaseController
             return InternalServerErrorView();
         }
 
-        if (await userManager.IsInRoleAsync(currentUser, "Administrator") && model.Id != currentUser.Id.ToString())
+        if (await userManager.IsInRoleAsync(currentUser, "Administrator") && model.Id != currentUser.Id)
         {
             return RedirectToAction("Index", "User");
         }

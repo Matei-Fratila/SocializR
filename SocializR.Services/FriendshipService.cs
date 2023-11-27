@@ -12,10 +12,10 @@ public class FriendshipService : BaseService
         this.mapper = mapper;
     }
 
-    public int CountMutualFriends(string id)
+    public int CountMutualFriends(Guid id)
     {
         return UnitOfWork.Friendships.Query
-            .Where(u => u.FirstUserId.ToString() == currentUser.Id && u.SecondUser.FriendsFirstUser.Where(f => f.SecondUserId.ToString() == id).Any())
+            .Where(u => u.FirstUserId.ToString() == currentUser.Id && u.SecondUser.FriendsFirstUser.Where(f => f.SecondUserId == id).Any())
             .Count();
     }
 

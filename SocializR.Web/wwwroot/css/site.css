@@ -1,8 +1,4 @@
-﻿main {
-    margin-top: 51px;
-}
-
-.form-control-dark {
+﻿.form-control-dark {
     color: #fff;
     background-color: rgba(255, 255, 255, .1);
     border-color: rgba(255, 255, 255, .1);
@@ -62,13 +58,11 @@ body {
 h2 {
     font-size: 24px;
     font-weight: bold;
-    color: steelblue;
 }
 
 h3 {
     font-size: 18px;
     font-weight: bold;
-    color: steelblue;
 }
 
 .img-thumbnail {
@@ -179,9 +173,8 @@ nav {
     border-bottom: 1px solid #ddd;
 }
 
-.nav .side-menu-item {
+#sidebarMenu li {
     border-bottom: 1px solid #ddd;
-    padding: 15px;
 }
 
 .head {

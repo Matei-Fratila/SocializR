@@ -3,11 +3,11 @@
     $('.action').each(function (index, elem) {
         if ($(elem).closest('.user-container').find('.is-deleted').val() === 'False') {
             $(elem).addClass('delete-user');
-            $(elem).append('<i class="glyphicon glyphicon-ok"></i>');
+            $(elem).append('<i class="fa fa-ok"></i>');
         }
         else {
             $(elem).addClass('activate-user');
-            $(elem).append('<i class="glyphicon glyphicon-remove"></i>');
+            $(elem).append('<i class="fa fa-remove"></i>');
         }
     });
 
@@ -24,7 +24,7 @@
                 $(link).removeClass('delete-user');
                 $(link).addClass('activate-user');
                 $(link).find('i').remove();
-                $(link).append('<i class="glyphicon glyphicon-remove"></i>');
+                $(link).append('<i class="fa fa-remove"></i>');
                 
             },
             error: function (ex) {
@@ -46,7 +46,7 @@
                 $(link).removeClass('activate-user');
                 $(link).addClass('delete-user');
                 $(link).find('i').remove();
-                $(link).append('<i class="glyphicon glyphicon-ok"></i>');
+                $(link).append('<i class="fa fa-ok"></i>');
                 
             },
             error: function (ex) {

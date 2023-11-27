@@ -47,10 +47,10 @@
                     <input type="hidden" value=1 class="comments-page" />
                     <input asp-for="@Model.Id" value="@Model.Id" name="@Model.Id" type="hidden" class="post-id" />
                     <input asp-for="@Model.IsLikedByCurrentUser" value="@Model.IsLikedByCurrentUser" name="@Model.IsLikedByCurrentUser" type="hidden" class="is-liked" />
-                    <button class="btn like" title="heart post" data-toggle="tooltip" data-placement="bottom"><i class="glyphicon glyphicon-heart"></i></button>
-                    <button class="btn float-right see-comments more-comments" title="see more comments" data-toggle="tooltip" data-placement="bottom"><i class="glyphicon glyphicon-plus"></i><span class="nr-of-likes">More comments</span></button>
-                    <button class="btn float-right see-comments" title="nr. of comments" data-toggle="tooltip" data-placement="bottom"><i class="glyphicon glyphicon-comment"></i><span class="nr-of-comments">@Model.NumberOfComments Comments</span></button>
-                    <button class="btn float-right see-likes" title="see likes" data-toggle="tooltip" data-placement="bottom"><i class="glyphicon glyphicon-heart"></i><span class="nr-of-likes">@Model.NumberOfLikes Hearts</span></button>
+                    <button class="btn like" title="heart post" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-heart"></i></button>
+                    <button class="btn float-right see-comments more-comments" title="see more comments" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-plus"></i><span class="nr-of-likes">More comments</span></button>
+                    <button class="btn float-right see-comments" title="nr. of comments" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-comment"></i><span class="nr-of-comments">@Model.NumberOfComments Comments</span></button>
+                    <button class="btn float-right see-likes" title="see likes" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-heart"></i><span class="nr-of-likes">@Model.NumberOfLikes Hearts</span></button>
                     <div class="comments-container">
                         @if (Model.Comments != null)
                         {
@@ -69,7 +69,7 @@
                                 <div class="col-sm-10 no-padding-left">
                                     <input asp-for="@Model.Id" value="@Model.Id" name="@Model.Id" type="hidden" class="post-id" />
                                     <textarea class="comment-body textarea-padding col-sm-11 text" placeholder="Write a comment..."></textarea>
-                                    <i class="glyphicon glyphicon-chevron-right btn float-right comment col-sm-1"></i>
+                                    <i class="fa fa-chevron-left btn float-right comment col-sm-1"></i>
                                 </div>
                             </div>
                         </div>

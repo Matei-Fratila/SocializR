@@ -64,11 +64,11 @@ public class AlbumService : BaseService
         return UnitOfWork.SaveChanges() != 0;
     }
 
-    public string Create(string name, string id)
+    public string Create(string name, Guid id)
     {
         var album = new Album
         {
-            UserId = new Guid(id),
+            UserId = id,
             Name = name
         };
 
@@ -114,10 +114,10 @@ public class AlbumService : BaseService
         return true;
     }
 
-    public string GetId(string name, string id)
+    public string GetId(string name, Guid id)
     {
         return UnitOfWork.Albums.Query
-            .Where(u => u.UserId.ToString() == id && u.Name == "Profile Pictures")
+            .Where(u => u.UserId == id && u.Name == "Profile Pictures")
             .Select(u => u.Id.ToString())
             .FirstOrDefault();
     }
