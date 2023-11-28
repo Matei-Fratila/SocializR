@@ -77,18 +77,18 @@ public class ProfileController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> Edit(string id)
+    public async Task<IActionResult> Edit(Guid id)
     {
         ProfileVM model = null;
         var currentUser = await userManager.GetUserAsync(User);
 
-        if (id == null)
+        if (id == Guid.Empty)
         {
-            id = currentUser.Id.ToString();
+            id = currentUser.Id;
         }
         else
         {
-            if (id == currentUser.Id.ToString())
+            if (id == currentUser.Id)
             {
                 model = profileService.GetEditProfileVM(id);
             }
@@ -127,7 +127,7 @@ public class ProfileController : BaseController
             model.Counties = countyService.GetSelectCounties();
             model.Cities = cityService.GetCities(model.CountyId);
             model.Interests = interestService.GetAll();
-            model.MyInterests = interestService.GetByUser(model.Id.ToString());
+            model.MyInterests = interestService.GetByUser(model.Id);
 
             return View(model);
         }

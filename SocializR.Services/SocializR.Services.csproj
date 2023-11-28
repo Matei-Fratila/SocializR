@@ -11,7 +11,7 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.2" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="8.0.0" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Socializr.DataAccess\SocializR.DataAccess.csproj" />

@@ -44,7 +44,7 @@ public class HomeController : BaseController
     }
 
     [HttpGet]
-    public JsonResult NextComments(int page, string postId)
+    public JsonResult NextComments(int page, Guid postId)
     {
         var comments = commentService.GetComments(postId, configuration.CommentsPerPage, page);
 

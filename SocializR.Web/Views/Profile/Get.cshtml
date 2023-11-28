@@ -6,13 +6,13 @@
     ViewData["Title"] = "View";
 }
 
-@section Styles{
+@section Styles {
     <link href="~/css/media.css" rel="stylesheet" />
     <link href="~/css/avatar.css" rel="stylesheet" />
     <link href="~/css/album.css" rel="stylesheet" />
 }
 
-@section Scripts{
+@section Scripts {
     <script src="~/js/profile.js"></script>
     <script src="~/js/gallery.js"></script>
     <script src="~/js/album.js"></script>
@@ -20,7 +20,7 @@
 
 <div class="row avatar sections-layout">
     <div class="col-sm-3">
-        <img class="img-responsive img-circle img-thumbnail header-photo" src="@Model.FilePath">
+        <img class="img-responsive img-circle img-thumbnail header-photo" src="~/images/noprofile.png">
     </div>
     <div class="col-sm-9 no-padding-left">
         <h2>@Model.FirstName @Model.LastName</h2>
@@ -50,77 +50,67 @@
         <span>@Model.MutualFriends mutual friends</span>
 
     }
-
 </div>
 
-
-<div class="row no-margin">
-    <h3>Contact information</h3>
-    <hr />
-
-    <input asp-for="Id" type="hidden" />
-
-    <div class="col-sm-6">
-        <div class="form-group row">
-            <label asp-for="FirstName" class="col-sm-4 col-form-label">First Name</label>
-            <div class="col-sm-8">
-                <span asp-for="FirstName">@Model.FirstName</span>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label asp-for="LastName" class="col-sm-4 col-form-label">Last Name</label>
-            <div class="col-sm-8">
-                <span asp-for="LastName">@Model.LastName</span>
-            </div>
-        </div>
-
-        @if (Model.BirthDate != null)
-        {
-            <div class="form-group row">
-                <label asp-for="BirthDate" class="col-sm-4 col-form-label">BirthDate</label>
-                <div class="col-sm-8">
-                    <p>@Model.BirthDate.Value.ToShortDateString()</p>
-                </div>
-            </div>
-        }
+<dl>
+    <div class="row">
+        <dt class="col-sm-1">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+    </div>
+    <div class="row">
+        <dt class="col-sm-1">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+    </div>
+    <div class="row">
+        <dt class="col-sm-1">
+            @Html.DisplayNameFor(model => model.BirthDate)
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.BirthDate)
+        </dd>
     </div>
 
-    <div class="col-sm-6">
-        <div class="form-group row">
-            <label asp-for="County" class="col-sm-4 col-form-label">County</label>
-            <div class="col-sm-8">
-                <span asp-for="CountyId">@Model.County</span>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label asp-for="City" class="col-sm-4 col-form-label">City</label>
-            <div class="col-sm-8">
-                <span asp-for="City">@Model.City</span>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label asp-for="Gender" class="col-sm-4 col-form-label">Gender</label>
-            <div class="col-sm-8">
-                <span asp-for="Gender">@Model.Gender</span>
-            </div>
-        </div>
+    <div class="row">
+        <dt class="col-sm-1">
+            @Html.DisplayNameFor(model => model.County)
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.County)
+        </dd>
     </div>
-</div>
-
-<div>
-    <h3>Likes and interests</h3>
-    <hr />
-
-    <div class="form-group row">
-        <label asp-for="MyInterests" class="col-sm-2 col-form-label">Interests</label>
-        <div class="col-sm-10">
+    <div class="row">
+        <dt class="col-sm-1">
+            @Html.DisplayNameFor(model => model.City)
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.City)
+        </dd>
+    </div>
+    <div class="row">
+        <dt class="col-sm-1">
+            @Html.DisplayNameFor(model => model.Gender)
+        </dt>
+        <dd class="col-sm-11">
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+    </div>
+    <div class="row">
+        <dt class="col-sm-1">
+            @Html.DisplayNameFor(model => model.MyInterests)
+        </dt>
+        <dd class="col-sm-11">
             <select asp-for="MyInterests" asp-items="Model.Interests" disabled class="js-states form-control" id="select2interests-view" multiple="multiple"></select>
-        </div>
+        </dd>
     </div>
-</div>
+</dl>
 
 
 @if (Model.IsPrivate == false || Model.Id.ToString() == UserManager.GetUserId(User) || (Model.IsPrivate == true && Model.RelationToCurrentUser == RelationTypes.Friends))
@@ -131,7 +121,7 @@
         <div class="albums-container row">
             @foreach (var album in Model.Albums)
             {
-                @await Html.PartialAsync("../Album/_Album", album);
+                @await Html.PartialAsync("../Album/_Album", album)
             }
         </div>
     </div>

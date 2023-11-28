@@ -57,7 +57,7 @@ public class InterestService : BaseService
         return model;
     }
 
-    public List<string> GetByUser(string id)
+    public List<string> GetByUser(Guid id)
     {
         if (id == null)
         {
@@ -65,7 +65,7 @@ public class InterestService : BaseService
         }
 
         var interests = UnitOfWork.UserInterests.Query
-            .Where(i => i.UserId.ToString() == id)
+            .Where(i => i.UserId == id)
             .Select(i => i.Interest.Id.ToString())
             .ToList();
 

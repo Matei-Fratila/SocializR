@@ -2,14 +2,14 @@
 
 public class ProfileService : BaseService
 {
-    private readonly CurrentUser currentUser;
-    private readonly IMapper mapper;
+    private readonly CurrentUser _currentUser;
+    private readonly IMapper _mapper;
 
     public ProfileService(CurrentUser currentUser, SocializRUnitOfWork unitOfWork, IMapper mapper)
         : base(unitOfWork)
     {
-        this.currentUser = currentUser;
-        this.mapper = mapper;
+        _currentUser = currentUser;
+        _mapper = mapper;
     }
 
     public byte[] ConvertToByteArray(IFormFile content)
@@ -44,15 +44,19 @@ public class ProfileService : BaseService
 
     public ProfileVM GetEditProfileVM() =>
         UnitOfWork.Users.Query
-            .Where(u => u.Id.ToString() == currentUser.Id)
-            .ProjectTo<ProfileVM>(mapper.ConfigurationProvider)
+            .Where(u => u.Id == _currentUser.Id)
+            .ProjectTo<ProfileVM>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
 
-    public ProfileVM GetEditProfileVM(string id)
+    public ProfileVM GetEditProfileVM(Guid id)
     {
+        var user = UnitOfWork.Users.Query
+            .Where(u => u.Id == id && u.IsDeleted == false)
+            .FirstOrDefault();
+
         var profile = UnitOfWork.Users.Query
-            .Where(u => u.Id.ToString() == id && u.IsDeleted == false)
-            .ProjectTo<ProfileVM>(mapper.ConfigurationProvider)
+            .Where(u => u.Id == id && u.IsDeleted == false)
+            .ProjectTo<ProfileVM>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
 
         return profile;
@@ -62,7 +66,7 @@ public class ProfileService : BaseService
     {
         var result = UnitOfWork.Users.Query
            .Where(u => u.Id == id && u.IsDeleted == false)
-           .ProjectTo<ViewProfileVM>(mapper.ConfigurationProvider)
+           .ProjectTo<ViewProfileVM>(_mapper.ConfigurationProvider)
            .FirstOrDefault();
 
         return result;
@@ -82,7 +86,7 @@ public class ProfileService : BaseService
             return false;
         }
 
-        mapper.Map<ProfileVM, User>(model, user);
+        _mapper.Map<ProfileVM, User>(model, user);
 
         UnitOfWork.Users.Update(user);
 
@@ -92,10 +96,10 @@ public class ProfileService : BaseService
     public bool UpdateCurrentUser(ProfileVM model)
     {
         var user = UnitOfWork.Users.Query
-            .Where(u => u.Id.ToString() == currentUser.Id)
+            .Where(u => u.Id == _currentUser.Id)
             .FirstOrDefault();
 
-        mapper.Map<ProfileVM, User>(model, user);
+        _mapper.Map<ProfileVM, User>(model, user);
 
         UnitOfWork.Users.Update(user);
 
@@ -115,7 +119,7 @@ public class ProfileService : BaseService
         }
 
         var hasEntries = UnitOfWork.Friendships.Query
-            .Where(f => f.FirstUserId.ToString() == id && f.SecondUserId.ToString() == currentUser.Id)
+            .Where(f => f.FirstUserId.ToString() == id && f.SecondUserId == _currentUser.Id)
             .Any();
 
         if (hasEntries)
@@ -124,7 +128,7 @@ public class ProfileService : BaseService
         }
 
         hasEntries = UnitOfWork.Friendships.Query
-            .Where(f => f.SecondUserId.ToString() == id && f.FirstUserId.ToString() == currentUser.Id)
+            .Where(f => f.SecondUserId.ToString() == id && f.FirstUserId == _currentUser.Id)
             .Any();
 
         if (hasEntries)
@@ -133,7 +137,7 @@ public class ProfileService : BaseService
         }
 
         hasEntries = UnitOfWork.FriendRequests.Query
-            .Where(f => f.RequesterUserId.ToString() == id && f.RequestedUserId.ToString() == currentUser.Id)
+            .Where(f => f.RequesterUserId.ToString() == id && f.RequestedUserId == _currentUser.Id)
             .Any();
 
         if (hasEntries)
@@ -142,7 +146,7 @@ public class ProfileService : BaseService
         }
 
         hasEntries = UnitOfWork.FriendRequests.Query
-            .Where(f => f.RequestedUserId.ToString() == id && f.RequesterUserId.ToString() == currentUser.Id)
+            .Where(f => f.RequestedUserId.ToString() == id && f.RequesterUserId == _currentUser.Id)
             .Any();
 
         if (hasEntries)

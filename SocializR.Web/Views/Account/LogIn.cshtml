@@ -10,7 +10,7 @@
 <form asp-action="Login">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="mb-3 row">
-        <label asp-for="Email" class="col-sm-2">Email</label>
+        <label asp-for="Email" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-7">
             <input asp-for="Email" class="form-control" />
             <span asp-validation-for="Email" class="text-danger"></span>
@@ -21,7 +21,7 @@
     <input type="hidden" asp-for=@Model.ReturnUrl />
 
     <div class="mb-3 row">
-        <label asp-for="Password" class="col-sm-2">Parola</label>
+        <label asp-for="Password" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-7">
             <input type="password" asp-for="Password" class="form-control" />
             <span asp-validation-for="Password" class="text-danger"></span>

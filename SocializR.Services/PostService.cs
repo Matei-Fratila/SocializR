@@ -14,12 +14,12 @@ public class PostService : BaseService
         this.commentService = commentService;
     }
 
-    public List<PostVM> GetNextPosts(string currentUserId, int page, int postsPerPage, int commentsPerPage)
+    public List<PostVM> GetNextPosts(Guid currentUserId, int page, int postsPerPage, int commentsPerPage)
     {
         var posts = UnitOfWork.Posts.Query
-            .Where(p => p.User.FriendsFirstUser.FirstOrDefault(f => f.SecondUserId.ToString() == currentUser.Id 
+            .Where(p => p.User.FriendsFirstUser.FirstOrDefault(f => f.SecondUserId == currentUser.Id 
             && f.FirstUser.IsDeleted == false) != null 
-            || p.UserId.ToString() == currentUserId)
+            || p.UserId == currentUserId)
             .OrderByDescending(p => p.CreatedOn)
             .Skip(page * postsPerPage)
             .Take(postsPerPage)

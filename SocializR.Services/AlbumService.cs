@@ -15,7 +15,7 @@ public class AlbumService : BaseService
     public string GetPostsAlbum()
     {
         var album = UnitOfWork.Albums.Query
-            .Where(a => a.Name == "Posts Photos" && a.UserId.ToString() == currentUser.Id)
+            .Where(a => a.Name == "Posts Photos" && a.UserId == currentUser.Id)
             .FirstOrDefault();
 
         if (album == null)
@@ -23,7 +23,7 @@ public class AlbumService : BaseService
             album = new Album
             {
                 Name = "Posts Photos",
-                UserId = new Guid(currentUser.Id)
+                UserId = currentUser.Id
             };
 
             UnitOfWork.Albums.Add(album);
@@ -37,7 +37,7 @@ public class AlbumService : BaseService
     public List<AlbumVM> GetAll()
     {
         var albums = UnitOfWork.Albums.Query
-            .Where(u => u.UserId.ToString() == currentUser.Id)
+            .Where(u => u.UserId == currentUser.Id)
             .ProjectTo<AlbumVM>(mapper.ConfigurationProvider)
             .OrderBy(i => i.Name)
             .ToList();
@@ -57,7 +57,7 @@ public class AlbumService : BaseService
     {
         UnitOfWork.Albums.Add(new Album
         {
-            UserId = new Guid(currentUser.Id),
+            UserId = currentUser.Id,
             Name = model.Name
         });
 

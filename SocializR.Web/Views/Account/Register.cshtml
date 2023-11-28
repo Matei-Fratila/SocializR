@@ -11,28 +11,28 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="row mb-3">
-        <label asp-for="FirstName" class="col-sm-2">Prenume</label>
+        <label asp-for="FirstName" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-7">
             <input asp-for="FirstName" class="form-control" />
             <span asp-validation-for="FirstName" class="text-danger"></span>
         </div>
     </div>
     <div class="row mb-3">
-        <label asp-for="LastName" class="col-sm-2">Nume</label>
+        <label asp-for="LastName" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-7">
             <input asp-for="LastName" class="form-control" />
             <span asp-validation-for="LastName" class="text-danger"></span>
         </div>
     </div>
     <div class="row mb-3">
-        <label asp-for="Email" class="col-sm-2">Email</label>
+        <label asp-for="Email" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-7">
             <input asp-for="Email" class="form-control" />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
     </div>
     <div class="row mb-3">
-        <label asp-for="Password" class="col-sm-2">Parola</label>
+        <label asp-for="Password" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-7">
             <input type="password" asp-for="Password" class="form-control" />
             <span asp-validation-for="Password" class="text-danger"></span>
@@ -40,7 +40,7 @@
     </div>
 
     <div class="row mb-3">
-        <label asp-for="BirthDate" class="col-sm-2">BirthDate</label>
+        <label asp-for="BirthDate" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-7">
             <input asp-for="BirthDate" class="form-control" />
             <span asp-validation-for="BirthDate" class="text-danger"></span>
@@ -48,7 +48,7 @@
     </div>
 
     <div class="row mb-3">
-        <label asp-for="CountyId" class="col-sm-2">Judet</label>
+        <label asp-for="CountyId" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-7">
             <select asp-for="CountyId" asp-items="Model.Counties" class="form-control" id="County"></select>
             <span asp-validation-for="CountyId" class="text-danger"></span>
@@ -56,7 +56,7 @@
     </div>
 
     <div class="row mb-3">
-        <label asp-for="CityId" class="col-sm-2">Oras</label>
+        <label asp-for="CityId" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-7">
             <select asp-for="CityId" asp-items="Model.Cities" class="form-control" id="City"></select>
             <span asp-validation-for="CityId" class="text-danger"></span>
@@ -64,8 +64,8 @@
     </div>
 
     <div class="row mb-3">
-        <label asp-for="Gender" class="col-sm-2 col-form-label">Gender</label>
-        <div class="col-sm-7">
+        <label asp-for="Gender" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-7 col-form-label">
             @Html.RadioButtonFor(m => m.Gender, 1, new { id = "" }) Male
             @Html.RadioButtonFor(m => m.Gender, 2, new { id = "" }) Female
             @Html.RadioButtonFor(m => m.Gender, 0, new { id = "" }) Other
@@ -73,12 +73,12 @@
     </div>
 
     <div class="row mb-3">
-        <label asp-for="IsPrivate" class="col-sm-2 col-form-label">Privacy</label>
-        <div class="col-sm-7">
+        <label asp-for="IsPrivate" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-7 col-form-label">
             @Html.RadioButtonFor(m => m.IsPrivate, false, new { id = "" }) Public
             @Html.RadioButtonFor(m => m.IsPrivate, true, new { id = "" }) Private
         </div>
     </div>
 
-    <button type="submit" class="btn btn-dark mb-3">Save</button>
+    <button type="submit" class="btn btn-dark mb-3">Sign Up</button>
 </form>

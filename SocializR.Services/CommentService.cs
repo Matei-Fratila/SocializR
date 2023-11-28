@@ -21,10 +21,10 @@ public class CommentService : BaseService
         return comment.Id.ToString();
     }
 
-    public List<CommentVM> GetComments(string postId, int commentsPerPage, int page)
+    public List<CommentVM> GetComments(Guid postId, int commentsPerPage, int page)
     {
         return UnitOfWork.Comments.Query
-            .Where(c => c.PostId.ToString() == postId)
+            .Where(c => c.PostId == postId)
             .OrderByDescending(c => c.CreatedOn)
             .Skip(page * commentsPerPage)
             .Take(commentsPerPage)
@@ -55,7 +55,7 @@ public class CommentService : BaseService
             Body = body,
             FirstName = currentUser.FirstName,
             LastName = currentUser.LastName,
-            UserPhoto = UnitOfWork.Users.Query.Where(u => u.Id.ToString() == currentUser.Id).Select(u => u.ProfilePhotoId).FirstOrDefault().ToString(),
+            UserPhoto = UnitOfWork.Users.Query.Where(u => u.Id == currentUser.Id).Select(u => u.ProfilePhotoId).FirstOrDefault().ToString(),
             CreatedOn = DateTime.Now
         };
     }

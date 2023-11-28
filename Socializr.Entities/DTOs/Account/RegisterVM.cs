@@ -2,35 +2,41 @@
 
 public class RegisterVM : IValidatableObject
 {
+    [MaxLength(100, ErrorMessage = "Campul trebuie sa aiba maximum 100 de caracatere")]
+    [Required(ErrorMessage = "The first name is required")]
+    [Display(Name = "First Name")]
+    public string FirstName { get; set; }
+
+    [MaxLength(100, ErrorMessage = "Campul trebuie sa aiba maximum 100 de caracatere")]
+    [Required(ErrorMessage = "The last name is required")]
+    [Display(Name = "Last Name")]
+    public string LastName { get; set; }
+
     [EmailAddress(ErrorMessage = "Adresa nu este valida!")]
     [MaxLength(100, ErrorMessage = "Campul trebuie sa aiba maximum 100 de caracatere")]
-    [Required(ErrorMessage = "Campul este obligatoriu!")]
+    [Required(ErrorMessage = "The email is required")]
     //[Remote(action: "IsEmailAvailable", controller: "Account", ErrorMessage = "Email-ul exista deja")]
     public string Email { get; set; }
 
     [MaxLength(100, ErrorMessage = "Campul trebuie sa aiba maximum 100 de caracatere")]
-    [Required(ErrorMessage = "Campul este obligatoriu!")]
-    public string FirstName { get; set; }
-
-    [MaxLength(100, ErrorMessage = "Campul trebuie sa aiba maximum 100 de caracatere")]
-    [Required(ErrorMessage = "Campul este obligatoriu!")]
-    public string LastName { get; set; }
-
-    [MaxLength(100, ErrorMessage = "Campul trebuie sa aiba maximum 100 de caracatere")]
-    [Required(ErrorMessage = "Campul este obligatoriu!")]
+    [Required(ErrorMessage = "The password is required")]
     public string Password { get; set; }
 
+    [Display(Name = "City")]
     public string CityId { get; set; }
     public List<SelectListItem> Cities { get; set; }
 
+    [Display(Name = "County")]
     public string CountyId { get; set; }
     public List<SelectListItem> Counties { get; set; }
 
     [DataType(DataType.Date)]
+    [Display(Name = "Date of birth")]
     public DateTime? BirthDate { get; set; }
 
     public int Gender { get; set; }
 
+    [Display(Name = "Privacy level")]
     public bool IsPrivate { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

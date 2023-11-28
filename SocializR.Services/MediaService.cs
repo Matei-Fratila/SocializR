@@ -31,7 +31,7 @@ public class MediaService : BaseService
             return false;
         }
 
-        if (owner.Id.ToString() == currentUser.Id)
+        if (owner.Id == currentUser.Id)
         {
             return true;
         }
@@ -41,7 +41,7 @@ public class MediaService : BaseService
             return true;
         }
 
-        if (friendshipService.AreFriends(currentUser.Id, owner.Id.ToString()) == true)
+        if (friendshipService.AreFriends(currentUser.Id, owner.Id) == true)
         {
             return true;
         }
@@ -88,7 +88,7 @@ public class MediaService : BaseService
             FilePath = imageId,
             AlbumId = new Guid(id),
             Type = type,
-            UserId = new Guid(currentUser.Id)
+            UserId = currentUser.Id
         };
 
         UnitOfWork.Media.Add(media);

@@ -5,8 +5,8 @@ public class PostVM
     public bool IsLikedByCurrentUser { get; set; }
     public bool IsCurrentUserPost { get; set; }
 
-    public string Id { get; set; }
-    public string UserId { get; set; }
+    public Guid Id { get; set; }
+    public Guid UserId { get; set; }
     public string UserPhoto { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }

@@ -18,7 +18,7 @@ public class FriendRequestService : BaseService
     {
         var friends1 = UnitOfWork.FriendRequests.Query
             //.Include(u => u.RequesterUser)
-            .Where(u => u.RequestedUserId.ToString() == currentUser.Id && u.RequesterUser.IsDeleted==false)
+            .Where(u => u.RequestedUserId == currentUser.Id && u.RequesterUser.IsDeleted==false)
                 .ProjectTo<FriendrequestVM>(mapper.ConfigurationProvider)
             .ToList();
 
@@ -29,11 +29,11 @@ public class FriendRequestService : BaseService
     {
         totalRequestsCount = UnitOfWork.FriendRequests.Query
             .Include(u => u.RequesterUser)
-            .Where(u => u.RequestedUserId.ToString() == currentUser.Id && u.RequesterUser.IsDeleted == false).Count();
+            .Where(u => u.RequestedUserId == currentUser.Id && u.RequesterUser.IsDeleted == false).Count();
 
         return UnitOfWork.FriendRequests.Query
             //.Include(u => u.RequesterUser)
-            .Where(u => u.RequestedUserId.ToString() == currentUser.Id && u.RequesterUser.IsDeleted == false)
+            .Where(u => u.RequestedUserId == currentUser.Id && u.RequesterUser.IsDeleted == false)
                 .ProjectTo<FriendrequestVM>(mapper.ConfigurationProvider)
                 .Skip(pageSize * pageIndex)
             .Take(pageSize)
@@ -44,8 +44,8 @@ public class FriendRequestService : BaseService
     {
         var friendrequest = UnitOfWork.FriendRequests.Query
             .Where(f => f.RequesterUserId.ToString() == id 
-            && f.RequestedUserId.ToString() == currentUser.Id 
-            || f.RequesterUserId.ToString() == currentUser.Id 
+            && f.RequestedUserId == currentUser.Id 
+            || f.RequesterUserId == currentUser.Id 
             && f.RequestedUserId.ToString() == id)
             .FirstOrDefault();
 
@@ -64,7 +64,7 @@ public class FriendRequestService : BaseService
         var friendRequest = new FriendRequest
         {
             RequestedUserId = new Guid(id),
-            RequesterUserId = new Guid(currentUser.Id),
+            RequesterUserId = currentUser.Id,
             CreatedOn = DateTime.Now
         };
 
