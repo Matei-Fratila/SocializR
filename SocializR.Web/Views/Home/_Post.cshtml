@@ -1,14 +1,15 @@
 ﻿@inject UserManager<User> userManager
 @model PostVM
 
-@{
+@section Scripts{
+
 }
 
 <div class="container post-container">
     <div class="row">
         <div class="col-sm-1">
             <a asp-controller="Profile" asp-action="Get" asp-route-id="@Model.UserId">
-                <img class="img-responsive img-circle img-thumbnail user-photo" src="@Url.Action("Render", "Media", new { id = Model.UserPhoto })">
+                <img class="img-responsive img-circle img-thumbnail user-photo" src="@Model.UserPhoto">
             </a>
         </div>
         <div class="col-sm-7">

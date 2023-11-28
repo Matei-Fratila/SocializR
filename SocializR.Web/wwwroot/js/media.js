@@ -1,6 +1,6 @@
 ﻿var formData = new FormData();
 
-$(document).ready(function () {
+jQuery(function ($) {
 
     $('video').on('play', function () {
         var id = this.id;
@@ -35,7 +35,7 @@ $(document).ready(function () {
                     'Accept': 'application/json'
                 },
                 type: 'POST',
-                url: Router.action('Media', 'Upload', { id: id }),
+                url: 'Media/Upload?id=' + id,
                 data: formData,
                 contentType: false,
                 processData: false,
@@ -60,7 +60,7 @@ $(document).ready(function () {
             container.remove();
         }
         else {
-            $.post(Router.action('Media', 'Delete', { id: id }), function () {
+            $.post('Media/Delete', { id: id }), function () {
                 alert("Image was deleted successfuly!");
                 container.remove();
             });
@@ -104,7 +104,7 @@ $(document).ready(function () {
         if (allPhotos.length !== 0) {
             $.ajax({
                 type: 'POST',
-                url: Router.action('Media', 'Edit'),
+                url: 'Media/Edit',
                 data: model,
                 success: function () {
                     var form = $('#edit-album');

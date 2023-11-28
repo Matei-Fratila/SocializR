@@ -17,6 +17,8 @@ public class PostService : BaseService
     public List<PostVM> GetNextPosts(Guid currentUserId, int page, int postsPerPage, int commentsPerPage)
     {
         var posts = UnitOfWork.Posts.Query
+            .Include(p => p.User)
+            .Include(u => u.Media)
             .Where(p => p.User.FriendsFirstUser.FirstOrDefault(f => f.SecondUserId == currentUser.Id 
             && f.FirstUser.IsDeleted == false) != null 
             || p.UserId == currentUserId)

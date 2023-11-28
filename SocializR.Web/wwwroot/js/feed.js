@@ -1,6 +1,6 @@
 ﻿var formData = new FormData();
 
-$('document').ready(function () {
+jQuery(function ($) {
 
     $('video').on('play', function () {
         var id = this.id;
@@ -64,6 +64,7 @@ $('document').ready(function () {
                 },
                 type: 'POST',
                 url: Router.action('Home', 'DeletePost', { postId: postId }),
+                data: { postId: postId},
                 success: function () {
                     $(ev.target).closest('.post-container').remove();
                 },
@@ -93,7 +94,8 @@ $('document').ready(function () {
                     'Accept': 'application/json'
                 },
                 type: 'POST',
-                url: Router.action('Home', 'DeleteComment', { commentId: commentId }),
+                url: 'Home/DeleteComment',
+                dara: { commentId: commentId },
                 success: function () {
                     ChangeComments($($(ev.target).closest('.post-container')).find('.see-comments .nr-of-comments'), -1);
                     $(ev.target).closest('.comment-container').remove();
@@ -155,7 +157,7 @@ $('document').ready(function () {
                     'Accept': 'application/json'
                 },
                 type: 'GET',
-                url: Router.action('Home', 'NextPosts'),
+                url: 'Home/NextPosts',
                 data: { page: page },
                 success: function (response) {
                     var posts = response.posts;
@@ -173,7 +175,7 @@ $('document').ready(function () {
                             $.ajax({
                                 dataType: "html",
                                 type: 'GET',
-                                url: Router.action('Home', 'GetPostWidget'),
+                                url: 'Home/GetPostWidget',
                                 data: post,
                                 success: function (htmlResponse) {
 
@@ -219,7 +221,7 @@ $('document').ready(function () {
                 var reader = new FileReader();
                 reader.onload = (function (theFile) {
                     return function (e) {
-                        $.get(Router.action("Home", "GetImageWidget"), function (htmlResponse) {
+                        $.get("Home/GetImageWidget", function (htmlResponse) {
                             var newelement = $.parseHTML(htmlResponse);
                             $(newelement).find("img").attr("src", e.target.result);
                             $(newelement).find('textarea').prop("placeholder", "say something about this picture...");
@@ -236,7 +238,7 @@ $('document').ready(function () {
                 reader = new FileReader();
                 reader.onload = (function (theFile) {
                     return function (e) {
-                        $.get(Router.action("Home", "GetVideoWidget"), function (htmlResponse) {
+                        $.get("Home/GetVideoWidget", function (htmlResponse) {
                             var newelement = $.parseHTML(htmlResponse);
                             $(newelement).find("source").attr("src", e.target.result);
                             $(newelement).find('textarea').prop("placeholder", "say something about this video...");
@@ -291,7 +293,7 @@ $('document').ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: Router.action('Home', 'AddPost'),
+            url: 'Home/AddPost',
             data: formData,
             contentType: false,
             processData: false,
@@ -321,11 +323,11 @@ $('document').ready(function () {
                 },
                 dataType: "json",
                 type: 'POST',
-                url: Router.action('Home', 'AddComment'),
+                url: 'Home/AddComment',
                 data: JSON.stringify({ body: comment.trim(), postId: postId }),
                 success: function (response) {
 
-                    $.get(Router.action('Home', 'GetCommentWidget'), { body: comment.trim() }, function (htmlResponse) {
+                    $.get('Home/GetCommentWidget', { body: comment.trim() }, function (htmlResponse) {
                         var newelement = $.parseHTML(htmlResponse);
                         var elem = $(newelement[1]).find('.search-for-link');
                         var text = $(elem).text().trim();
@@ -350,7 +352,7 @@ $('document').ready(function () {
         var container = $(elem.target).closest('.post-footer').find('.comments-container');
         var page = $(elem.target).closest('.post-footer').find('.comments-page').val();
         var postId = $(elem.target).closest('.post-footer').find('.post-id').val();
-        $.get(Router.action('Home', 'NextComments', { page: page, postId: postId }), function (response) {
+        $.get('Home/NextComments', { page: page, postId: postId }), function (response) {
             var requests = Array();
             for (var i = 0; i < response.length; i++) {
                 var comment = response[i];
@@ -358,7 +360,7 @@ $('document').ready(function () {
                     $.ajax({
                         dataType: "html",
                         type: 'GET',
-                        url: Router.action('Home', 'GetComment'),
+                        url: 'Home/GetComment',
                         data: comment,
                         success: function (htmlResponse) {
 
@@ -383,7 +385,7 @@ $('document').ready(function () {
                 });
                 $(elem.target).closest('.post-footer').find('.comments-page').val(parseInt(page) + 1);
             });
-        });
+        };
     });
 
     //Handle New Like
@@ -434,7 +436,7 @@ $('document').ready(function () {
                 'Accept': 'application/json'
             },
             type: 'POST',
-            url: Router.action('Home', 'Like'),
+            url: 'Home/Like',
             data: { id: id },
             success: function () {
                 var text = $(elem).text().split(" ");
@@ -454,7 +456,7 @@ $('document').ready(function () {
                 'Accept': 'application/json'
             },
             type: 'POST',
-            url: Router.action('Home', 'DeleteLike'),
+            url: 'Home/DeleteLike',
             data: { id: id },
             success: function () {
                 var text = $(elem).text().split(" ");

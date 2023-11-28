@@ -1,10 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using SocializR.DataAccess;
-using SocializR.DataAccess.Seeds;
-using SocializR.DataAccess.UnitOfWork;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -62,6 +56,8 @@ else
             "js/validations/validators.js", "js/validations/errorFormatting.js");
     });
 }
+
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));
 
 var app = builder.Build();
 

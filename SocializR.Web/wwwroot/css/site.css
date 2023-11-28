@@ -142,9 +142,8 @@ li {
 }
 
 #avatar-photo {
-    width: 90px !important;
-    height: 90px !important;
-    object-fit: cover;
+    width: 60px !important;
+    height: 60px !important;
 }
 
 nav {

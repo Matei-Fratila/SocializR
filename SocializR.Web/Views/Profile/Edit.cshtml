@@ -2,40 +2,47 @@
 @using SocializR.Entities.Enums
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Profile";
 }
 
-@section Scripts{
+@section Styles {
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/select2/css/select2.css" asp-append-version="true" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+              referrerpolicy="no-referrer"
+              crossorigin="anonymous"
+              integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" />
+    </environment>
+}
+
+@section Scripts {
     <script src="~/js/profile.js"></script>
-    <script src="~/js/editProfile.js"></script>
+    <script src="~/js/edit-profile.js"></script>
+    <environment include="Development">
+        <script src="~/lib/select2/js/select2.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+                referrerpolicy="no-referrer"
+                crossorigin="anonymous"
+                integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==">
+        </script>
+    </environment>
 }
 
 <form method="post" enctype="multipart/form-data" asp-controller="Profile" asp-action="Edit">
+
     <div class="row avatar sections-layout">
         <div class="col-sm-3">
-            <img class="img-responsive img-circle img-thumbnail header-photo" src="@Url.Action("RenderProfilePicture", "Profile", new { id = Model.Id })">
-        </div>
-        <div class="col-sm-9">
-            <h2>@Model.FirstName @Model.LastName</h2>
-        </div>
-        @*<div class="form-group row">
-            <div class="form-group row btn btn-primary btn-file">
-                <i class="glyphicon glyphicon-camera"></i>
-                Change photo
-                <input asp-for="ProfilePhoto" type="file" accept="image/*" value="Add Photo" class="col-sm-6" />
-            </div>
-        </div>*@
-        <div class="col-sm-1 small-margin">
-            <span class="btn btn-primary btn-file">
-                <i class="fa fa-camera"></i>
-                change photo
-                @* <input asp-for="ProfilePhoto" title="change profile photo" multiple data-toggle="tooltip" data-placement="bottom" type="file" accept="image/*" text="add photos"/> *@
-            </span>
+            <img class="rounded-circle shadow" style="width: 150px;" alt="Avatar" src="@Url.Content(Model.FilePath)" />
+
+            <input asp-for="ProfilePhoto" type="file" accept="image/*" value="Add Photo">
+            <span asp-validation-for="ProfilePhoto"></span>
         </div>
     </div>
 
-    <h3>Edit Profile</h3>
-    <hr />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <input asp-for="Id" type="hidden" class="id" />
@@ -66,7 +73,7 @@
     <div class="form-group row mb-3">
         <label asp-for="CountyId" class="col-sm-1 col-form-label"></label>
         <div class="col-sm-2">
-            <select asp-for="CountyId" asp-items="Model.Counties" class="form-control" id="County"></select>
+            <select asp-for="CountyId" asp-items="ViewBag.Counties" class="form-control" id="County"></select>
             <span asp-validation-for="CountyId" class="text-danger"></span>
         </div>
     </div>
@@ -74,7 +81,7 @@
     <div class="form-group row mb-3">
         <label asp-for="CityId" class="col-sm-1 col-form-label"></label>
         <div class="col-sm-2">
-            <select asp-for="CityId" asp-items="Model.Cities" class="form-control" id="City"></select>
+            <select asp-for="CityId" asp-items="ViewBag.Cities" class="form-control" id="City"></select>
             <span asp-validation-for="CityId" class="text-danger"></span>
         </div>
     </div>
@@ -97,9 +104,9 @@
     </div>
 
     <div class="form-group row mb-3" row>
-        <label asp-for="MyInterests" class="col-sm-1 col-form-label"></label>
+        <label asp-for="Interests" class="col-sm-1 col-form-label"></label>
         <div class="col-sm-2">
-            <select asp-for="MyInterests" asp-items="Model.Interests" class="js-example-basic-multiple js-states form-control" id="select2interests" multiple="multiple"></select>
+            <select asp-for="Interests" asp-items="ViewBag.Interests" class="select2 form-control" multiple="multiple"></select>
         </div>
     </div>
 

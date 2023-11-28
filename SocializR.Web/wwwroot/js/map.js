@@ -1,5 +1,4 @@
-﻿
-$(document).ready(function () {
+﻿jQuery(function ($) {
 
     $('#myModal').on('show.bs.modal', function (e) {
         if (!data) return e.preventDefault();
@@ -22,7 +21,8 @@ $(document).ready(function () {
                     'Accept': 'application/json'
                 },
                 type: 'POST',
-                url: Router.action('City', 'Delete', { cityId: cityId }),
+                url: 'City/Delete',
+                data: { cityId: cityId },
                 success: function (response) {
                     $(e.target).closest('tr').remove();
                     alert(name + " was deleted");
@@ -44,7 +44,8 @@ $(document).ready(function () {
                 'Accept': 'application/json'
             },
             type: 'POST',
-            url: Router.action('County', 'Add', { name: name, shortname: shortName }),
+            url: 'County/Add',
+            data: { name: name, shortname: shortName },
             success: function (response) {
                 $('#modal-edit-county').modal('hide');
                 alert('County added successfuly');
@@ -75,7 +76,8 @@ $(document).ready(function () {
                 'Accept': 'application/json'
             },
             type: 'POST',
-            url: Router.action('City', 'Add', { name: name, countyId: countyId }),
+            url: 'City/Add',
+            data: { name: name, countyId: countyId },
             success: function (response) {
                 $('#modal-edit-city').modal('hide');
                 alert('City modified successfuly');
@@ -134,7 +136,8 @@ $(document).ready(function () {
                 'Accept': 'application/json'
             },
             type: 'POST',
-            url: Router.action('County', 'Edit', { id: id, name: name, shortname: shortname }),
+            url: 'County/Edit',
+            data: { id: id, name: name, shortname: shortname },
             success: function (response) {
                 $('#modal-edit-county').modal('hide');
                 alert('County modified successfuly');
@@ -168,7 +171,8 @@ $(document).ready(function () {
                 'Accept': 'application/json'
             },
             type: 'POST',
-            url: Router.action('City', 'Edit', { id: id, name: name }),
+            url: 'City/Edit',
+            data: { id: id, name: name },
             success: function (response) {
                 $('#modal-edit-city').modal('hide');
                 alert('City modified successfuly');
@@ -203,7 +207,8 @@ $(document).ready(function () {
                     'Accept': 'application/json'
                 },
                 type: 'POST',
-                url: Router.action('County', 'Delete', { id: countyId }),
+                url: 'County/Delete',
+                data: { id: countyId },
                 success: function (response) {
                     if (response.id === 0) {
                         $(ev.target).closest('tr').remove();
@@ -247,7 +252,7 @@ $(document).ready(function () {
                 'Accept': 'application/json'
             },
             type: 'GET',
-            url: Router.action('City', 'Index'),
+            url: 'City/Index',
             data: { id: countyId },
             success: function (response) {
 

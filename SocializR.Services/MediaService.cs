@@ -75,20 +75,30 @@ public class MediaService : BaseService
         return result;
     }
 
-    public Media Add(string id, string imageId, MediaTypes type)
+    public Media Add(Guid albumId, string fileName, MediaTypes type, Post associatedPost = null)
     {
-        if (imageId == null || id == null)
+        if (fileName == null || albumId == Guid.Empty)
         {
             return null;
         }
 
+        if(associatedPost == null)
+        {
+            associatedPost = new Post
+            {
+                Body = $"{currentUser.FirstName} {currentUser.LastName} uploaded a new profile picture",
+                UserId = currentUser.Id,
+                CreatedOn = DateTime.Now
+            };
+        }
+
         var media = new Media
         {
-            Id = new Guid(imageId),
-            FilePath = imageId,
-            AlbumId = new Guid(id),
+            FilePath = fileName,
+            AlbumId = albumId,
             Type = type,
-            UserId = currentUser.Id
+            UserId = currentUser.Id,
+            Post = associatedPost
         };
 
         UnitOfWork.Media.Add(media);

@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿jQuery(function ($) {
     $('.delete-interest').click(function (e) {
         var interestId = $(e.target).closest('tr').find('.interest-id').val();
 
@@ -7,7 +7,8 @@
                 'Accept': 'application/json'
             },
             type: 'POST',
-            url: Router.action('Interest', 'Delete', { id: interestId }),
+            url: 'Interest/Delete',
+            data: { id: interestId },
             success: function (response) {
                 $(e.target).closest('tr').remove();
                 alert('Interest deleted successfuly');

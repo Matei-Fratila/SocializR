@@ -21,16 +21,10 @@ public class ProfileService : BaseService
         }
     }
 
-    public bool ChangeProfilePhoto(string id, Guid userId)
+    public bool ChangeProfilePhoto(Guid photoId, Guid userId)
     {
-        var user = UnitOfWork.Users.Query
-            .Include(u => u.ProfilePhoto)
-            .FirstOrDefault(u => u.Id == userId);
-
-        user.ProfilePhotoId = new Guid(id);
-
-        UnitOfWork.Users.Update(user);
-
+        var user = UnitOfWork.Users.Query.FirstOrDefault(u => u.Id == userId);
+        user.ProfilePhotoId = photoId;
         return UnitOfWork.SaveChanges() != 0;
     }
 
@@ -65,6 +59,7 @@ public class ProfileService : BaseService
     public ViewProfileVM GetViewProfileVM(Guid id)
     {
         var result = UnitOfWork.Users.Query
+           .Include(u => u.ProfilePhoto)
            .Where(u => u.Id == id && u.IsDeleted == false)
            .ProjectTo<ViewProfileVM>(_mapper.ConfigurationProvider)
            .FirstOrDefault();

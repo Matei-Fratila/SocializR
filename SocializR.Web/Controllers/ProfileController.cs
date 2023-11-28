@@ -3,55 +3,65 @@
 [Authorize]
 public class ProfileController : BaseController
 {
-    private readonly UserManager<User> userManager;
-    private readonly SignInManager<User> signInManager;
-    private readonly ProfileService profileService;
-    private readonly CountyService countyService;
-    private readonly CityService cityService;
-    private readonly InterestService interestService;
-    private readonly CurrentUser currentUser;
-    private readonly MediaService mediaService;
-    private readonly AlbumService albumService;
-    private readonly FriendshipService friendshipService;
-    private readonly PostService postService;
-    private readonly IHostEnvironment hostingEnvironment;
-    private readonly IImageStorage imageStorage;
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly ProfileService _profileService;
+    private readonly CountyService _countyService;
+    private readonly CityService _cityService;
+    private readonly InterestService _interestService;
+    private readonly CurrentUser _currentUser;
+    private readonly MediaService _mediaService;
+    private readonly AlbumService _albumService;
+    private readonly FriendshipService _friendshipService;
+    private readonly PostService _postService;
+    private readonly IHostEnvironment _hostingEnvironment;
+    private readonly IImageStorage _imageStorage;
 
-    public ProfileController(IHostEnvironment hostingEnvironment, PostService postService, CurrentUser currentUser, 
-        FriendshipService friendshipService, AlbumService albumService, MediaService mediaService, ProfileService profileService, 
-        CountyService countyService, CityService cityService, InterestService interestService, IMapper mapper,
-        UserManager<User> userManager, SignInManager<User> signInManager, IImageStorage imageStorage)
+    public ProfileController(IHostEnvironment hostingEnvironment, 
+        PostService postService, 
+        CurrentUser currentUser,
+        FriendshipService friendshipService, 
+        AlbumService albumService, 
+        MediaService mediaService, 
+        ProfileService profileService,
+        CountyService countyService, 
+        CityService cityService, 
+        InterestService interestService, 
+        IMapper mapper,
+        UserManager<User> userManager, 
+        SignInManager<User> signInManager, 
+        IImageStorage imageStorage)
         : base(mapper)
     {
-        this.imageStorage = imageStorage;
-        this.userManager = userManager;
-        this.signInManager = signInManager;
-        this.friendshipService = friendshipService;
-        this.albumService = albumService;
-        this.mediaService = mediaService;
-        this.hostingEnvironment = hostingEnvironment;
-        this.currentUser = currentUser;
-        this.profileService = profileService;
-        this.countyService = countyService;
-        this.cityService = cityService;
-        this.interestService = interestService;
-        this.postService = postService;
+        _imageStorage = imageStorage;
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _friendshipService = friendshipService;
+        _albumService = albumService;
+        _mediaService = mediaService;
+        _hostingEnvironment = hostingEnvironment;
+        _currentUser = currentUser;
+        _profileService = profileService;
+        _countyService = countyService;
+        _cityService = cityService;
+        _interestService = interestService;
+        _postService = postService;
     }
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> Get(Guid id)
+    public async Task<IActionResult> Index(Guid id)
     {
         ViewProfileVM model = null;
-        var currentUser = await userManager.GetUserAsync(User);
+        var currentUser = await _userManager.GetUserAsync(User);
 
-        if (id == null)
+        if (id == Guid.Empty)
         {
             id = currentUser.Id;
         }
 
-        model = profileService.GetViewProfileVM(id);
-        model.FilePath = imageStorage.UriFor(model.FilePath);
+        model = _profileService.GetViewProfileVM(id);
+        model.FilePath = _imageStorage.UriFor(model.FilePath);
 
         if (model == null)
         {
@@ -60,13 +70,30 @@ public class ProfileController : BaseController
 
         if (id != currentUser.Id)
         {
-            model.MutualFriends = friendshipService.CountMutualFriends(id);
+            model.MutualFriends = _friendshipService.CountMutualFriends(id);
         }
 
-        model.Interests = interestService.GetAll();
-        model.RelationToCurrentUser = profileService.GetRelationToCurrentUser(currentUser.Id.ToString(), id.ToString());
+        List<SelectListItem> selectedInterests = _interestService.GetAll();
 
-        if (model.IsPrivate && model.RelationToCurrentUser == RelationTypes.Strangers && await userManager.IsInRoleAsync(currentUser, "Administrator") == false)
+        if (model.Interests.Any())
+        {
+            foreach (var interest in model.Interests)
+            {
+                selectedInterests.Single(i => i.Value == interest.ToString()).Selected = true;
+            }
+        }
+        else
+        {
+            selectedInterests.First().Selected = true;
+        }
+
+        ViewData["Interests"] = selectedInterests;
+
+        model.RelationToCurrentUser = _profileService.GetRelationToCurrentUser(currentUser.Id.ToString(), id.ToString());
+
+        if (model.IsPrivate 
+            && model.RelationToCurrentUser == RelationTypes.Strangers 
+            && await _userManager.IsInRoleAsync(currentUser, "Administrator") == false)
         {
             model.Albums = null;
             model.Interests = null;
@@ -80,7 +107,7 @@ public class ProfileController : BaseController
     public async Task<IActionResult> Edit(Guid id)
     {
         ProfileVM model = null;
-        var currentUser = await userManager.GetUserAsync(User);
+        var currentUser = await _userManager.GetUserAsync(User);
 
         if (id == Guid.Empty)
         {
@@ -90,13 +117,13 @@ public class ProfileController : BaseController
         {
             if (id == currentUser.Id)
             {
-                model = profileService.GetEditProfileVM(id);
+                model = _profileService.GetEditProfileVM(id);
             }
             else
             {
-                if (await userManager.IsInRoleAsync(currentUser, "Administrator"))
+                if (await _userManager.IsInRoleAsync(currentUser, "Administrator"))
                 {
-                    model = profileService.GetEditProfileVM(id);
+                    model = _profileService.GetEditProfileVM(id);
                 }
                 else
                 {
@@ -110,10 +137,13 @@ public class ProfileController : BaseController
             return UserNotFoundView();
         }
 
-        model.Counties = countyService.GetSelectCounties();
-        model.Cities = cityService.GetCities(model.CountyId);
-        model.Interests = interestService.GetAll();
-        model.MyInterests = interestService.GetByUser(id);
+        ViewData["Counties"] = new SelectList(_countyService.GetAll(), nameof(County.Id), nameof(County.Name));
+        ViewData["Cities"] = new SelectList(_cityService.GetAll(model.CountyId), nameof(City.Id), nameof(City.Name));
+
+        model.Interests = _interestService.GetByUser(id);
+        ViewData["Interests"] = _interestService.GetAllWithSelected(model.Interests);
+
+        model.FilePath = _imageStorage.UriFor(model.FilePath);
 
         return View(model);
     }
@@ -124,48 +154,49 @@ public class ProfileController : BaseController
     {
         if (!ModelState.IsValid)
         {
-            model.Counties = countyService.GetSelectCounties();
-            model.Cities = cityService.GetCities(model.CountyId);
-            model.Interests = interestService.GetAll();
-            model.MyInterests = interestService.GetByUser(model.Id);
+            ViewData["Counties"] = _countyService.GetSelectCounties();
+            ViewData["Cities"] = _cityService.GetCities(model.CountyId);
+
+            model.Interests = _interestService.GetByUser(model.Id);
+            ViewData["Interests"] = _interestService.GetAllWithSelected(model.Interests);
 
             return View(model);
         }
 
-        var currentUser = await userManager.GetUserAsync(User);
-        var result = profileService.UpdateUser(model);
+        var currentUser = await _userManager.GetUserAsync(User);
+        var result = _profileService.UpdateUser(model);
         var file = model.ProfilePhoto;
 
         if (file != null && result)
         {
-            var uploads = Path.Combine(hostingEnvironment.ContentRootPath, @"images\uploads");
+            var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, @"wwwroot\images\uploads");
             var type = file.ContentType.ToString().Split('/');
 
             if (file.Length > 0)
             {
                 if (type[0] == "image")
                 {
-                    var albumId = albumService.GetId("Profile Pictures", model.Id);
-                    if (albumId == null)
+                    var albumId = _albumService.GetIdByUserId(model.Id);
+                    if (albumId == Guid.Empty)
                     {
-                        albumId = albumService.Create("Profile Pictures", model.Id);
+                        albumId = _albumService.Create(model.Id);
                     }
 
                     try
                     {
-                        var imageId = await imageStorage.SaveImage(file.OpenReadStream(), type[1]);
-                        var photo = mediaService.Add(albumId, imageId, MediaTypes.Image);
+                        var imageName = await _imageStorage.SaveImage(file.OpenReadStream(), type[1]);
+                        var image = _mediaService.Add(albumId, imageName, MediaTypes.Image);
 
-                        if (photo == null)
+                        if (image == null)
                         {
                             return InternalServerErrorView();
                         }
 
-                        var hasModified = profileService.ChangeProfilePhoto(imageId, model.Id);
+                        var hasModified = _profileService.ChangeProfilePhoto(image.Id, model.Id);
 
                         if (hasModified)
                         {
-                            postService.NotifyProfilePhotoChanged(photo, model.Id);
+                            _postService.NotifyProfilePhotoChanged(image, model.Id);
                         }
 
                     }
@@ -182,26 +213,26 @@ public class ProfileController : BaseController
             return InternalServerErrorView();
         }
 
-        if (await userManager.IsInRoleAsync(currentUser, "Administrator") && model.Id != currentUser.Id)
+        if (await _userManager.IsInRoleAsync(currentUser, "Administrator") && model.Id != currentUser.Id)
         {
             return RedirectToAction("Index", "User");
         }
 
-        return RedirectToAction("Get", "Profile", new { id = currentUser.Id });
+        return RedirectToAction("Index", "Profile", new { id = currentUser.Id });
     }
 
     [HttpGet]
-    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     [AllowAnonymous]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult RenderProfilePicture(string id)
     {
-        var media = profileService.GetUserPhoto(id);
+        var media = _profileService.GetUserPhoto(id);
 
         if (media == null)
         {
-            return Ok(imageStorage.UriFor("noprofile.png"));
+            return Ok(_imageStorage.UriFor("noprofile.png"));
         }
 
-        return Ok(imageStorage.UriFor(media));
+        return Ok(_imageStorage.UriFor(media));
     }
 }

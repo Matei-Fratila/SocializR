@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿jQuery(function ($) {
 
     $('.item').first().addClass('active');
     $('li').first().addClass('active');

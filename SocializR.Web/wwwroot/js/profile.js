@@ -1,4 +1,6 @@
-﻿$(document).ready(function () {
+﻿jQuery(function ($) {
+
+    $('.select2').select2();
 
     $('.album-container a').remove();
 
@@ -7,7 +9,8 @@
     $('.unfriend').on('click', function () {
         $.ajax({
             type: 'POST',
-            url: Router.action('Friendship', 'Unfriend', { id: id }),
+            url: 'Friendship/Unfriend',
+            data: { id: id },
             success: function (cities) {
                 location.reload();
             }
@@ -17,7 +20,8 @@
     $('.send-friend-request').on('click', function () {
         $.ajax({
             type: 'POST',
-            url: Router.action('FriendRequest', 'SendFriendRequest', { id: id }),
+            url: 'FriendRequest/SendFriendRequest',
+            data: { id: id },
             success: function (cities) {
                 location.reload();
             }
@@ -27,7 +31,8 @@
     $('.accept-friend-request').on('click', function () {
         $.ajax({
             type: 'POST',
-            url: Router.action('Friendship', 'AddFriend', { id: id }),
+            url: 'Friendship/AddFriend', 
+            data: { id: id },
             success: function (cities) {
                 location.reload();
             }
@@ -37,7 +42,8 @@
     $('.reject-friend-request').on('click', function () {
         $.ajax({
             type: 'POST',
-            url: Router.action('FriendRequest', 'DeleteFriendRequest', { id: id }),
+            url: 'FriendRequest/DeleteFriendRequest', 
+            data: { id: id },
             success: function (cities) {
                 location.reload();
             }
@@ -47,11 +53,11 @@
     $('.delete-friendrequest').on('click', function () {
         $.ajax({
             type: 'POST',
-            url: Router.action('FriendRequest', 'DeleteFriendRequest', { id: id }),
+            url: 'FriendRequest/DeleteFriendRequest', 
+            data: { id: id },
             success: function (cities) {
                 location.reload();
             }
         });
     });
-
 });

@@ -92,7 +92,7 @@ public class MediaController : BaseController
     }
 
     [HttpPost]
-    public async Task<JsonResult> Upload(List<IFormFile> media, string id)
+    public async Task<JsonResult> Upload(List<IFormFile> media, Guid id)
     {
         var ids = new List<string>();
 

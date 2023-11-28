@@ -12,7 +12,7 @@ public class AlbumService : BaseService
         this.mapper = mapper;
     }
 
-    public string GetPostsAlbum()
+    public Guid GetPostsAlbum()
     {
         var album = UnitOfWork.Albums.Query
             .Where(a => a.Name == "Posts Photos" && a.UserId == currentUser.Id)
@@ -31,7 +31,7 @@ public class AlbumService : BaseService
             UnitOfWork.SaveChanges();
         }
 
-        return album.Id.ToString();
+        return album.Id;
     }
 
     public List<AlbumVM> GetAll()
@@ -64,19 +64,19 @@ public class AlbumService : BaseService
         return UnitOfWork.SaveChanges() != 0;
     }
 
-    public string Create(string name, Guid id)
+    public Guid Create(Guid userId, string albumName = "Profile Pictures")
     {
         var album = new Album
         {
-            UserId = id,
-            Name = name
+            UserId = userId,
+            Name = albumName
         };
 
         UnitOfWork.Albums.Add(album);
 
         UnitOfWork.SaveChanges();
 
-        return album.Id.ToString();
+        return album.Id;
     }
 
     public bool Delete(string albumId)
@@ -114,11 +114,11 @@ public class AlbumService : BaseService
         return true;
     }
 
-    public string GetId(string name, Guid id)
+    public Guid GetIdByUserId(Guid id, string albumName = "Profile Pictures")
     {
         return UnitOfWork.Albums.Query
-            .Where(u => u.UserId == id && u.Name == "Profile Pictures")
-            .Select(u => u.Id.ToString())
+            .Where(u => u.UserId == id && u.Name == albumName)
+            .Select(u => u.Id)
             .FirstOrDefault();
     }
 }

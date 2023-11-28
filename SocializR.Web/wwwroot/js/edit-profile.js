@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿jQuery(function ($) {
 
     function handleFileSelect(evt) {
         var files = evt.target.files;

@@ -1,36 +1,20 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize]
-public class HomeController : BaseController
+public class HomeController(IOptionsMonitor<AppSettings> _configuration,
+    IMapper _mapper,
+    AlbumService _albumService,
+    FeedService _feedService,
+    MediaService _mediaService,
+    IHostEnvironment _hostingEnvironment,
+    UserManager<User> _userManager,
+    HtmlEncoder _htmlEncoder,
+    CommentService _commentService) : BaseController(_mapper)
 {
-    private readonly UserManager<User> userManager;
-    private readonly HtmlEncoder htmlEncoder;
-    private readonly FeedService feedService;
-    private readonly AppSettings configuration;
-    private readonly MediaService mediaService;
-    private readonly AlbumService albumService;
-    private readonly CommentService commentService;
-    private readonly IHostEnvironment hostingEnvironment;
-
-    public HomeController(IOptions<AppSettings> configuration, IMapper mapper, AlbumService albumService, FeedService feedService, 
-        MediaService mediaService, IHostEnvironment hostingEnvironment, UserManager<User> userManager, HtmlEncoder htmlEncoder,
-        CommentService commentService) :
-        base(mapper)
-    {
-        this.htmlEncoder = htmlEncoder;
-        this.userManager = userManager;
-        this.albumService = albumService;
-        this.commentService = commentService;
-        this.mediaService = mediaService;
-        this.hostingEnvironment = hostingEnvironment;
-        this.configuration = configuration.Value;
-        this.feedService = feedService;
-    }
-
     [HttpGet]
     public IActionResult Index()
     {
-        var model = feedService.GetNextPosts(0, configuration.PostsPerPage, configuration.CommentsPerPage);
+        var model = _feedService.GetNextPosts(0, _configuration.CurrentValue.PostsPerPage, _configuration.CurrentValue.CommentsPerPage);
 
         return View(model);
     }
@@ -38,7 +22,7 @@ public class HomeController : BaseController
     [HttpGet]
     public JsonResult NextPosts(int page)
     {
-        var posts = feedService.GetNextPosts(page, configuration.PostsPerPage, configuration.PostsPerPage);
+        var posts = _feedService.GetNextPosts(page, _configuration.CurrentValue.PostsPerPage, _configuration.CurrentValue.PostsPerPage);
 
         return Json(posts);
     }
@@ -46,7 +30,7 @@ public class HomeController : BaseController
     [HttpGet]
     public JsonResult NextComments(int page, Guid postId)
     {
-        var comments = commentService.GetComments(postId, configuration.CommentsPerPage, page);
+        var comments = _commentService.GetComments(postId, _configuration.CurrentValue.CommentsPerPage, page);
 
         return Json(comments);
     }
@@ -55,17 +39,17 @@ public class HomeController : BaseController
     public async Task<IActionResult> AddPost(AddPostModel model)
     {
         var media = new List<Media>();
-        var uploads = Path.Combine(hostingEnvironment.ContentRootPath, @"images\uploads");
+        var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, @"images\uploads");
         if (model.Media != null)
         {
             foreach (var file in model.Media)
             {
-                var id = albumService.GetPostsAlbum();
+                var id = _albumService.GetPostsAlbum();
 
                 if (file.Length > 0)
                 {
                     var type = file.ContentType.ToString().Split('/');
-                    if (type[0] == "image" || type[0] == "video") 
+                    if (type[0] == "image" || type[0] == "video")
                     {
                         var filePath = Path.Combine(uploads, Path.GetRandomFileName() + '.' + type[1]);
                         using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -73,13 +57,13 @@ public class HomeController : BaseController
                             await file.CopyToAsync(fileStream);
                         }
 
-                        media.Add(mediaService.Add(id, Path.GetRelativePath("wwwroot", filePath), type[0] == "image" ? MediaTypes.Image : MediaTypes.Video));
+                        media.Add(_mediaService.Add(id, Path.GetRelativePath("wwwroot", filePath), type[0] == "image" ? MediaTypes.Image : MediaTypes.Video));
                     }
                 }
             }
         }
 
-        var result = feedService.AddPost(userManager.GetUserId(User), htmlEncoder.Encode(model.Title), htmlEncoder.Encode(model.Body), media);
+        var result = _feedService.AddPost(_userManager.GetUserId(User), _htmlEncoder.Encode(model.Title), _htmlEncoder.Encode(model.Body), media);
 
         if (!result)
         {
@@ -93,7 +77,7 @@ public class HomeController : BaseController
     [HttpPost]
     public IActionResult DeletePost(string postId)
     {
-        var result = feedService.DeletePost(postId);
+        var result = _feedService.DeletePost(postId);
 
         if (!result)
         {
@@ -106,7 +90,7 @@ public class HomeController : BaseController
     [HttpPost]
     public IActionResult Like(string id)
     {
-        var result = feedService.LikePost(userManager.GetUserId(User), id);
+        var result = _feedService.LikePost(_userManager.GetUserId(User), id);
 
         if (!result)
         {
@@ -117,9 +101,9 @@ public class HomeController : BaseController
     }
 
     [HttpPost]
-    public JsonResult AddComment([FromBody]AddCommentModel comment)
+    public JsonResult AddComment([FromBody] AddCommentModel comment)
     {
-        var id = feedService.AddComment(userManager.GetUserId(User), htmlEncoder.Encode(comment.Body), comment.PostId);
+        var id = _feedService.AddComment(_userManager.GetUserId(User), _htmlEncoder.Encode(comment.Body), comment.PostId);
 
         return Json(new { id });
     }
@@ -127,7 +111,7 @@ public class HomeController : BaseController
     [HttpPost]
     public IActionResult DeleteComment(string commentId)
     {
-        var result = feedService.DeleteComment(commentId);
+        var result = _feedService.DeleteComment(commentId);
 
         if (!result)
         {
@@ -140,7 +124,7 @@ public class HomeController : BaseController
     [HttpPost]
     public IActionResult DeleteLike(string id)
     {
-        var result = feedService.DeleteLike(userManager.GetUserId(User), id);
+        var result = _feedService.DeleteLike(_userManager.GetUserId(User), id);
 
         if (!result)
         {
@@ -153,7 +137,7 @@ public class HomeController : BaseController
     [HttpGet]
     public IActionResult GetCommentWidget(string body)
     {
-        var comment = feedService.CurrentUserComment(body);
+        var comment = _feedService.CurrentUserComment(body);
 
         return PartialView("Views/Home/_Comment.cshtml", comment);
     }

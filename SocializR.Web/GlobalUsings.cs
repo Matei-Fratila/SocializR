@@ -38,3 +38,8 @@ global using SocializR.Entities.DTOs.Profile;
 global using SocializR.Services.MediaServices;
 global using SocializR.Services.ValidationService;
 global using System.Linq;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using SocializR.DataAccess;
+global using SocializR.DataAccess.Seeds;
+global using SocializR.DataAccess.UnitOfWork;

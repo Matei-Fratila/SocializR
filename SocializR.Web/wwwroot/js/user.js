@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿jQuery(function ($) {
 
     $('.action').each(function (index, elem) {
         if ($(elem).closest('.user-container').find('.is-deleted').val() === 'False') {
@@ -18,7 +18,8 @@
                 'Accept': 'application/json'
             },
             type: 'POST',
-            url: Router.action('User', 'Delete', { id: userId }),
+            url: 'User/Delete', 
+            data: { id: userId },
             success: function (response) {
                 var link = $(e.target).closest('.user-container').find('.action');
                 $(link).removeClass('delete-user');
@@ -40,7 +41,8 @@
                 'Accept': 'application/json'
             },
             type: 'POST',
-            url: Router.action('User', 'Activate', { id: userId }),
+            url: 'User/Activate',
+            data: { id: userId },
             success: function (response) {
                 var link = $(e.target).closest('.user-container').find('.action');
                 $(link).removeClass('activate-user');

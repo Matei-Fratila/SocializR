@@ -3,27 +3,42 @@
 @using SocializR.Entities.Enums
 
 @{
-    ViewData["Title"] = "View";
+    ViewData["Title"] = "View Profile";
 }
 
 @section Styles {
-    <link href="~/css/media.css" rel="stylesheet" />
-    <link href="~/css/avatar.css" rel="stylesheet" />
-    <link href="~/css/album.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/media.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/album.css" asp-append-version="true" />
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/select2/css/select2.css" asp-append-version="true" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+              referrerpolicy="no-referrer"
+              crossorigin="anonymous"
+              integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" />
+    </environment>
 }
 
 @section Scripts {
     <script src="~/js/profile.js"></script>
     <script src="~/js/gallery.js"></script>
     <script src="~/js/album.js"></script>
+    <environment include="Development">
+        <script src="~/lib/select2/js/select2.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+                referrerpolicy="no-referrer"
+                crossorigin="anonymous"
+                integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==">
+        </script>
+    </environment>
 }
 
 <div class="row avatar sections-layout">
     <div class="col-sm-3">
-        <img class="img-responsive img-circle img-thumbnail header-photo" src="~/images/noprofile.png">
-    </div>
-    <div class="col-sm-9 no-padding-left">
-        <h2>@Model.FirstName @Model.LastName</h2>
+        <img class="rounded-circle shadow" style="width: 150px;" alt="Avatar" src="@Url.Content(Model.FilePath)">
     </div>
 
     @switch (Model.RelationToCurrentUser)
@@ -57,7 +72,7 @@
         <dt class="col-sm-1">
             @Html.DisplayNameFor(model => model.FirstName)
         </dt>
-        <dd class="col-sm-11">
+        <dd class="col-sm-2">
             @Html.DisplayFor(model => model.FirstName)
         </dd>
     </div>
@@ -65,7 +80,7 @@
         <dt class="col-sm-1">
             @Html.DisplayNameFor(model => model.LastName)
         </dt>
-        <dd class="col-sm-11">
+        <dd class="col-sm-2">
             @Html.DisplayFor(model => model.LastName)
         </dd>
     </div>
@@ -73,7 +88,7 @@
         <dt class="col-sm-1">
             @Html.DisplayNameFor(model => model.BirthDate)
         </dt>
-        <dd class="col-sm-11">
+        <dd class="col-sm-2">
             @Html.DisplayFor(model => model.BirthDate)
         </dd>
     </div>
@@ -82,7 +97,7 @@
         <dt class="col-sm-1">
             @Html.DisplayNameFor(model => model.County)
         </dt>
-        <dd class="col-sm-11">
+        <dd class="col-sm-2">
             @Html.DisplayFor(model => model.County)
         </dd>
     </div>
@@ -90,7 +105,7 @@
         <dt class="col-sm-1">
             @Html.DisplayNameFor(model => model.City)
         </dt>
-        <dd class="col-sm-11">
+        <dd class="col-sm-2">
             @Html.DisplayFor(model => model.City)
         </dd>
     </div>
@@ -98,16 +113,16 @@
         <dt class="col-sm-1">
             @Html.DisplayNameFor(model => model.Gender)
         </dt>
-        <dd class="col-sm-11">
+        <dd class="col-sm-2">
             @Html.DisplayFor(model => model.Gender)
         </dd>
     </div>
     <div class="row">
         <dt class="col-sm-1">
-            @Html.DisplayNameFor(model => model.MyInterests)
+            @Html.DisplayNameFor(model => model.Interests)
         </dt>
-        <dd class="col-sm-11">
-            <select asp-for="MyInterests" asp-items="Model.Interests" disabled class="js-states form-control" id="select2interests-view" multiple="multiple"></select>
+        <dd class="col-sm-2">
+            <select asp-for="Interests" asp-items="ViewBag.Interests" class="form-control select2" multiple="multiple" disabled></select>
         </dd>
     </div>
 </dl>

@@ -13,7 +13,7 @@ public class ProfileMapper : Profile
             .ForMember(dest => dest.InterestId, opt => opt.MapFrom(src => src));
 
         CreateMap<ProfileVM, User>()
-            .ForMember(dest => dest.UserInterests, opt => opt.MapFrom(src => src.MyInterests))
+            .ForMember(dest => dest.UserInterests, opt => opt.MapFrom(src => src.Interests))
             .ForMember(p => p.ProfilePhoto, opt => opt.Ignore());
     }
 }

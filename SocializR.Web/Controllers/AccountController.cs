@@ -1,23 +1,11 @@
 ﻿namespace SocializR.Web.Controllers;
 
-public class AccountController : BaseController
+public class AccountController(CountyService _countyService,
+    CityService _cityService,
+    IMapper _mapper,
+    UserManager<User> _userManager,
+    SignInManager<User> _signInManager) : BaseController(_mapper)
 {
-    private readonly UserManager<User> userManager;
-    private readonly SignInManager<User> signInManager;
-    private readonly CountyService countyService;
-    private readonly CityService cityService;
-
-    public AccountController(/*AccountService AccountService, */CountyService countyService, CityService cityService, IMapper mapper,
-        UserManager<User> userManager, SignInManager<User> signInManager)
-        : base(mapper)
-    {
-        //this.AccountService = AccountService;
-        this.userManager = userManager;
-        this.signInManager = signInManager;
-        this.countyService = countyService;
-        this.cityService = cityService;
-    }
-
     [HttpGet]
     public IActionResult Login(string returnUrl)
     {
@@ -40,11 +28,11 @@ public class AccountController : BaseController
             return View(model);
         }
 
-        var user = await userManager.FindByEmailAsync(model.Email);
+        var user = await _userManager.FindByEmailAsync(model.Email);
 
         if (user != null)
         {
-            var result = await signInManager.PasswordSignInAsync(user, model.Password, true, true);
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, true);
             if (result.Succeeded)
             {
                 if (string.IsNullOrEmpty(model.ReturnUrl))
@@ -85,7 +73,7 @@ public class AccountController : BaseController
     {
         //await LogOutCookie();
 
-        await signInManager.SignOutAsync();
+        await _signInManager.SignOutAsync();
 
         return RedirectToAction("Login", "Account");
     }
@@ -93,7 +81,7 @@ public class AccountController : BaseController
     [HttpGet]
     public IActionResult Register()
     {
-        var counties = countyService.GetSelectCounties();
+        var counties = _countyService.GetSelectCounties();
 
         if (counties == null)
         {
@@ -114,16 +102,16 @@ public class AccountController : BaseController
     {
         if (!ModelState.IsValid)
         {
-            model.Counties = countyService.GetSelectCounties();
+            model.Counties = _countyService.GetSelectCounties();
             return View(model);
         }
 
-        var user = mapper.Map<User>(model);
-        var result = await userManager.CreateAsync(user, model.Password);
+        var user = _mapper.Map<User>(model);
+        var result = await _userManager.CreateAsync(user, model.Password);
 
         if (result.Succeeded)
         {
-            await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Email, user.Email));
+            await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Email, user.Email));
             return RedirectToAction("Index", "Home");
         }
 
@@ -132,7 +120,7 @@ public class AccountController : BaseController
             ModelState.AddModelError("Password", error.Description);
         }
 
-        model.Counties = countyService.GetSelectCounties();
+        model.Counties = _countyService.GetSelectCounties();
         return View(model);
 
         //var encription = new Pbkdf2();

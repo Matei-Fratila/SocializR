@@ -26,23 +26,40 @@ public class InterestService : BaseService
 
     public List<SelectListItem> GetAll()
     {
-        var interests = UnitOfWork.Interests.Query
-            .ToList();
+        var interests = UnitOfWork.Interests.Query.ToList();
 
-        var interestSelect = interests.Select(i => new SelectListItem
+        interests.Add(new Interest
         {
-            Text = i.Name,
-            Value = i.Id.ToString()
-        })
-        .ToList();
-
-        interestSelect.Add(new SelectListItem
-        {
-            Text = "No Interest",
-            Value = "0"
+            Name = "No Interest",
+            Id = Guid.Empty
         });
 
-        return interestSelect.OrderBy(i => i.Value).ToList();
+        return new SelectList(interests, nameof(Interest.Id), nameof(Interest.Name))
+            .OrderBy(i => i.Value)
+            .ToList();
+    }
+
+    public List<SelectListItem> GetAllWithSelected(List<Guid> userInterests)
+    {
+        List<SelectListItem> selectedInterests = GetAll();
+
+        if (userInterests.Any())
+        {
+            foreach (var interest in userInterests)
+            {
+                var selectedInterest = selectedInterests.FirstOrDefault(i => i.Value == interest.ToString());
+                if(selectedInterest != null)
+                {
+                    selectedInterest.Selected = true;
+                }
+            }
+        }
+        else
+        {
+            selectedInterests.First().Selected = true;
+        }
+
+        return selectedInterests;
     }
 
     public EditInterestVM GetEditModel(string id)
@@ -57,16 +74,16 @@ public class InterestService : BaseService
         return model;
     }
 
-    public List<string> GetByUser(Guid id)
+    public List<Guid> GetByUser(Guid id)
     {
-        if (id == null)
+        if (id == Guid.Empty)
         {
             id = currentUser.Id;
         }
 
         var interests = UnitOfWork.UserInterests.Query
             .Where(i => i.UserId == id)
-            .Select(i => i.Interest.Id.ToString())
+            .Select(i => i.Interest.Id)
             .ToList();
 
         return interests;

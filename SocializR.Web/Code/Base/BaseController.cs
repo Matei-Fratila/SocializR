@@ -2,11 +2,11 @@
 
 public class BaseController : Controller
 {
-    protected readonly IMapper mapper;
+    protected readonly IMapper _mapper;
 
     public BaseController(IMapper mapper)
     {
-        this.mapper = mapper;
+        _mapper = mapper;
     }
 
     public IActionResult InternalServerErrorView()

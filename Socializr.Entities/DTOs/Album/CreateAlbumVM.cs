@@ -6,8 +6,8 @@ public class CreateAlbumVM : IValidatableObject
 
     public string Id { get; set; }
 
-    [Required(ErrorMessage = "Campul este obligatoriu!")]
-    [MaxLength(100, ErrorMessage = "Campul trebuie sa aiba maximum 100 de caracatere")]
+    [Required]
+    [MaxLength(100)]
     public string Name { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

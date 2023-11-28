@@ -1,10 +1,11 @@
-﻿$(document).ready(function () {
+﻿jQuery(function ($) {
 
     $('.accept-friend-request').on('click', function (e) {
         var id = $(e.target).closest('.user-container').find('.user-id').val();
         $.ajax({
             type: 'POST',
-            url: Router.action('Friendship', 'AddFriend', { id: id }),
+            url: 'Friendship/AddFriend', 
+            data: { id: id },
             success: function (cities) {
                 location.reload();
             }
@@ -15,7 +16,8 @@
         var id = $(e.target).closest('.user-container').find('.user-id').val();
         $.ajax({
             type: 'POST',
-            url: Router.action('FriendRequest', 'DeleteFriendRequest', { id: id }),
+            url: 'FriendRequest/DeleteFriendRequest', 
+            data: { id: id },
             success: function (cities) {
                 location.reload();
             }

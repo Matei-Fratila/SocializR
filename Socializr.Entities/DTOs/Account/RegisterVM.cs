@@ -2,24 +2,24 @@
 
 public class RegisterVM : IValidatableObject
 {
-    [MaxLength(100, ErrorMessage = "Campul trebuie sa aiba maximum 100 de caracatere")]
-    [Required(ErrorMessage = "The first name is required")]
+    [MaxLength(100)]
+    [Required]
     [Display(Name = "First Name")]
     public string FirstName { get; set; }
 
-    [MaxLength(100, ErrorMessage = "Campul trebuie sa aiba maximum 100 de caracatere")]
-    [Required(ErrorMessage = "The last name is required")]
+    [MaxLength(100)]
+    [Required]
     [Display(Name = "Last Name")]
     public string LastName { get; set; }
 
     [EmailAddress(ErrorMessage = "Adresa nu este valida!")]
-    [MaxLength(100, ErrorMessage = "Campul trebuie sa aiba maximum 100 de caracatere")]
-    [Required(ErrorMessage = "The email is required")]
+    [MaxLength(100)]
+    [Required]
     //[Remote(action: "IsEmailAvailable", controller: "Account", ErrorMessage = "Email-ul exista deja")]
     public string Email { get; set; }
 
-    [MaxLength(100, ErrorMessage = "Campul trebuie sa aiba maximum 100 de caracatere")]
-    [Required(ErrorMessage = "The password is required")]
+    [MaxLength(100)]
+    [Required]
     public string Password { get; set; }
 
     [Display(Name = "City")]

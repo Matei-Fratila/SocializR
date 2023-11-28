@@ -11,20 +11,20 @@ public class LocalStorageService : IImageStorage
 
     public async Task<string> SaveImage(Stream imageStream, string type)
     {
-        var uploads = Path.Combine(hostingEnvironment.ContentRootPath, @"images\uploads");
-        var imageId = Guid.NewGuid().ToString() + "." + type;
-        var filePath = Path.Combine(uploads, imageId);
+        var basePath = Path.Combine(hostingEnvironment.ContentRootPath, @"wwwroot\images\uploads");
+        var name = Guid.NewGuid().ToString() + "." + type;
+        var filePath = Path.Combine(basePath, name);
 
         using (var fileStream = new FileStream(filePath, FileMode.Create))
         {
             await imageStream.CopyToAsync(fileStream);
         }
 
-        return imageId;
+        return name;
     }
 
     public string UriFor(string imageId)
     {
-        return @"~\images\" + imageId;
+        return @$"~/images/uploads/{imageId}";
     }
 }
