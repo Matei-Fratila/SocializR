@@ -4,12 +4,12 @@
     ViewData["Title"] = "ViewAlbum";
 }
 
-<div class="col-sm-6 album-container">
+<div class="col-sm-4 album-container">
     <input value="@Model.Id" class="album-id" type="hidden" />
     <input value="@Model.Name" class="album-name" type="hidden" />
     <figure class="media-body">
-        <button class="btn no-padding show-gallery">
-            <img src="@Url.Action("RenderCoverPicture", "Album", new { id = Model.CoverId })">
+        <button class="container btn show-gallery">
+            <img class="album-cover" src="@Url.Content(Model.CoverFilePath)">
         </button>
         <div class="card-body">
             <h3>@Model.Name</h3>

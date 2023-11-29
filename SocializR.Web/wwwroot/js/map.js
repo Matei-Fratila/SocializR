@@ -256,15 +256,15 @@
             data: { id: countyId },
             success: function (response) {
 
-                var table = $('#cities-table');
+                var tableBody = $('#cities-table tbody');
 
-                $('#cities-table tr').each(function (index, elem) {
+                $('#cities-table tbody tr').each(function (index, elem) {
                     elem.remove();
                 });
 
                 for (var i = 0; i < response.length; i++) {
                     var html = template(response[i]);
-                    table.append(html);
+                    tableBody.append(html);
                 }
             },
             fail: function (ex) {

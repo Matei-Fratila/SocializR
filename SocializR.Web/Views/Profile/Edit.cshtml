@@ -34,13 +34,11 @@
 
 <form method="post" enctype="multipart/form-data" asp-controller="Profile" asp-action="Edit">
 
-    <div class="row avatar sections-layout">
-        <div class="col-sm-3">
-            <img class="rounded-circle shadow" style="width: 150px;" alt="Avatar" src="@Url.Content(Model.FilePath)" />
+    <div class="col-sm-3">
+        <img class="rounded-circle shadow avatar-image" alt="Avatar" src="@Url.Content(Model.FilePath)" />
 
-            <input asp-for="ProfilePhoto" type="file" accept="image/*" value="Add Photo">
-            <span asp-validation-for="ProfilePhoto"></span>
-        </div>
+        <input asp-for="ProfilePhoto" type="file" accept="image/*" value="Add Photo">
+        <span asp-validation-for="ProfilePhoto"></span>
     </div>
 
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>

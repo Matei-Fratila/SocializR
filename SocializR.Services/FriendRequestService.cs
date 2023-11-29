@@ -40,13 +40,13 @@ public class FriendRequestService : BaseService
             .ToList();
     }
 
-    public bool DeleteFriendRequest(string id)
+    public bool DeleteFriendRequest(Guid id)
     {
         var friendrequest = UnitOfWork.FriendRequests.Query
-            .Where(f => f.RequesterUserId.ToString() == id 
+            .Where(f => f.RequesterUserId == id 
             && f.RequestedUserId == currentUser.Id 
             || f.RequesterUserId == currentUser.Id 
-            && f.RequestedUserId.ToString() == id)
+            && f.RequestedUserId == id)
             .FirstOrDefault();
 
         if (friendrequest == null)
@@ -59,11 +59,11 @@ public class FriendRequestService : BaseService
         return UnitOfWork.SaveChanges() != 0;
     }
 
-    public bool SendFriendRequest(string id)
+    public bool SendFriendRequest(Guid id)
     {
         var friendRequest = new FriendRequest
         {
-            RequestedUserId = new Guid(id),
+            RequestedUserId = id,
             RequesterUserId = currentUser.Id,
             CreatedOn = DateTime.Now
         };

@@ -22,14 +22,13 @@ public class FriendshipController : BaseController
     {
         var pageIndex = (page ?? 1) - 1;
         var friends = friendshipService.GetFriends(pageIndex, configuration.UsersPerPage, out int totalUserCount);
-        //var model = new StaticPagedList<UserVM>(friends, pageIndex + 1, configuration.UsersPerPage, totalUserCount);
-        var model = new { };
+        var model = new StaticPagedList<UserVM>(friends, pageIndex + 1, configuration.UsersPerPage, totalUserCount);
 
         return View(model);
     }
 
     [HttpPost]
-    public IActionResult AddFriend(string id)
+    public IActionResult AddFriend(Guid id)
     {
         var result = friendshipService.AddFriend(id);
 

@@ -36,38 +36,37 @@
     </environment>
 }
 
-<div class="row avatar sections-layout">
-    <div class="col-sm-3">
-        <img class="rounded-circle shadow" style="width: 150px;" alt="Avatar" src="@Url.Content(Model.FilePath)">
-    </div>
-
-    @switch (Model.RelationToCurrentUser)
-    {
-        case (RelationTypes.Friends):
-            <a class="btn btn-primary unfriend">Unfriend</a>
-            break;
-        case (RelationTypes.Strangers):
-            <a class="btn btn-primary send-friend-request">Send Friend Request</a>
-            break;
-        case (RelationTypes.PendingAccept):
-            <a class="btn btn-success accept-friend-request">Accept friend request</a>
-            <a class="btn btn-danger reject-friend-request">Reject friend request</a>
-            break;
-        case (RelationTypes.RequestedFriendship):
-            <a class="btn btn-primary delete-friendrequest">Delete Friend Request</a>
-            break;
-        default:
-            break;
-    }
-
-    @if (Model.Id.ToString() != UserManager.GetUserId(User))
-    {
-        <span>@Model.MutualFriends mutual friends</span>
-
-    }
+<div class="col-sm-3">
+    <img class="rounded-circle shadow avatar-image" alt="Avatar" src="@Url.Content(Model.FilePath)">
 </div>
 
+@switch (Model.RelationToCurrentUser)
+{
+    case (RelationTypes.Friends):
+        <a class="btn btn-primary unfriend">Unfriend</a>
+        break;
+    case (RelationTypes.Strangers):
+        <a class="btn btn-primary send-friend-request">Send Friend Request</a>
+        break;
+    case (RelationTypes.PendingAccept):
+        <a class="btn btn-success accept-friend-request">Accept friend request</a>
+        <a class="btn btn-danger reject-friend-request">Reject friend request</a>
+        break;
+    case (RelationTypes.RequestedFriendship):
+        <a class="btn btn-primary delete-friendrequest">Delete Friend Request</a>
+        break;
+    default:
+        break;
+}
+
+@if (Model.Id.ToString() != UserManager.GetUserId(User))
+{
+    <span>@Model.MutualFriends mutual friends</span>
+
+}
+
 <dl>
+    <input type="hidden" asp-for="Id" />
     <div class="row">
         <dt class="col-sm-1">
             @Html.DisplayNameFor(model => model.FirstName)
@@ -130,15 +129,11 @@
 
 @if (Model.IsPrivate == false || Model.Id.ToString() == UserManager.GetUserId(User) || (Model.IsPrivate == true && Model.RelationToCurrentUser == RelationTypes.Friends))
 {
-    <div>
-        <h3>Albums</h3>
-        <hr />
-        <div class="albums-container row">
-            @foreach (var album in Model.Albums)
-            {
-                @await Html.PartialAsync("../Album/_Album", album)
-            }
-        </div>
+    <div class="albums-container row">
+        @foreach (var album in Model.Albums)
+        {
+            @await Html.PartialAsync("../Album/_Album", album)
+        }
     </div>
 }
 

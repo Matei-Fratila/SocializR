@@ -1,8 +1,8 @@
 ﻿@model UserVM
 
 <li class="col-sm-4">
-    <a asp-controller="Profile" asp-action="Get" asp-route-id=@Model.Id class="UserName side-menu-item">
-        <img class="img-responsive img-circle img-thumbnail" id="avatar-photo" src="@Url.Action("RenderProfilePicture", "Profile", new { id=Model.Id})">
+    <a asp-controller="Profile" asp-action="Index" asp-route-id=@Model.Id class="UserName side-menu-item">
+        <img class="rounded-circle shadow" id="avatar-photo" src="@Url.Action("RenderProfilePicture", "Profile", new { id=Model.Id})">
         @Model.FirstName @Model.LastName
     </a>
 </li>
@@ -10,6 +10,6 @@
 <li class="user-container col-sm-2">
     <input class="user-id" value="@Model.Id" type="hidden" />
     <input asp-for="IsDeleted" type="hidden" class="action is-deleted" />
-    <button class="btn-link float-right action"></button>
+    @* <button class="btn-link float-right action"></button> *@
     <a asp-controller="Profile" asp-action="Edit" asp-route-id=@Model.Id class="btn-link float-right"><i class="fa fa-pencil"></i></a>
 </li>

@@ -4,65 +4,81 @@
     ViewData["Title"] = "Index";
 }
 
-@section Scripts{
+@section Scripts {
     <script src="~/lib/handlebars/handlebars.js"></script>
     <script src="~/js/map.js"></script>
+    <script type="text/x-handlebars-template" id="city-template">
+        <tr>
+            <input asp-for="{{id}}" value="{{id}}" name="{{id}}" type="hidden" class="city-id" />
+        @*<td><input type="checkbox" class="checkthis" value="{{id}}" /></td>*@
+            <td></td>
+            <td>
+                <span class="city-name">{{name}}</span>
+            </td>
+            <td>
+                <button class="btn btn-xs edit px-0" title="Edit" data-toggle="tooltip" data-title="Edit"><span class="fa fa-pencil"></span></button>
+                <button class="btn btn-xs delete px-0" title="Delete" data-toggle="tooltip" data-title="Delete"><span class="fa fa-trash"></span></button>
+            </td>
+        </tr>
+    </script>
 }
 
-<div class="column col-sm-6">
-    <h3>Județe</h3>
-
-    <p>
-        <button id="new-county" class="btn-link">New County</button>
-    </p>
-    <table class="table table-striped table-hover table-condensed" id="counties-table">
-        <thead class="">
-        </thead>
-        <tbody>
-            @for (var i = 0; i < Model.Counties.Count; i++)
-            {
-                <tr data-title="click to see cities" class="table-row">
-                    <input asp-for="@Model.Counties[i].Id" value="@Model.Counties[i].Id" name="@Model.Counties[i].Id" type="hidden" class="county-id" />
-
-                    <td>
-                        <span class="county-name">@Html.DisplayFor(modelItem => Model.Counties[i].Name)</span>
-                    </td>
-                    <td>
-                        <span class="county-short-name">@Html.DisplayFor(modelItem => Model.Counties[i].ShortName)</span>
-                    </td>
-
-                    <td><p data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-xs edit" data-title="Edit" data-toggle="modal" data-target="#modal-edit-form"><span class="fa fa-pencil"></span></button></p></td>
-                    <td><p data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-xs delete" data-title="Delete" data-toggle="modal" data-target="#delete"><span class="fa fa-trash"></span></button></p></td>
-
+<div class="row">
+    <div class="column col-sm-4">
+        <h3>Counties</h3>
+        <p>
+            <button id="new-county" class="btn btn-success"><i class="fa fa-plus"></i></button>
+        </p>
+        <table class="table table-sm table-hover shadow px-3" id="counties-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>County</th>
+                    <th>Abbreviation</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @for (var i = 0; i < Model.Counties.Count; i++)
+                {
+                    <tr data-title="click to see cities" class="table-row">
+                        <input asp-for="@Model.Counties[i].Id" value="@Model.Counties[i].Id" name="@Model.Counties[i].Id" type="hidden" class="county-id" />
+                        <td></td>
+                        <td>
+                            <span class="county-name">@Html.DisplayFor(modelItem => Model.Counties[i].Name)</span>
+                        </td>
+                        <td>
+                            <span class="county-short-name">@Html.DisplayFor(modelItem => Model.Counties[i].ShortName)</span>
+                        </td>
 
-<div class="column col-sm-6">
-    <h3>Orașe</h3>
-    <p>
-        <button id="new-city" class="btn-link">New City</button>
-    </p>
-    <table class="table table-striped table-hover" id="cities-table">
-        <thead class="">
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
+                        <td>
+                            <button class="btn btn-xs edit px-0" title="Edit" data-title="Edit" data-toggle="tooltip" data-target="#modal-edit-form"><span class="fa fa-pencil"></span></button>
+                            <button class="btn btn-xs delete px-0" title="Delete" data-title="Delete" data-toggle="tooltip" data-target="#delete"><span class="fa fa-trash"></span></button>
+                        </td>
 
-<script type="text/x-handlebars-template" id="city-template">
-    <tr>
-        <input asp-for="{{id}}" value="{{id}}" name="{{id}}" type="hidden" class="city-id" />
-        @*<td><input type="checkbox" class="checkthis" value="{{id}}" /></td>*@
-        <td>
-            <span class="city-name">{{name}}</span>
-        </td>
-        <td><p data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-xs edit" data-title="Edit"><span class="fa fa-pencil"></span></button></p></td>
-        <td><p data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-xs delete" data-title="Delete"><span class="fa fa-trash"></span></button></p></td>
-    </tr>
-</script>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-sm-1"></div>
+    <div class="column col-sm-4">
+        <h3>Cities</h3>
+        <p>
+            <button id="new-city" class="btn btn-success"><i class="fa fa-plus"></i></button>
+        </p>
+        <table class="table table-sm table-hover shadow" id="cities-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>City</th>
+                    <th colspan="2">Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
 
 <div class="modal fade" id="modal-edit-county" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

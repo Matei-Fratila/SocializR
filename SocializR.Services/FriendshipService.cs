@@ -52,13 +52,13 @@ public class FriendshipService : BaseService
             .Any();
     }
 
-    public bool AddFriend(string id)
+    public bool AddFriend(Guid id)
     {
         var friendships = new List<Friendship>()
         {
             new Friendship
             {
-                FirstUserId = new Guid(id),
+                FirstUserId = id,
                 SecondUserId = currentUser.Id,
                 CreatedDate=DateTime.Now
 
@@ -66,7 +66,7 @@ public class FriendshipService : BaseService
             new Friendship
             {
                 FirstUserId = currentUser.Id,
-                SecondUserId = new Guid(id),
+                SecondUserId = id,
                 CreatedDate=DateTime.Now
             }
 

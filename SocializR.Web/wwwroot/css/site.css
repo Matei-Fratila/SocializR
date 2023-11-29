@@ -4,6 +4,12 @@
     border-color: rgba(255, 255, 255, .1);
 }
 
+.avatar-image{
+    height: 10vw;
+    width: 10vw;
+    object-fit: contain;
+}
+
 .no-margin {
     margin: 0;
 }
@@ -164,12 +170,6 @@ nav {
 .custom-margin {
     margin-left: 15%;
     margin-right: 15%;
-}
-
-.avatar {
-    padding: 15px 0;
-    /*height: 120px;*/
-    border-bottom: 1px solid #ddd;
 }
 
 #sidebarMenu li {

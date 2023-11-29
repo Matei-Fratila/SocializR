@@ -1,4 +1,8 @@
-﻿.no-padding {
+﻿.album-cover{
+    object-fit: contain;
+}
+
+.no-padding {
     padding:0;
 }
 

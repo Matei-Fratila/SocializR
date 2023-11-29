@@ -29,7 +29,7 @@ public class UserController : BaseController
         var users = userAdminService.GetAllUsers(pageIndex, configuration.UsersPerPage, out int totalUserCount);
         var model = new StaticPagedList<UserVM>(users, pageIndex + 1, configuration.UsersPerPage, totalUserCount);
 
-        return View();
+        return View(model);
     }
 
     [HttpPost]

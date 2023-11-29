@@ -8,5 +8,7 @@ public class AlbumVM
 
     public Guid CoverId { get; set; }
 
+    public string CoverFilePath { get; set; }
+
     public int NrOfImages { get; set; }
 }

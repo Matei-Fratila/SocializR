@@ -8,5 +8,7 @@ public class UserMapper : Profile
     {
         CreateMap<User, SearchUserVM>()
             .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.FirstName + " " + src.LastName));
+
+        CreateMap<User, UserVM>();
     }
 }

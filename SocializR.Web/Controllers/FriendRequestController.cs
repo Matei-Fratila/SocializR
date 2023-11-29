@@ -26,7 +26,7 @@ public class FriendRequestController : BaseController
     }
 
     [HttpPost]
-    public IActionResult SendFriendRequest(string id)
+    public IActionResult SendFriendRequest(Guid id)
     {
         var result = friendRequestService.SendFriendRequest(id);
         if (!result)
@@ -38,7 +38,7 @@ public class FriendRequestController : BaseController
     }
 
     [HttpPost]
-    public IActionResult DeleteFriendRequest(string id)
+    public IActionResult DeleteFriendRequest(Guid id)
     {
         var result = friendRequestService.DeleteFriendRequest(id);
         if (!result)

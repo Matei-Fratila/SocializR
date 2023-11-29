@@ -13,11 +13,15 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table table-striped table-hover table-condensed">
+<table class="table table-sm table-hover shadow px-3">
     <thead>
         <tr>
+            <th>#</th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                Actions
             </th>
         </tr>
     </thead>
@@ -27,6 +31,7 @@
         {
             <tr>
                 <input asp-for="@item.Id" value="@item.Id" name="@item.Id" type="hidden" class="interest-id" />
+                <td></td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>

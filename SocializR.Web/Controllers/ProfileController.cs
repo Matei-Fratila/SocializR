@@ -61,7 +61,12 @@ public class ProfileController : BaseController
         }
 
         model = _profileService.GetViewProfileVM(id);
+
         model.FilePath = _imageStorage.UriFor(model.FilePath);
+        foreach(var album in model.Albums)
+        {
+            album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath);
+        }
 
         if (model == null)
         {
