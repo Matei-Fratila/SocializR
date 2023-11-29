@@ -4,6 +4,6 @@ public class CountyMapper : Profile
 {
     public CountyMapper()
     {
-        CreateMap<County, CountyVM>();
+        CreateMap<County, CountyViewModel>();
     }
 }

@@ -49,12 +49,12 @@ public class MediaService : BaseService
         return false;
     }
 
-    public List<MediaModel> GetAll(string id)
+    public List<MediaViewModel> GetAll(string id)
     {
         var images = UnitOfWork.Media.Query
             .Where(u => u.AlbumId.ToString() == id)
             .OrderByDescending(u => u.Id)
-            .ProjectTo<MediaModel>(mapper.ConfigurationProvider)
+            .ProjectTo<MediaViewModel>(mapper.ConfigurationProvider)
             .ToList();
 
         return images;
@@ -108,7 +108,7 @@ public class MediaService : BaseService
         return media;
     }
 
-    public void Update(EditedMediaModel model)
+    public void Update(EditedMediaViewModel model)
     {
         if (model.Media.Any())
         {

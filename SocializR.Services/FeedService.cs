@@ -58,7 +58,7 @@ public class FeedService : BaseService
         return commentService.DeleteComment(commentId);
     }
 
-    public void MarkPosts(FeedVM feed)
+    public void MarkPosts(FeedViewModel feed)
     {
         foreach (var post in feed.Posts)
         {
@@ -75,11 +75,11 @@ public class FeedService : BaseService
         }
     }
 
-    public FeedVM GetNextPosts(int page, int postsPerPage, int commentsPerPage)
+    public FeedViewModel GetNextPosts(int page, int postsPerPage, int commentsPerPage)
     {
         var posts = postService.GetNextPosts(currentUser.Id, page, postsPerPage, commentsPerPage);
 
-        var feed = new FeedVM
+        var feed = new FeedViewModel
         {
             Posts = posts
         };
@@ -100,7 +100,7 @@ public class FeedService : BaseService
         return likeService.AddLike(currentUserId, id);
     }
 
-    public CommentVM CurrentUserComment(string body)
+    public CommentViewModel CurrentUserComment(string body)
     {
         return commentService.CurrentUserComment(body);
     }

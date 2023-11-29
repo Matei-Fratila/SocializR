@@ -49,7 +49,7 @@ jQuery(function ($) {
         }
     }
 
-    $('#files').change(handleFileSelect);
+    $('#files').on('change', handleFileSelect);
 
     $('#images').on('click', '.delete', function (e) {
 
@@ -63,12 +63,12 @@ jQuery(function ($) {
             $.post('Media/Delete', { id: id }), function () {
                 alert("Image was deleted successfuly!");
                 container.remove();
-            });
+            }
         }
 
     });
 
-    $('#save-changes').click(function (e) {
+    $('#save-changes').on('click', function (e) {
 
         var name = $('#album-name').val();
         var id = $("#album-id").val();
@@ -109,7 +109,7 @@ jQuery(function ($) {
                 success: function () {
                     var form = $('#edit-album');
                     if ($(form).valid()) {
-                        $(form).submit();
+                        $(form).trigger('submit');
                     }
                 },
                 error: function (error) {
@@ -120,7 +120,7 @@ jQuery(function ($) {
         else {
             var form = $('#edit-album');
             if ($(form).valid()) {
-                $(form).submit();
+                $(form).trigger('submit');
             }
         }
 

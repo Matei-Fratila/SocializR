@@ -10,13 +10,13 @@ public class AdminService : BaseService
         this.mapper = mapper;
     }
 
-    public List<UserVM> GetAllUsers(int pageIndex, int pageSize, out int totalUserCount)
+    public List<UserViewModel> GetAllUsers(int pageIndex, int pageSize, out int totalUserCount)
     {
         totalUserCount = UnitOfWork.Users.Query.Count();
 
         return UnitOfWork.Users.Query
             .OrderBy(u=>u.FirstName)
-            .ProjectTo<UserVM>(mapper.ConfigurationProvider)
+            .ProjectTo<UserViewModel>(mapper.ConfigurationProvider)
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
             .ToList();

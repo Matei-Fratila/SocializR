@@ -4,14 +4,14 @@ public class PostMapper : Profile
 {
     public PostMapper()
     {
-        CreateMap<Media, MediaModel>();
+        CreateMap<Media, MediaViewModel>();
 
-        CreateMap<Like, LikeVM>()
+        CreateMap<Like, LikeViewModel>()
             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.User.FirstName))
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.User.LastName))
             .ForMember(dest => dest.UserPhoto, opt => opt.MapFrom(src => src.User.ProfilePhotoId));
 
-        CreateMap<Comment, CommentVM>()
+        CreateMap<Comment, CommentViewModel>()
             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.User.FirstName))
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.User.LastName))
             .ForMember(dest => dest.UserPhoto, opt => opt.MapFrom(src => src.User.ProfilePhotoId));

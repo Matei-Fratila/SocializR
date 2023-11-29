@@ -4,6 +4,6 @@ public class CityMapper : Profile
 {
     public CityMapper()
     {
-        CreateMap<City, CityVM>();
+        CreateMap<City, CityViewModel>();
     }
 }

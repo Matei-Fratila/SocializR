@@ -54,11 +54,13 @@
 
     //});
 
-    $("#County").change(function () {
+    $("#County").on("change", function () {
+        var countyId = $("#County").val();
         $("#City").empty();
         $.ajax({
             type: 'GET',
-            url: `City/GetAllByCounty/${$("#County").val() }`,
+            url: '/City/GetAllByCounty',
+            data: { id: countyId },
             success: function (cities) {
                 $.each(cities, function (i, city) {
                     $("#City").append('<option value="'

@@ -41,21 +41,21 @@ public class CityService : BaseService
         return UnitOfWork.SaveChanges() != 0;
     }
 
-    public List<CityVM> GetCitiesByCountyId(string countyId)
+    public List<CityViewModel> GetCitiesByCountyId(string countyId)
     {
         return UnitOfWork.Cities.Query
             .Where(u => u.CountyId.ToString() == countyId)
             .OrderBy(u => u.Name)
-            .ProjectTo<CityVM>(mapper.ConfigurationProvider)
+            .ProjectTo<CityViewModel>(mapper.ConfigurationProvider)
             .ToList();
     }
 
-    public List<SelectListItem> GetCities(Guid id)
+    public List<SelectListItem> GetCities(Guid? id)
     {
-        //if (id == null)
-        //{
-        //    return null;
-        //}
+        if (id == null)
+        {
+            return null;
+        }
 
         var cities = GetAll(id);
 
@@ -67,7 +67,7 @@ public class CityService : BaseService
         .ToList();
     }
 
-    public List<City> GetAll(Guid countyId)
+    public List<City> GetAll(Guid? countyId)
     {
         if (countyId == null)
         {

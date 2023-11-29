@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocializR.DataAccess", "Socializr.DataAccess\SocializR.DataAccess.csproj", "{6041160B-CEE3-482A-8D5E-834426463BD0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Socializr.Entities", "Socializr.Entities\Socializr.Entities.csproj", "{5145C22B-0317-4EB6-8838-93079E6E3067}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Socializr.Models", "Socializr.Entities\Socializr.Models.csproj", "{5145C22B-0317-4EB6-8838-93079E6E3067}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocializR.Services", "SocializR.Services\SocializR.Services.csproj", "{C80AB649-9424-4B98-877A-7A0E235177E1}"
 EndProject

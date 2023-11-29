@@ -25,11 +25,11 @@ public class CountyService : BaseService
         return unitOfWork.SaveChanges() != 0;
     }
 
-    public List<CountyVM> GetCounties()
+    public List<CountyViewModel> GetCounties()
     {
         return unitOfWork.Counties.Query
             .Where(c=>true==true)
-            .ProjectTo<CountyVM>(mapper.ConfigurationProvider)
+            .ProjectTo<CountyViewModel>(mapper.ConfigurationProvider)
             .OrderBy(c => c.ShortName)
             .ToList();
             

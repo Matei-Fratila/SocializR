@@ -4,6 +4,6 @@ public class MediaMapper : Profile
 {
     public MediaMapper()
     {
-        CreateMap<Media, MediaModel>();
+        CreateMap<Media, MediaViewModel>();
     }
 }

@@ -1,28 +1,17 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize]
-public class FriendshipController : BaseController
+public class FriendshipController(IOptionsMonitor<AppSettings> _configuration,
+    FriendshipService _friendshipService, 
+    FriendRequestService _friendRequestService, 
+    IMapper _mapper) : BaseController(_mapper)
 {
-    private readonly FriendshipService friendshipService;
-    private readonly FriendRequestService friendRequestService;
-    private readonly IHostEnvironment hostingEnvironment;
-    private readonly AppSettings configuration;
-
-    public FriendshipController(IOptions<AppSettings> configuration, IHostEnvironment hostingEnvironment, FriendshipService friendshipService, FriendRequestService friendRequestService, IMapper mapper)
-         : base(mapper)
-    {
-        this.hostingEnvironment = hostingEnvironment;
-        this.friendshipService = friendshipService;
-        this.friendRequestService = friendRequestService;
-        this.configuration = configuration.Value;
-    }
-
     [HttpGet]
     public IActionResult Index(int? page)
     {
         var pageIndex = (page ?? 1) - 1;
-        var friends = friendshipService.GetFriends(pageIndex, configuration.UsersPerPage, out int totalUserCount);
-        var model = new StaticPagedList<UserVM>(friends, pageIndex + 1, configuration.UsersPerPage, totalUserCount);
+        var friends = _friendshipService.GetFriends(pageIndex, _configuration.CurrentValue.UsersPerPage, out int totalUserCount);
+        var model = new StaticPagedList<UserViewModel>(friends, pageIndex + 1, _configuration.CurrentValue.UsersPerPage, totalUserCount);
 
         return View(model);
     }
@@ -30,11 +19,11 @@ public class FriendshipController : BaseController
     [HttpPost]
     public IActionResult AddFriend(Guid id)
     {
-        var result = friendshipService.AddFriend(id);
+        var result = _friendshipService.AddFriend(id);
 
         if (result)
         {
-            friendRequestService.DeleteFriendRequest(id);
+            _friendRequestService.DeleteFriendRequest(id);
         }
 
         return RedirectToAction("Get", "Profile", new { id });
@@ -43,7 +32,7 @@ public class FriendshipController : BaseController
     [HttpPost]
     public IActionResult Unfriend(string id)
     {
-        var result = friendshipService.Unfriend(id);
+        var result = _friendshipService.Unfriend(id);
         if (!result)
         {
             return InternalServerErrorView();

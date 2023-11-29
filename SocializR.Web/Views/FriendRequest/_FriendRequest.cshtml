@@ -1,11 +1,11 @@
-﻿@model FriendrequestVM
+﻿@model FriendrequestViewModel
 
 @{
     ViewData["Title"] = "_Image";
 }
 
 <li class="col-sm-10">
-    <a asp-controller="Profile" asp-action="Get" asp-route-id=@Model.Id class="UserName side-menu-item">
+    <a asp-controller="Profile" asp-action="Index" asp-route-id=@Model.Id class="UserName side-menu-item">
         <img class="img-responsive img-circle img-thumbnail" id="avatar-photo" src="@Url.Action("RenderProfilePicture", "Profile", new { id=Model.Id})">
         @Model.FirstName @Model.LastName
     </a>

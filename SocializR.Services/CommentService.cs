@@ -21,14 +21,14 @@ public class CommentService : BaseService
         return comment.Id.ToString();
     }
 
-    public List<CommentVM> GetComments(Guid postId, int commentsPerPage, int page)
+    public List<CommentViewModel> GetComments(Guid postId, int commentsPerPage, int page)
     {
         return UnitOfWork.Comments.Query
             .Where(c => c.PostId == postId)
             .OrderByDescending(c => c.CreatedOn)
             .Skip(page * commentsPerPage)
             .Take(commentsPerPage)
-            .ProjectTo<CommentVM>(mapper.ConfigurationProvider)
+            .ProjectTo<CommentViewModel>(mapper.ConfigurationProvider)
             .ToList();
     }
 
@@ -48,9 +48,9 @@ public class CommentService : BaseService
         return UnitOfWork.SaveChanges() != 0;
     }
 
-    public CommentVM CurrentUserComment(string body)
+    public CommentViewModel CurrentUserComment(string body)
     {
-        return new CommentVM
+        return new CommentViewModel
         {
             Body = body,
             FirstName = currentUser.FirstName,

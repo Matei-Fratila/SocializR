@@ -1,6 +1,4 @@
-﻿using SocializR.Entities.DTOs.Friend;
-
-namespace SocializR.Services;
+﻿namespace SocializR.Services;
 
 public class FriendRequestService : BaseService
 {
@@ -14,18 +12,18 @@ public class FriendRequestService : BaseService
         this.currentUser = currentUser;
     }
 
-    public List<FriendrequestVM> GetAllFriendRequests()
+    public List<FriendrequestViewModel> GetAllFriendRequests()
     {
         var friends1 = UnitOfWork.FriendRequests.Query
             //.Include(u => u.RequesterUser)
             .Where(u => u.RequestedUserId == currentUser.Id && u.RequesterUser.IsDeleted==false)
-                .ProjectTo<FriendrequestVM>(mapper.ConfigurationProvider)
+                .ProjectTo<FriendrequestViewModel>(mapper.ConfigurationProvider)
             .ToList();
 
         return friends1;
     }
 
-    public List<FriendrequestVM> GetFriendRequests(int pageIndex, int pageSize, out int totalRequestsCount)
+    public List<FriendrequestViewModel> GetFriendRequests(int pageIndex, int pageSize, out int totalRequestsCount)
     {
         totalRequestsCount = UnitOfWork.FriendRequests.Query
             .Include(u => u.RequesterUser)
@@ -34,7 +32,7 @@ public class FriendRequestService : BaseService
         return UnitOfWork.FriendRequests.Query
             //.Include(u => u.RequesterUser)
             .Where(u => u.RequestedUserId == currentUser.Id && u.RequesterUser.IsDeleted == false)
-                .ProjectTo<FriendrequestVM>(mapper.ConfigurationProvider)
+                .ProjectTo<FriendrequestViewModel>(mapper.ConfigurationProvider)
                 .Skip(pageSize * pageIndex)
             .Take(pageSize)
             .ToList();

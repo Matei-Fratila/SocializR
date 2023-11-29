@@ -4,10 +4,10 @@ public class InterestMapper:Profile
 {
     public InterestMapper()
     {
-        CreateMap<Interest, InterestVM>();
+        CreateMap<Interest, InterestViewModel>();
 
-        CreateMap<Interest, EditInterestVM>();
+        CreateMap<Interest, EditInterestViewModel>();
 
-        CreateMap<EditInterestVM, Interest>();
+        CreateMap<EditInterestViewModel, Interest>();
     }
 }

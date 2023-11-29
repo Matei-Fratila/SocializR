@@ -36,13 +36,13 @@ public class ProfileService : BaseService
             .FirstOrDefault();
     }
 
-    public ProfileVM GetEditProfileVM() =>
+    public ProfileViewModel GetEditProfileVM() =>
         UnitOfWork.Users.Query
             .Where(u => u.Id == _currentUser.Id)
-            .ProjectTo<ProfileVM>(_mapper.ConfigurationProvider)
+            .ProjectTo<ProfileViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
 
-    public ProfileVM GetEditProfileVM(Guid id)
+    public ProfileViewModel GetEditProfileVM(Guid id)
     {
         var user = UnitOfWork.Users.Query
             .Where(u => u.Id == id && u.IsDeleted == false)
@@ -50,24 +50,24 @@ public class ProfileService : BaseService
 
         var profile = UnitOfWork.Users.Query
             .Where(u => u.Id == id && u.IsDeleted == false)
-            .ProjectTo<ProfileVM>(_mapper.ConfigurationProvider)
+            .ProjectTo<ProfileViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
 
         return profile;
     }
 
-    public ViewProfileVM GetViewProfileVM(Guid id)
+    public ViewProfileViewModel GetViewProfileVM(Guid id)
     {
         var result = UnitOfWork.Users.Query
            .Include(u => u.ProfilePhoto)
            .Where(u => u.Id == id && u.IsDeleted == false)
-           .ProjectTo<ViewProfileVM>(_mapper.ConfigurationProvider)
+           .ProjectTo<ViewProfileViewModel>(_mapper.ConfigurationProvider)
            .FirstOrDefault();
 
         return result;
     }
 
-    public bool UpdateUser(ProfileVM model)
+    public bool UpdateUser(ProfileViewModel model)
     {
         var user = UnitOfWork.Users.Query
             .Include(u => u.City)
@@ -81,20 +81,20 @@ public class ProfileService : BaseService
             return false;
         }
 
-        _mapper.Map<ProfileVM, User>(model, user);
+        _mapper.Map<ProfileViewModel, User>(model, user);
 
         UnitOfWork.Users.Update(user);
 
         return UnitOfWork.SaveChanges() != 0;
     }
 
-    public bool UpdateCurrentUser(ProfileVM model)
+    public bool UpdateCurrentUser(ProfileViewModel model)
     {
         var user = UnitOfWork.Users.Query
             .Where(u => u.Id == _currentUser.Id)
             .FirstOrDefault();
 
-        _mapper.Map<ProfileVM, User>(model, user);
+        _mapper.Map<ProfileViewModel, User>(model, user);
 
         UnitOfWork.Users.Update(user);
 

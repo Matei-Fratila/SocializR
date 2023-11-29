@@ -4,6 +4,6 @@ public class EditAlbumMapper : Profile
 {
     public EditAlbumMapper()
     {
-        CreateMap<AlbumVM, CreateAlbumVM>();
+        CreateMap<AlbumViewModel, CreateAlbumViewModel>();
     }
 }

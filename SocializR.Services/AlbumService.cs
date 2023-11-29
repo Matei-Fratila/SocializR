@@ -1,4 +1,6 @@
-﻿namespace SocializR.Services;
+﻿using SocializR.Models.Entities;
+
+namespace SocializR.Services;
 
 public class AlbumService : BaseService
 {
@@ -34,26 +36,26 @@ public class AlbumService : BaseService
         return album.Id;
     }
 
-    public List<AlbumVM> GetAll()
+    public List<AlbumViewModel> GetAll()
     {
         var albums = UnitOfWork.Albums.Query
             .Where(u => u.UserId == currentUser.Id)
-            .ProjectTo<AlbumVM>(mapper.ConfigurationProvider)
+            .ProjectTo<AlbumViewModel>(mapper.ConfigurationProvider)
             .OrderBy(i => i.Name)
             .ToList();
 
         return albums;
     }
 
-    public EditAlbumVM GetEditAlbumVM(string id)
+    public EditAlbumViewModel GetEditAlbumVM(string id)
     {
         return UnitOfWork.Albums.Query
             .Where(a => a.Id.ToString() == id)
-            .ProjectTo<EditAlbumVM>(mapper.ConfigurationProvider)
+            .ProjectTo<EditAlbumViewModel>(mapper.ConfigurationProvider)
             .FirstOrDefault();
     }
 
-    public bool Add(CreateAlbumVM model)
+    public bool Add(CreateAlbumViewModel model)
     {
         UnitOfWork.Albums.Add(new Album
         {
@@ -96,7 +98,7 @@ public class AlbumService : BaseService
         return UnitOfWork.SaveChanges() != 0;
     }
 
-    public bool Update(CreateAlbumVM model)
+    public bool Update(CreateAlbumViewModel model)
     {
         var album = UnitOfWork.Albums.Query
             .Where(a => a.Id.ToString() == model.Id)

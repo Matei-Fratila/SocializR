@@ -1,4 +1,4 @@
-﻿namespace SocializR.Entities.Enums
+﻿namespace SocializR.Models.Enums
 {
     public enum PrivacyTypes
     {

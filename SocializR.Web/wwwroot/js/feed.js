@@ -252,7 +252,7 @@ jQuery(function ($) {
         }
     }
 
-    $('#files').change(handleFileSelect);
+    $('#files').on('change', handleFileSelect);
 
     $('#images').on('click', '.delete-link', function (e) {
 
@@ -264,7 +264,7 @@ jQuery(function ($) {
     });
 
     //Handle New Post
-    $('#share').click(function (e) {
+    $('#share').on('click', function (e) {
 
         //var newPhotos = $('.image-id[value="-1"]').parent();
         //var imagesToInsert = [];

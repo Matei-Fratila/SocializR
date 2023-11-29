@@ -1,26 +1,16 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize]
-public class FriendRequestController : BaseController
+public class FriendRequestController(IOptionsMonitor<AppSettings> _configuration,
+    FriendRequestService _friendRequestService, 
+    IMapper _mapper) : BaseController(_mapper)
 {
-    private readonly FriendshipService friendshipService;
-    private readonly FriendRequestService friendRequestService;
-    private readonly AppSettings configuration;
-
-    public FriendRequestController(IOptions<AppSettings> configuration, FriendshipService friendshipService, FriendRequestService friendRequestService, IMapper mapper)
-         : base(mapper)
-    {
-        this.friendshipService = friendshipService;
-        this.friendRequestService = friendRequestService;
-        this.configuration = configuration.Value;
-    }
-
     [HttpGet]
     public IActionResult Index(int? page)
     {
         var pageIndex = (page ?? 1) - 1;
-        var requests = friendRequestService.GetFriendRequests(pageIndex, configuration.UsersPerPage, out int totalUserCount);
-        var model = new StaticPagedList<FriendrequestVM>(requests, pageIndex + 1, configuration.UsersPerPage, totalUserCount);
+        var requests = _friendRequestService.GetFriendRequests(pageIndex, _configuration.CurrentValue.UsersPerPage, out int totalUserCount);
+        var model = new StaticPagedList<FriendrequestViewModel>(requests, pageIndex + 1, _configuration.CurrentValue.UsersPerPage, totalUserCount);
 
         return View(model);
     }
@@ -28,7 +18,7 @@ public class FriendRequestController : BaseController
     [HttpPost]
     public IActionResult SendFriendRequest(Guid id)
     {
-        var result = friendRequestService.SendFriendRequest(id);
+        var result = _friendRequestService.SendFriendRequest(id);
         if (!result)
         {
             return InternalServerErrorView();
@@ -40,7 +30,7 @@ public class FriendRequestController : BaseController
     [HttpPost]
     public IActionResult DeleteFriendRequest(Guid id)
     {
-        var result = friendRequestService.DeleteFriendRequest(id);
+        var result = _friendRequestService.DeleteFriendRequest(id);
         if (!result)
         {
             return InternalServerErrorView();

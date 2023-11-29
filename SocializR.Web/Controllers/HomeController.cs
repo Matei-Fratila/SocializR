@@ -36,7 +36,7 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddPost(AddPostModel model)
+    public async Task<IActionResult> AddPost(AddPostViewModel model)
     {
         var media = new List<Media>();
         var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, @"images\uploads");
@@ -101,7 +101,7 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     }
 
     [HttpPost]
-    public JsonResult AddComment([FromBody] AddCommentModel comment)
+    public JsonResult AddComment([FromBody] AddCommentViewModel comment)
     {
         var id = _feedService.AddComment(_userManager.GetUserId(User), _htmlEncoder.Encode(comment.Body), comment.PostId);
 
@@ -143,7 +143,7 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     }
 
     [HttpGet]
-    public IActionResult GetComment(CommentVM comment)
+    public IActionResult GetComment(CommentViewModel comment)
     {
 
         return PartialView("Views/Home/_Comment.cshtml", comment);
@@ -162,13 +162,13 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     //}
 
     [HttpGet]
-    public IActionResult GetImageWidget(MediaModel model)
+    public IActionResult GetImageWidget(MediaViewModel model)
     {
         return PartialView("Views/Home/_Image.cshtml", model);
     }
 
     [HttpGet]
-    public IActionResult GetVideoWidget(MediaModel model)
+    public IActionResult GetVideoWidget(MediaViewModel model)
     {
         return PartialView("Views/Home/_Video.cshtml", model);
     }

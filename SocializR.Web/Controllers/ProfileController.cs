@@ -1,58 +1,24 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize]
-public class ProfileController : BaseController
+public class ProfileController(UserManager<User> _userManager,
+    ProfileService _profileService,
+    CountyService _countyService,
+    CityService _cityService,
+    InterestService _interestService,
+    MediaService _mediaService,
+    AlbumService _albumService,
+    FriendshipService _friendshipService,
+    PostService _postService,
+    IHostEnvironment _hostingEnvironment,
+    IImageStorage _imageStorage,
+    IMapper _mapper) : BaseController(_mapper)
 {
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
-    private readonly ProfileService _profileService;
-    private readonly CountyService _countyService;
-    private readonly CityService _cityService;
-    private readonly InterestService _interestService;
-    private readonly CurrentUser _currentUser;
-    private readonly MediaService _mediaService;
-    private readonly AlbumService _albumService;
-    private readonly FriendshipService _friendshipService;
-    private readonly PostService _postService;
-    private readonly IHostEnvironment _hostingEnvironment;
-    private readonly IImageStorage _imageStorage;
-
-    public ProfileController(IHostEnvironment hostingEnvironment, 
-        PostService postService, 
-        CurrentUser currentUser,
-        FriendshipService friendshipService, 
-        AlbumService albumService, 
-        MediaService mediaService, 
-        ProfileService profileService,
-        CountyService countyService, 
-        CityService cityService, 
-        InterestService interestService, 
-        IMapper mapper,
-        UserManager<User> userManager, 
-        SignInManager<User> signInManager, 
-        IImageStorage imageStorage)
-        : base(mapper)
-    {
-        _imageStorage = imageStorage;
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _friendshipService = friendshipService;
-        _albumService = albumService;
-        _mediaService = mediaService;
-        _hostingEnvironment = hostingEnvironment;
-        _currentUser = currentUser;
-        _profileService = profileService;
-        _countyService = countyService;
-        _cityService = cityService;
-        _interestService = interestService;
-        _postService = postService;
-    }
-
     [HttpGet]
     [AllowAnonymous]
     public async Task<IActionResult> Index(Guid id)
     {
-        ViewProfileVM model = null;
+        ViewProfileViewModel model = null;
         var currentUser = await _userManager.GetUserAsync(User);
 
         if (id == Guid.Empty)
@@ -63,7 +29,7 @@ public class ProfileController : BaseController
         model = _profileService.GetViewProfileVM(id);
 
         model.FilePath = _imageStorage.UriFor(model.FilePath);
-        foreach(var album in model.Albums)
+        foreach (var album in model.Albums)
         {
             album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath);
         }
@@ -96,8 +62,8 @@ public class ProfileController : BaseController
 
         model.RelationToCurrentUser = _profileService.GetRelationToCurrentUser(currentUser.Id.ToString(), id.ToString());
 
-        if (model.IsPrivate 
-            && model.RelationToCurrentUser == RelationTypes.Strangers 
+        if (model.IsPrivate
+            && model.RelationToCurrentUser == RelationTypes.Strangers
             && await _userManager.IsInRoleAsync(currentUser, "Administrator") == false)
         {
             model.Albums = null;
@@ -111,7 +77,7 @@ public class ProfileController : BaseController
     [HttpGet]
     public async Task<IActionResult> Edit(Guid id)
     {
-        ProfileVM model = null;
+        ProfileViewModel model = null;
         var currentUser = await _userManager.GetUserAsync(User);
 
         if (id == Guid.Empty)
@@ -155,7 +121,7 @@ public class ProfileController : BaseController
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(ProfileVM model)
+    public async Task<IActionResult> Edit(ProfileViewModel model)
     {
         if (!ModelState.IsValid)
         {

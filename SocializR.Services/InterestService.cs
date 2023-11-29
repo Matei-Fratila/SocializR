@@ -1,6 +1,4 @@
-﻿using SocializR.Entities.DTOs.Interest;
-
-namespace SocializR.Services;
+﻿namespace SocializR.Services;
 
 public class InterestService : BaseService
 {
@@ -14,11 +12,11 @@ public class InterestService : BaseService
         this.currentUser = currentUser;
     }
 
-    public List<InterestVM> GetAllInterests()
+    public List<InterestViewModel> GetAllInterests()
     {
         var interests = UnitOfWork.Interests.Query
             .OrderBy(i => i.Name)
-            .ProjectTo<InterestVM>(mapper.ConfigurationProvider)
+            .ProjectTo<InterestViewModel>(mapper.ConfigurationProvider)
             .ToList();
 
         return interests;
@@ -62,11 +60,11 @@ public class InterestService : BaseService
         return selectedInterests;
     }
 
-    public EditInterestVM GetEditModel(string id)
+    public EditInterestViewModel GetEditModel(string id)
     {
         var model = UnitOfWork.Interests.Query
             .Where(i => i.Id.ToString() == id)
-            .ProjectTo<EditInterestVM>(mapper.ConfigurationProvider)
+            .ProjectTo<EditInterestViewModel>(mapper.ConfigurationProvider)
             .FirstOrDefault();
 
         model.Interests = GetAll();
@@ -99,7 +97,7 @@ public class InterestService : BaseService
         return interests;
     }
 
-    public bool EditInterest(EditInterestVM model)
+    public bool EditInterest(EditInterestViewModel model)
     {
         var interest = UnitOfWork.Interests.Query
             .Where(i => i.Id.ToString() == model.Id)
@@ -117,7 +115,7 @@ public class InterestService : BaseService
         return UnitOfWork.SaveChanges() != 0;
     }
 
-    public bool AddInterest(EditInterestVM model)
+    public bool AddInterest(EditInterestViewModel model)
     {
         var interest = new Interest
         {

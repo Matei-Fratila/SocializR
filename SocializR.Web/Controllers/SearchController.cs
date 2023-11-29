@@ -1,19 +1,11 @@
 ﻿namespace SocializR.Web.Controllers;
 
-public class SearchController : BaseController
+public class SearchController(IMapper _mapper, SearchService _searchService) : BaseController(_mapper)
 {
-    private readonly SearchService searchService;
-
-    public SearchController(IMapper mapper, SearchService searchService)
-        :base(mapper)
-    {
-        this.searchService = searchService;
-    }
-
     [HttpGet]
     public JsonResult Search(int page, string search)
     {
-        var data = searchService.SearchResults(page, 5, search);
+        var data = _searchService.SearchResults(page, 5, search);
 
         return Json(data);
     }

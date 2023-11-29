@@ -1,7 +1,6 @@
 ﻿namespace SocializR.Web.Controllers;
 
 public class AccountController(CountyService _countyService,
-    CityService _cityService,
     IMapper _mapper,
     UserManager<User> _userManager,
     SignInManager<User> _signInManager) : BaseController(_mapper)
@@ -9,7 +8,7 @@ public class AccountController(CountyService _countyService,
     [HttpGet]
     public IActionResult Login(string returnUrl)
     {
-        var model = new LoginVM
+        var model = new LogInViewModel
         {
             ReturnUrl = returnUrl
         };
@@ -19,7 +18,7 @@ public class AccountController(CountyService _countyService,
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginVM model)
+    public async Task<IActionResult> Login(LogInViewModel model)
     {
         //var context = Request;
 
@@ -88,7 +87,7 @@ public class AccountController(CountyService _countyService,
             return InternalServerErrorView();
         }
 
-        var model = new RegisterVM
+        var model = new RegisterViewModel
         {
             Counties = counties
         };
@@ -98,7 +97,7 @@ public class AccountController(CountyService _countyService,
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(RegisterVM model)
+    public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (!ModelState.IsValid)
         {

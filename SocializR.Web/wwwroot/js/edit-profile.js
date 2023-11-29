@@ -21,5 +21,5 @@
         }
     }
 
-    $('#ProfilePhoto').change(handleFileSelect);
+    $('#ProfilePhoto').on('change', handleFileSelect);
 });

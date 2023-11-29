@@ -24,11 +24,21 @@
       ]
     },
     {
-      "library": "jQuery-linkify@4.1.3",
-      "destination": "wwwroot/lib/jQuery-linkify",
+      "provider": "jsdelivr",
+      "library": "linkify-jquery@4.1.3",
+      "destination": "wwwroot/lib/linkify-jquery",
       "files": [
-        "linkify.js",
-        "linkify.min.js"
+        "dist/linkify-jquery.js",
+        "dist/linkify-jquery.min.js"
+      ]
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "linkifyjs@4.1.3",
+      "destination": "wwwroot/lib/linkify-js",
+      "files": [
+        "dist/linkify.js",
+        "dist/linkify.min.js"
       ]
     },
     {

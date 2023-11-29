@@ -1,30 +1,21 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize(Roles = "Administrator")]
-public class CountyController : BaseController
+public class CountyController(CountyService _countyService, 
+    IMapper _mapper) : BaseController(_mapper)
 {
-    private readonly CountyService countyService;
-    private readonly CityService cityService;
-
-    public CountyController(CountyService countyService, CityService cityService, IMapper mapper)
-       : base(mapper)
-    {
-        this.countyService = countyService;
-        this.cityService = cityService;
-    }
-
     [HttpGet]
     public IActionResult Index()
     {
-        var counties = countyService.GetCounties();
-        var model = new CountiesVM { Counties = counties };
+        var counties = _countyService.GetCounties();
+        var model = new CountiesViewModel { Counties = counties };
         return View(model);
     }
 
     [HttpPost]
     public JsonResult Delete(string countyId)
     {
-        var result = countyService.DeleteCounty(countyId);
+        var result = _countyService.DeleteCounty(countyId);
 
         switch (result)
         {
@@ -40,7 +31,7 @@ public class CountyController : BaseController
     [HttpPost]
     public IActionResult Edit(string id, string name, string shortname)
     {
-        var result = countyService.EditCounty(id, name, shortname);
+        var result = _countyService.EditCounty(id, name, shortname);
 
         if (!result)
         {
@@ -53,7 +44,7 @@ public class CountyController : BaseController
     [HttpPost]
     public IActionResult Add(string name, string shortName)
     {
-        var result = countyService.AddCounty(name, shortName);
+        var result = _countyService.AddCounty(name, shortName);
 
         if (!result)
         {

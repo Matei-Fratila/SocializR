@@ -1,43 +1,36 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize]
-public class AlbumController : BaseController
+public class AlbumController(AlbumService _albumService,
+    MediaService _mediaService,
+    IImageStorage _imageStorage,
+    IMapper _mapper) : BaseController(_mapper)
 {
-    private readonly AlbumService albumService;
-    private readonly MediaService mediaService;
-    private readonly IValidationService validationService;
-    private readonly IImageStorage imageStorage;
-
-    public AlbumController(AlbumService albumService, MediaService mediaService, IMapper mapper, IValidationService validationService,
-        IImageStorage imageStorage)
-        : base(mapper)
-    {
-        this.imageStorage = imageStorage;
-        this.validationService = validationService;
-        this.mediaService = mediaService;
-        this.albumService = albumService;
-    }
-
     [HttpGet]
     public IActionResult Index()
     {
-        var model = new AlbumsVM
+        var model = new AlbumsViewModel
         {
-            Albums = albumService.GetAll()
+            Albums = _albumService.GetAll()
         };
+
+        foreach (var album in model.Albums)
+        {
+            album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath);
+        }
 
         return View(model);
     }
 
     [HttpPost]
-    public IActionResult Create(CreateAlbumVM model)
+    public IActionResult Create(CreateAlbumViewModel model)
     {
         if (!ModelState.IsValid)
         {
             RedirectToAction("Index", "Album");
         }
 
-        var result = albumService.Add(model);
+        var result = _albumService.Add(model);
 
         if (!result)
         {
@@ -48,11 +41,11 @@ public class AlbumController : BaseController
     }
 
     [HttpPost]
-    public IActionResult Edit(CreateAlbumVM model)
+    public IActionResult Edit(CreateAlbumViewModel model)
     {
         if (ModelState.IsValid)
         {
-            var result = albumService.Update(model);
+            var result = _albumService.Update(model);
 
             if (!result)
             {
@@ -66,7 +59,7 @@ public class AlbumController : BaseController
     [HttpPost]
     public IActionResult Delete(string id)
     {
-        var isSuccessStatusCode = albumService.Delete(id);
+        var isSuccessStatusCode = _albumService.Delete(id);
 
         return RedirectToAction("Index", "Album");
     }
@@ -77,17 +70,17 @@ public class AlbumController : BaseController
     {
         if (id == null)
         {
-            return imageStorage.UriFor("default-image.jpg");
+            return _imageStorage.UriFor("default-image.jpg");
         }
 
-        var media = mediaService.Get(id);
+        var media = _mediaService.Get(id);
 
-        if (media == null) 
+        if (media == null)
         {
-            return imageStorage.UriFor("default-image.jpg");
+            return _imageStorage.UriFor("default-image.jpg");
         }
 
-        return imageStorage.UriFor(media);
+        return _imageStorage.UriFor(media);
 
     }
 }

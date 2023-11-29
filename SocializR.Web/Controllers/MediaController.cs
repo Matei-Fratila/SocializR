@@ -1,54 +1,35 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize]
-public class MediaController : BaseController
+public class MediaController(IMapper _mapper,
+    AlbumService _albumService,
+    MediaService _mediaService,
+    UserManager<User> _userManager,
+    IImageStorage _imageStorage) : BaseController(_mapper)
 {
-    private readonly UserManager<User> userManager;
-    private readonly SignInManager<User> signInManager;
-    private readonly ProfileService ProfileService;
-    private readonly MediaService mediaService;
-    private readonly AlbumService albumService;
-    private readonly IImageStorage imageStorage;
-    private readonly IHostEnvironment hostingEnvironment;
-
-    public MediaController(CurrentUser currentUser, IMapper mapper, AlbumService albumService,
-        ProfileService ProfileService, MediaService mediaService, UserManager<User> userManager, SignInManager<User> signInManager,
-        IImageStorage imageStorage, IHostEnvironment hostingEnvironment)
-        : base(mapper)
-    {
-        this.hostingEnvironment = hostingEnvironment;
-        this.imageStorage = imageStorage;
-        this.userManager = userManager;
-        this.signInManager = signInManager;
-        this.albumService = albumService;
-        this.ProfileService = ProfileService;
-        this.mediaService = mediaService;
-    }
-
-
     [HttpGet]
     public async Task<IActionResult> Index(string id)
     {
-        var currentUser = await userManager.GetUserAsync(User);
-        var album = albumService.GetEditAlbumVM(id);
+        var currentUser = await _userManager.GetUserAsync(User);
+        var album = _albumService.GetEditAlbumVM(id);
 
         if (album == null)
         {
             return NotFoundView();
         }
 
-        if (album.UserId.ToString() != currentUser.Id.ToString() && await userManager.IsInRoleAsync(currentUser, "Administrator") == false)
+        if (album.UserId.ToString() != currentUser.Id.ToString() && await _userManager.IsInRoleAsync(currentUser, "Administrator") == false)
         {
             return ForbidView();
         }
 
-        return View(new ImagesVM { Album = album });
+        return View(new ImagesViewModel { Album = album });
     }
 
     [HttpPost]
-    public IActionResult Edit(EditedMediaModel model)
+    public IActionResult Edit(EditedMediaViewModel model)
     {
-        mediaService.Update(model);
+        _mediaService.Update(model);
 
         return Ok();
     }
@@ -56,7 +37,7 @@ public class MediaController : BaseController
     [HttpPost]
     public IActionResult Delete(string id)
     {
-        var result = mediaService.Delete(id);
+        var result = _mediaService.Delete(id);
 
         if (result == false)
         {
@@ -75,19 +56,19 @@ public class MediaController : BaseController
     [HttpGet]
     public ActionResult GetImageWidget()
     {
-        return PartialView("Views/Media/_Media.cshtml", new MediaModel() { Id = null, Caption = "" });
+        return PartialView("Views/Media/_Media.cshtml", new MediaViewModel() { Id = null, Caption = "" });
     }
 
     [HttpGet]
     public ActionResult GetVideoWidget()
     {
-        return PartialView("Views/Media/_Media.cshtml", new MediaModel() { Id = null, Caption = "" });
+        return PartialView("Views/Media/_Media.cshtml", new MediaViewModel() { Id = null, Caption = "" });
     }
 
     [HttpGet]
     public IActionResult GetGallery(string id)
     {
-        var model = mediaService.GetAll(id);
+        var model = _mediaService.GetAll(id);
         return PartialView("Views/Media/_Gallery.cshtml", model);
     }
 
@@ -106,9 +87,9 @@ public class MediaController : BaseController
                 {
                     try
                     {
-                        var imageId = await imageStorage.SaveImage(file.OpenReadStream(), type[1]);
+                        var imageId = await _imageStorage.SaveImage(file.OpenReadStream(), type[1]);
 
-                        var result = mediaService.Add(id, imageId, type[0] == "image" ? MediaTypes.Image : MediaTypes.Video);
+                        var result = _mediaService.Add(id, imageId, type[0] == "image" ? MediaTypes.Image : MediaTypes.Video);
 
                         if (result == null)
                         {
@@ -117,9 +98,9 @@ public class MediaController : BaseController
 
                         ids.Add(result.Id.ToString());
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
-                        
+
                     }
 
                 }
@@ -139,23 +120,23 @@ public class MediaController : BaseController
 
         if (id == null)
         {
-            return imageStorage.UriFor("default-image.jpg");
+            return _imageStorage.UriFor("default-image.jpg");
         }
-        var currentUser = await userManager.GetUserAsync(User);
+        var currentUser = await _userManager.GetUserAsync(User);
 
-        if (mediaService.IsAllowed(await userManager.IsInRoleAsync(currentUser, "Administrator"), id) == false)
+        if (_mediaService.IsAllowed(await _userManager.IsInRoleAsync(currentUser, "Administrator"), id) == false)
         {
-            return imageStorage.UriFor("default-image.jpg");
+            return _imageStorage.UriFor("default-image.jpg");
         }
 
-        var media = mediaService.Get(id);
+        var media = _mediaService.Get(id);
 
         if (media == null)
         {
-            return imageStorage.UriFor("default-image.jpg");
+            return _imageStorage.UriFor("default-image.jpg");
         }
 
-        var path = imageStorage.UriFor(media);
+        var path = _imageStorage.UriFor(media);
 
         return path;
 

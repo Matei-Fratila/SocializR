@@ -19,17 +19,17 @@ public class FriendshipService : BaseService
             .Count();
     }
 
-    public List<UserVM> GetAllFriends()
+    public List<UserViewModel> GetAllFriends()
     {
         var friends = UnitOfWork.Friendships.Query
             .Where(u => u.FirstUserId == currentUser.Id && u.SecondUser.IsDeleted == false)
-            .ProjectTo<UserVM>(mapper.ConfigurationProvider)
+            .ProjectTo<UserViewModel>(mapper.ConfigurationProvider)
             .ToList();
 
         return friends;
     }
 
-    public List<UserVM> GetFriends(int pageIndex, int pageSize, out int totalFriendsCount)
+    public List<UserViewModel> GetFriends(int pageIndex, int pageSize, out int totalFriendsCount)
     {
         totalFriendsCount = UnitOfWork.Friendships.Query
             .Include(u => u.SecondUser)
@@ -37,7 +37,7 @@ public class FriendshipService : BaseService
 
         return UnitOfWork.Friendships.Query
             .Where(u => u.FirstUserId == currentUser.Id && u.SecondUser.IsDeleted == false)
-            .ProjectTo<UserVM>(mapper.ConfigurationProvider)
+            .ProjectTo<UserViewModel>(mapper.ConfigurationProvider)
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
             .ToList();

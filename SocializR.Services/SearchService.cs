@@ -12,14 +12,14 @@ public class SearchService : BaseService
         this.currentUser = currentUser;
     }
 
-    public SearchVM SearchResults(int pageIndex, int pageSize, string keyword)
+    public SearchViewModel SearchResults(int pageIndex, int pageSize, string keyword)
     {
-        var model = new SearchVM
+        var model = new SearchViewModel
         {
             Results = UnitOfWork.Users.Query
                         .Where(u => u.IsDeleted == false && ((u.FirstName + " " + u.LastName).Contains(keyword) ||
                         (u.LastName + " " + u.FirstName).Contains(keyword)))
-                        .ProjectTo<SearchUserVM>(mapper.ConfigurationProvider)
+                        .ProjectTo<SearchUserViewModel>(mapper.ConfigurationProvider)
                         .Skip(pageSize * (pageIndex - 1))
                         .Take(pageSize)
                         .ToList(),

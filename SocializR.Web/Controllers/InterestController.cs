@@ -1,20 +1,13 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize(Roles = "Administrator")]
-public class InterestController : BaseController
+public class InterestController(IMapper _mapper, InterestService _interestService) 
+    : BaseController(_mapper)
 {
-    private readonly InterestService interestService;
-
-    public InterestController(IMapper mapper, InterestService interestService)
-        : base(mapper)
-    {
-        this.interestService = interestService;
-    }
-
     [HttpGet]
     public IActionResult Index()
     {
-        var interests = interestService.GetAllInterests();
+        var interests = _interestService.GetAllInterests();
 
         return View(interests);
     }
@@ -22,21 +15,21 @@ public class InterestController : BaseController
     [HttpGet]
     public IActionResult Edit(string id)
     {
-        var model = interestService.GetEditModel(id);
+        var model = _interestService.GetEditModel(id);
 
         return View(model);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(EditInterestVM model)
+    public IActionResult Edit(EditInterestViewModel model)
     {
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        var result = interestService.EditInterest(model);
+        var result = _interestService.EditInterest(model);
 
         if (!result)
         {
@@ -50,9 +43,9 @@ public class InterestController : BaseController
     [HttpGet]
     public IActionResult Create()
     {
-        var model = new EditInterestVM()
+        var model = new EditInterestViewModel()
         {
-            Interests = interestService.GetAll()
+            Interests = _interestService.GetAll()
         };
 
         return View(model);
@@ -60,14 +53,14 @@ public class InterestController : BaseController
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(EditInterestVM model)
+    public IActionResult Create(EditInterestViewModel model)
     {
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        interestService.AddInterest(model);
+        _interestService.AddInterest(model);
 
         return RedirectToAction("Index", "Interest");
     }
@@ -75,7 +68,7 @@ public class InterestController : BaseController
     [HttpPost]
     public IActionResult Delete(string id)
     {
-        var result = interestService.DeleteInterest(id);
+        var result = _interestService.DeleteInterest(id);
 
         if (!result)
         {

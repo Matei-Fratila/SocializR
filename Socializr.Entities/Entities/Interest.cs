@@ -1,4 +1,4 @@
-﻿namespace SocializR.Entities;
+﻿namespace SocializR.Models.Entities;
 
 public partial class Interest : IEntity
 {

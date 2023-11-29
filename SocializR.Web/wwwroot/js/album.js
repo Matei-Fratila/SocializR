@@ -18,7 +18,7 @@
         $(location).attr('href', 'Media/Index');
     });
 
-    $('.show-gallery').click(function (e) {
+    $('.show-gallery').on('click', function (e) {
         var id = $(e.target).closest('.album-container').find('.album-id').val();
         var name = $(e.target).closest('.album-container').find('.album-name').val();
 
@@ -26,7 +26,7 @@
             $('#myModal').find('#modal-gallery').empty();
             $('#myModal').find('#modal-gallery').append(response);
             $('#myModal').find('.modal-title').text(name);
-            $('#myModal').modal();
+            $('#myModal').modal('show');
         }).then(function () {
             $('.search-for-link').each(function (index, elem) {
                 var text = $(elem).text().trim();
