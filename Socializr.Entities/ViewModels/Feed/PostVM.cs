@@ -1,6 +1,4 @@
-﻿using SocializR.Models.ViewModels.Media;
-
-namespace SocializR.Models.ViewModels.Feed;
+﻿namespace SocializR.Models.ViewModels.Feed;
 
 public class PostVM
 {

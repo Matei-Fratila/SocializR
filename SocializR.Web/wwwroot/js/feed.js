@@ -50,7 +50,6 @@ jQuery(function ($) {
         LikeOrUnlike($(elems).find('.like'));
     }
 
-    //Puts delete buttons on new elements or at page refresh
     $('#posts-container').on('click', '.delete-post-btn', function deletePost(ev) {
 
         var result = confirm("Are you sure you want to delete this post?");
@@ -115,7 +114,7 @@ jQuery(function ($) {
             }
         });
 
-        $('.delete-comment-btn').click(deleteCommentHandler);
+        $('.delete-comment-btn').on('click', deleteCommentHandler);
 
     }());
 
@@ -127,7 +126,7 @@ jQuery(function ($) {
 
         });
 
-        $(elems).find('.delete-comment-btn').click(deleteCommentHandler);
+        $(elems).find('.delete-comment-btn').on('click', deleteCommentHandler);
     }
 
     (function PutDeletePostButtons() {
@@ -149,7 +148,7 @@ jQuery(function ($) {
     }
 
     //Infinite Scroll
-    $(window).scroll(function () {
+    $(window).trigger('scroll', function () {
         if ($(window).scrollTop() === $(document).height() - $(window).height()) {
 
             $.ajax({
@@ -348,7 +347,7 @@ jQuery(function ($) {
         }
     });
 
-    $('.more-comments').click(function (elem) {
+    $('.more-comments').on('click', function (elem) {
         var container = $(elem.target).closest('.post-footer').find('.comments-container');
         var page = $(elem.target).closest('.post-footer').find('.comments-page').val();
         var postId = $(elem.target).closest('.post-footer').find('.post-id').val();

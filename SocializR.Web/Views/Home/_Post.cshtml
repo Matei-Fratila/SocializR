@@ -1,21 +1,88 @@
 ﻿@inject UserManager<User> userManager
 @model PostVM
 
-@section Scripts{
+@section Scripts {
 
 }
 
-<div class="container post-container">
+<div class="container post-container mt-5">
     <div class="row">
         <div class="col-sm-1">
-            <a asp-controller="Profile" asp-action="Get" asp-route-id="@Model.UserId">
-                <img class="img-responsive img-circle img-thumbnail user-photo" src="@Model.UserPhoto">
+            <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.UserId">
+                <img class="rounded-circle shadow img-thumbnail user-photo" src="~/images/noprofile.png">
             </a>
         </div>
-        <div class="col-sm-7">
-            <div class="panel panel-default">
+        <div class="col-sm-8">
+            <div class="card shadow">
+                <div class="card-header">
+                    <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.UserId" class="text-bold">@Model.FirstName @Model.LastName</a>
+                    @if (Model.IsCurrentUserPost)
+                    {
+                        <a class="float-right ms-2"><i class="fa fa-trash"></i></a>
+                    }
+                    <span class="float-right">2 days ago</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Title</h5>
+                    <p class="card-text pre search-for-link">@Model.Body</p>
+                    <div class="images">
+                        @if (Model.Media != null)
+                        {
+                            foreach (var elem in Model.Media)
+                            {
+                                if (elem.Type == MediaTypes.Image)
+                                {
+                                    @await Html.PartialAsync("_Image", elem)
+                                }
+                                else if (elem.Type == MediaTypes.Video)
+                                {
+                                    @await Html.PartialAsync("_Video", elem)
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="card-footer text-muted post-footer">
+                    <input type="hidden" value=1 class="comments-page" />
+                    <input asp-for="@Model.Id" value="@Model.Id" name="@Model.Id" type="hidden" class="post-id" />
+                    <input asp-for="@Model.IsLikedByCurrentUser" value="@Model.IsLikedByCurrentUser" name="@Model.IsLikedByCurrentUser" type="hidden" class="is-liked" />
+                    <button class="btn like" title="heart post" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-heart"></i></button>
+                    <button class="btn float-right see-comments more-comments" title="see more comments" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-plus"></i><span class="nr-of-likes">More comments</span></button>
+                    <button class="btn float-right see-comments" title="nr. of comments" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-comment"></i><span class="nr-of-comments">@Model.NumberOfComments Comments</span></button>
+                    <button class="btn float-right see-likes" title="see likes" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-heart"></i><span class="nr-of-likes">@Model.NumberOfLikes Hearts</span></button>
+                    <div class="comments-container">
+                        @if (Model.Comments != null)
+                        {
+                            var nrOfComments = Model.Comments.Count - 1;
+                            for (var i = 0; i <= nrOfComments; i++)
+                            {
+                                @await Html.PartialAsync("_Comment", Model.Comments[nrOfComments - i])
+                            }
+                        }
+
+                        <div class="fresh-comments-container mt-3"></div>
+
+                        <div class="insert-container">
+                            <div class="row">
+                                <div class="col-sm-1">
+                                    <img class="img-responsive rounded-circle img-thumbnail small-user-photo" src="@Url.Action("RenderProfilePicture", "Profile", new { id = userManager.GetUserId(User) })">
+                                </div>
+                                <div class="col-sm-11 no-padding-left">
+                                    <input asp-for="@Model.Id" value="@Model.Id" name="@Model.Id" type="hidden" class="post-id" />
+                                    <textarea class="comment-body textarea-padding col-sm-11 text" placeholder="Write a comment..."></textarea>
+                                    <i class="fa fa-chevron-left btn float-right comment col-sm-1"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+@*             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a asp-controller="Profile" asp-action="Get" asp-route-id="@Model.UserId" class="text-bold">@Model.FirstName @Model.LastName</a>
+                    <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.UserId" class="text-bold">@Model.FirstName @Model.LastName</a>
                     <span class="search-for-link">@Model.Title</span>
                     <span class="delete-post-container btn-group-xs">
                         <input asp-for="@Model.IsCurrentUserPost" value="@Model.IsCurrentUserPost" name="@Model.IsCurrentUserPost" type="hidden" class="is-current-user-post" />
@@ -34,11 +101,11 @@
                         {
                             if (elem.Type == MediaTypes.Image)
                             {
-                                @await Html.PartialAsync("_Image", elem);
+                                @await Html.PartialAsync("_Image", elem)
                             }
                             else if (elem.Type == MediaTypes.Video)
                             {
-                                @await Html.PartialAsync("_Video", elem);
+                                @await Html.PartialAsync("_Video", elem)
                             }
                         }
                     }
@@ -55,17 +122,17 @@
                     <div class="comments-container">
                         @if (Model.Comments != null)
                         {
-                            var nrOfComments = Model.Comments.Count-1;
-                            for (var i = 0; i <= nrOfComments; i++) 
+                            var nrOfComments = Model.Comments.Count - 1;
+                            for (var i = 0; i <= nrOfComments; i++)
                             {
-                                @await Html.PartialAsync("_Comment", Model.Comments[nrOfComments - i]);
+                                @await Html.PartialAsync("_Comment", Model.Comments[nrOfComments - i])
                             }
                         }
                         <div class="fresh-comments-container"></div>
                         <div class="insert-container">
                             <div class="row">
                                 <div class="col-sm-2">
-                                    <img class="img-responsive img-circle img-thumbnail small-user-photo" src="@Url.Action("RenderProfilePicture", "Profile", new { id = userManager.GetUserId(User) })">
+                                    <img class="img-responsive rounded-circle img-thumbnail small-user-photo" src="@Url.Action("RenderProfilePicture", "Profile", new { id = userManager.GetUserId(User) })">
                                 </div>
                                 <div class="col-sm-10 no-padding-left">
                                     <input asp-for="@Model.Id" value="@Model.Id" name="@Model.Id" type="hidden" class="post-id" />
@@ -76,7 +143,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> *@
+
         </div>
     </div>
 </div>

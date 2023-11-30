@@ -23,7 +23,7 @@
 
 @await Html.PartialAsync("_Create", Model.NewAlbum)
 
-<div class="albums-container row">
+<div class="albums-container row row-cols-1 row-cols-md-3 g-4">
     @foreach (var album in Model.Albums)
     {
         @await Html.PartialAsync("_Album", album);

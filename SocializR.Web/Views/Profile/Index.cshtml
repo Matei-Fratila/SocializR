@@ -79,10 +79,18 @@
                         default:
                             break;
                     }
+                    @if (Model.Id.ToString() == UserManager.GetUserId(User))
+                    {
+                        <div class="col-sm-6">
+                            <a class="btn btn-primary" asp-controller="Profile" asp-action="Edit" asp-route-id="@Model.Id">
+                                <i class="fa fa-pencil"></i> Edit profile
+                            </a>
+                        </div>
+                    }
                 </div>
             </div>
             <div class="col-sm-5">
-                <img class="rounded-circle shadow avatar-image" alt="Avatar" src="@Url.Content(Model.FilePath)">
+                <img class="rounded-circle shadow avatar-image img-thumbnail shadow-lg" alt="Avatar" src="@Url.Content(Model.FilePath)">
             </div>
         </div>
 
@@ -162,7 +170,7 @@
             <hr />
             @if (Model.IsPrivate == false || Model.Id.ToString() == UserManager.GetUserId(User) || (Model.IsPrivate == true && Model.RelationToCurrentUser == RelationTypes.Friends))
             {
-                <div class="albums-container row">
+                <div class="albums-container row row-cols-1 row-cols-md-2 g-4">
                     @foreach (var album in Model.Albums)
                     {
                         @await Html.PartialAsync("../Album/_Album", album)

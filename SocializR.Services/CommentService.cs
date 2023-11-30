@@ -1,17 +1,9 @@
 ﻿namespace SocializR.Services;
 
-public class CommentService : BaseService
+public class CommentService(CurrentUser _currentUser,
+    SocializRUnitOfWork _unitOfWork,
+    IMapper _mapper) : BaseService(_unitOfWork)
 {
-    private readonly IMapper mapper;
-    private readonly CurrentUser currentUser;
-
-    public CommentService(CurrentUser currentUser, SocializRUnitOfWork unitOfWork, IMapper mapper)
-        : base(unitOfWork)
-    {
-        this.mapper = mapper;
-        this.currentUser = currentUser;
-    }
-
     public string AddComment(Comment comment)
     {
         UnitOfWork.Comments.Add(comment);
@@ -22,15 +14,14 @@ public class CommentService : BaseService
     }
 
     public List<CommentViewModel> GetComments(Guid postId, int commentsPerPage, int page)
-    {
-        return UnitOfWork.Comments.Query
+        => UnitOfWork.Comments.Query
             .Where(c => c.PostId == postId)
             .OrderByDescending(c => c.CreatedOn)
             .Skip(page * commentsPerPage)
             .Take(commentsPerPage)
-            .ProjectTo<CommentViewModel>(mapper.ConfigurationProvider)
+            .ProjectTo<CommentViewModel>(_mapper.ConfigurationProvider)
             .ToList();
-    }
+
 
     public bool DeleteComment(string commentId)
     {
@@ -53,9 +44,11 @@ public class CommentService : BaseService
         return new CommentViewModel
         {
             Body = body,
-            FirstName = currentUser.FirstName,
-            LastName = currentUser.LastName,
-            UserPhoto = UnitOfWork.Users.Query.Where(u => u.Id == currentUser.Id).Select(u => u.ProfilePhotoId).FirstOrDefault().ToString(),
+            FirstName = _currentUser.FirstName,
+            LastName = _currentUser.LastName,
+            UserPhoto = UnitOfWork.Users.Query
+                .Where(u => u.Id == _currentUser.Id)
+                .Select(u => u.ProfilePhotoId).FirstOrDefault().ToString(),
             CreatedOn = DateTime.Now
         };
     }

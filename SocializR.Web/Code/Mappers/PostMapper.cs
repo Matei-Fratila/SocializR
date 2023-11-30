@@ -9,12 +9,12 @@ public class PostMapper : Profile
         CreateMap<Like, LikeViewModel>()
             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.User.FirstName))
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.User.LastName))
-            .ForMember(dest => dest.UserPhoto, opt => opt.MapFrom(src => src.User.ProfilePhotoId));
+            .ForMember(dest => dest.UserPhoto, opt => opt.MapFrom(src => src.User.ProfilePhoto.FilePath));
 
         CreateMap<Comment, CommentViewModel>()
             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.User.FirstName))
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.User.LastName))
-            .ForMember(dest => dest.UserPhoto, opt => opt.MapFrom(src => src.User.ProfilePhotoId));
+            .ForMember(dest => dest.UserPhoto, opt => opt.MapFrom(src => src.User.ProfilePhoto.FilePath));
 
         CreateMap<Post, PostVM>()
             .ForMember(dest => dest.NumberOfLikes, opt => opt.MapFrom(src => src.Likes.Count))

@@ -22,8 +22,7 @@
                         <ul class="nav flex-column">
                             <li>
                                 <a asp-controller="Profile" asp-action="Index" asp-route-id=@UserManager.GetUserId(User) aria-current="page">
-                                    <img class="rounded-circle shadow" id="avatar-photo" src="~/images/noprofile.png" />
-                                    @* @Url.Action("RenderProfilePicture", "Profile", new { id=UserManager.GetUserId(User)}) *@
+                                    <img class="rounded-circle shadow img-thumbnail user-photo" id="avatar-photo" src="~/images/noprofile.png" />
                                     @CurrentUser.FirstName @CurrentUser.LastName
                                 </a>
                             </li>

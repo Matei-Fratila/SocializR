@@ -10,6 +10,7 @@ public class ProfileController(UserManager<User> _userManager,
     AlbumService _albumService,
     FriendshipService _friendshipService,
     PostService _postService,
+    IOptionsMonitor<AppSettings> _configuration,
     IHostEnvironment _hostingEnvironment,
     IImageStorage _imageStorage,
     IMapper _mapper) : BaseController(_mapper)
@@ -28,10 +29,10 @@ public class ProfileController(UserManager<User> _userManager,
 
         model = _profileService.GetViewProfileVM(id);
 
-        model.FilePath = _imageStorage.UriFor(model.FilePath);
+        model.FilePath = _imageStorage.UriFor(model.FilePath ?? _configuration.CurrentValue.DefaultProfilePicture);
         foreach (var album in model.Albums)
         {
-            album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath);
+            album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath ?? _configuration.CurrentValue.DefaultAlbumCover);
         }
 
         if (model == null)
@@ -140,7 +141,7 @@ public class ProfileController(UserManager<User> _userManager,
 
         if (file != null && result)
         {
-            var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, @"wwwroot\images\uploads");
+            var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, _configuration.CurrentValue.FileUploadLocation);
             var type = file.ContentType.ToString().Split('/');
 
             if (file.Length > 0)

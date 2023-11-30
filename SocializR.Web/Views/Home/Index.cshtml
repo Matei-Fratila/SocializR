@@ -4,11 +4,11 @@
     ViewData["Title"] = "Home Page";
 }
 
-@section Styles{
+@section Styles {
     <link href="~/css/feed.css" rel="stylesheet" />
 }
 
-@section Scripts{
+@section Scripts {
     <script src="~/js/feed.js"></script>
 }
 
@@ -16,36 +16,44 @@
     <div class="row">
         <div class="col-sm-1">
         </div>
-        <div class="col-sm-7">
-            <div class="widget-area blank">
-                <h3>
+        <div class="col-sm-8 mt-lg-5">
+            <div class="card">
+                <h5 class="card-header">
                     <i class="fa fa-pencil"></i>
-                    Write Post
-                </h3>
-                <div class="status-upload">
-                    <form id="post-form" class="border shadow">
-                        @Html.AntiForgeryToken()
-                        <input id="post-title" class="col-sm-12 textarea-padding" placeholder="Give your post a title" />
-                        <textarea id="post-body" class="textarea-padding" placeholder="What are you doing right now?"></textarea>
-
-                        <div class="col-sm-2 small-margin">
-                            <span class="btn btn-primary btn-file">
-                                <i class="fa fa-camera"></i>
-                                add photos
-                                <input title="add photos" multiple data-toggle="tooltip" data-placement="bottom" type="file" accept="image/*, video/*" text="add photos" id="files" />
-                            </span>
-                        </div>
-
-                        <div class="col-sm-2 small-margin float-right">
-                            <button id="share" type="button" class="btn btn-success">
-                                <i class="fa fa-ok"></i>
-                                Share
-                            </button>
-                        </div>
-                    </form>
+                    What's on your mind?
+                </h5>
+                <div class="card-body">
+                    <h5 class="card-title">Special title treatment</h5>
+                    <p class="card-text">
+                        <textarea id="post-body" class="textarea-padding card-text" placeholder="What are you doing right now?"></textarea>
+                    </p>
+                    <a href="#" class="btn btn-primary"><i class="fa fa-share"></i> Share</a>
+                    <a href="#" class="btn btn-success"><i class="fa fa-camera"></i></a>
                 </div>
-                <div id="media" class="border">
 
+                @*                 <div class="status-upload card">
+                <form id="post-form" class="border shadow">
+                @Html.AntiForgeryToken()
+                <input id="post-title" class="col-sm-12 textarea-padding" placeholder="Give your post a title" />
+                <textarea id="post-body" class="textarea-padding" placeholder="What are you doing right now?"></textarea>
+
+                <div class="row">
+                <div>
+                <span class="btn btn-primary btn-file">
+                <i class="fa fa-camera"></i> Add photos
+                <input title="Add photos" multiple data-toggle="tooltip" data-placement="bottom" type="file" accept="image/*, video/*" text="add photos" id="files" />
+                </span>
+                </div>
+
+                <div class="float-right">
+                <button id="share" type="button" class="btn btn-success">
+                <i class="fa fa-share"></i> Share
+                </button>
+                </div>
+                </div>
+                </form>
+                </div> *@
+                <div id="media" class="border">
                 </div>
             </div>
         </div>
@@ -55,6 +63,7 @@
 <div id="posts-container">
     @foreach (var post in Model.Posts)
     {
-        @await Html.PartialAsync("_Post", post);
+        @await Html.PartialAsync("_Post", post)
+        ;
     }
 </div>

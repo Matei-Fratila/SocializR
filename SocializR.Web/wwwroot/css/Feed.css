@@ -2,19 +2,13 @@
     width: 330px;
 }
 
-.user-photo {
-    width: 68px !important;
-    height: 68px !important;
-    object-fit: cover;
-}
-
 .btn:hover {
     color:steelblue;
 }
 
-.small-margin {
+/*.small-margin {
     margin:10px 15px;
-}
+}*/
 
 .no-padding-left {
     padding-left:0px;
@@ -120,7 +114,7 @@ input {
     border: 1px solid #ddd;
 }
 
-.btn-file input[type=file] {
+/*.btn-file input[type=file] {
     position: absolute;
     top: 0;
     right: 0;
@@ -242,4 +236,4 @@ input {
 
 .status-upload form button > i {
     margin-right: 7px;
-}
+}*/

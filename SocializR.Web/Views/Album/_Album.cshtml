@@ -4,7 +4,20 @@
     ViewData["Title"] = "ViewAlbum";
 }
 
-<div class="col-sm-6 album-container">
+<div class="col">
+    <div class="card shadow">
+        <img src="@Url.Content(Model.CoverFilePath)" class="card-img-top">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Name</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">Last updated 3 mins ago</small>
+        </div>
+    </div>
+</div>
+
+@* <div class="col-sm-6 album-container">
     <input value="@Model.Id" class="album-id" type="hidden" />
     <input value="@Model.Name" class="album-name" type="hidden" />
     <figure class="media-body">
@@ -27,8 +40,8 @@
             </div>
         </div>
     </figure>
-
-    @*<div class="modal fade gallery-modal" role="dialog">
+</div> *@
+@*     <div class="modal fade gallery-modal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -61,7 +74,4 @@
                 </div>
             </div>
         </div>
-    </div>*@
-</div>
-
-@*<script src="~/lib/jquery/dist/jquery.js"></script>*@
+    </div> *@

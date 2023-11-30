@@ -1,4 +1,7 @@
-﻿namespace SocializR.Web.Controllers;
+﻿using Common.Interfaces;
+using System.Web;
+
+namespace SocializR.Web.Controllers;
 
 [Authorize]
 public class HomeController(IOptionsMonitor<AppSettings> _configuration,
@@ -8,13 +11,18 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     MediaService _mediaService,
     IHostEnvironment _hostingEnvironment,
     UserManager<User> _userManager,
-    HtmlEncoder _htmlEncoder,
-    CommentService _commentService) : BaseController(_mapper)
+    CommentService _commentService,
+    IImageStorage _imageStorage) : BaseController(_mapper)
 {
     [HttpGet]
     public IActionResult Index()
     {
         var model = _feedService.GetNextPosts(0, _configuration.CurrentValue.PostsPerPage, _configuration.CurrentValue.CommentsPerPage);
+
+        foreach (var comment in model.Posts.SelectMany(p => p.Comments))
+        {
+            comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _configuration.CurrentValue.DefaultProfilePicture);
+        }
 
         return View(model);
     }
@@ -22,15 +30,25 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     [HttpGet]
     public JsonResult NextPosts(int page)
     {
-        var posts = _feedService.GetNextPosts(page, _configuration.CurrentValue.PostsPerPage, _configuration.CurrentValue.PostsPerPage);
+        var model = _feedService.GetNextPosts(page, _configuration.CurrentValue.PostsPerPage, _configuration.CurrentValue.PostsPerPage);
 
-        return Json(posts);
+        foreach (var comment in model.Posts.SelectMany(p => p.Comments))
+        {
+            comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _configuration.CurrentValue.DefaultProfilePicture);
+        }
+
+        return Json(model);
     }
 
     [HttpGet]
     public JsonResult NextComments(int page, Guid postId)
     {
         var comments = _commentService.GetComments(postId, _configuration.CurrentValue.CommentsPerPage, page);
+
+        foreach (var comment in comments)
+        {
+            comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _configuration.CurrentValue.DefaultProfilePicture);
+        }
 
         return Json(comments);
     }
@@ -39,7 +57,7 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     public async Task<IActionResult> AddPost(AddPostViewModel model)
     {
         var media = new List<Media>();
-        var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, @"images\uploads");
+        var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, _configuration.CurrentValue.FileUploadLocation);
         if (model.Media != null)
         {
             foreach (var file in model.Media)
@@ -63,7 +81,7 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
             }
         }
 
-        var result = _feedService.AddPost(_userManager.GetUserId(User), _htmlEncoder.Encode(model.Title), _htmlEncoder.Encode(model.Body), media);
+        var result = _feedService.AddPost(_userManager.GetUserId(User), model.Title, model.Body, media);
 
         if (!result)
         {
@@ -103,7 +121,7 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     [HttpPost]
     public JsonResult AddComment([FromBody] AddCommentViewModel comment)
     {
-        var id = _feedService.AddComment(_userManager.GetUserId(User), _htmlEncoder.Encode(comment.Body), comment.PostId);
+        var id = _feedService.AddComment(_userManager.GetUserId(User), HttpUtility.HtmlEncode(comment.Body), comment.PostId);
 
         return Json(new { id });
     }

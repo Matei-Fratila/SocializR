@@ -10,7 +10,7 @@
             return repo.text;
         }
 
-        var markup = '<span><img src=' + 'Profile/RenderProfilePicture?id=' + repo.id + ' class="img-responsive img-circle img-thumbnail small-user-photo" /> ' + repo.text + '</span>';
+        var markup = '<span><img src=' + 'Profile/RenderProfilePicture?id=' + repo.id + ' class="rounded-circle img-thumbnail small-user-photo" /> ' + repo.text + '</span>';
 
         return markup;
     }

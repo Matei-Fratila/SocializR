@@ -2,6 +2,12 @@
     color: dimgray;
 }
 
+.user-photo {
+    width: 68px !important;
+    height: 68px !important;
+    object-fit: cover;
+}
+
 hr {
     height: 2px;
     background: black;
@@ -76,11 +82,6 @@ h3 {
     font-weight: bold;
 }
 
-.img-thumbnail {
-    border: none;
-    background-color: inherit;
-}
-
 .small-user-photo {
     width: 50px !important;
     height: 50px !important;
@@ -152,11 +153,6 @@ li {
     object-fit: cover;
 }
 
-#avatar-photo {
-    width: 60px !important;
-    height: 60px !important;
-}
-
 nav {
     background-color: steelblue;
     border-bottom: 3px gray;
@@ -168,6 +164,11 @@ nav a {
     text-decoration: none;
     font-weight: 600;
     font-size: large;
+}
+
+a{
+    color: dimgray;
+    text-decoration: none;
 }
 
 #UserName {

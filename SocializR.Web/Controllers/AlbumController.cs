@@ -4,7 +4,8 @@
 public class AlbumController(AlbumService _albumService,
     MediaService _mediaService,
     IImageStorage _imageStorage,
-    IMapper _mapper) : BaseController(_mapper)
+    IMapper _mapper,
+    IOptionsMonitor<AppSettings> _configuration) : BaseController(_mapper)
 {
     [HttpGet]
     public IActionResult Index()
@@ -16,7 +17,7 @@ public class AlbumController(AlbumService _albumService,
 
         foreach (var album in model.Albums)
         {
-            album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath);
+            album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath ?? _configuration.CurrentValue.DefaultAlbumCover);
         }
 
         return View(model);

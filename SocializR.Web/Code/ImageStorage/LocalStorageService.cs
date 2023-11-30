@@ -1,17 +1,11 @@
 ﻿namespace SocializR.Services.MediaServices;
 
-public class LocalStorageService : IImageStorage
+public class LocalStorageService(IHostEnvironment _hostingEnvironment,
+    IOptionsMonitor<AppSettings> _configuration) : IImageStorage
 {
-    private readonly IHostEnvironment hostingEnvironment;
-
-    public LocalStorageService(IHostEnvironment hostingEnvironment)
-    {
-        this.hostingEnvironment = hostingEnvironment;
-    }
-
     public async Task<string> SaveImage(Stream imageStream, string type)
     {
-        var basePath = Path.Combine(hostingEnvironment.ContentRootPath, @"wwwroot\images\uploads");
+        var basePath = Path.Combine(_hostingEnvironment.ContentRootPath, _configuration.CurrentValue.FileUploadLocation);
         var name = Guid.NewGuid().ToString() + "." + type;
         var filePath = Path.Combine(basePath, name);
 
@@ -25,6 +19,6 @@ public class LocalStorageService : IImageStorage
 
     public string UriFor(string imageId)
     {
-        return @$"~/images/uploads/{imageId}";
+        return Path.Combine(_configuration.CurrentValue.FileUploadLocation, imageId);
     }
 }
