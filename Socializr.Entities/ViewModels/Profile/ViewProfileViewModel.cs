@@ -1,6 +1,4 @@
-﻿using SocializR.Models.ViewModels.Album;
-
-namespace SocializR.Models.ViewModels.Profile;
+﻿namespace SocializR.Models.ViewModels.Profile;
 
 public class ViewProfileViewModel
 {
@@ -13,6 +11,14 @@ public class ViewProfileViewModel
 
     [Display(Name = "Last Name")]
     public string LastName { get; set; }
+
+    public string DisplayName
+    {
+        get
+        {
+            return $"{FirstName} {LastName}";
+        }
+    }
 
     public int MutualFriends { get; set; }
 
@@ -33,4 +39,12 @@ public class ViewProfileViewModel
     public List<AlbumViewModel> Albums { get; set; }
 
     public List<Guid> Interests { get; set; }
+
+    public int NrOfFriends { get; set; }
+
+    public int NrOfPhotos { get; set; }
+
+    public int NrOfPosts { get; set; }
+
+    public string Description { get; set; }
 }

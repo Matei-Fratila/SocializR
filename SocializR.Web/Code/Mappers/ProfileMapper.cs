@@ -7,7 +7,7 @@ public class ProfileMapper : Profile
         CreateMap<User, ProfileViewModel>()
             .ForMember(p => p.CountyId, opt => opt.MapFrom(u => u.City.CountyId))
             .ForMember(p => p.ProfilePhoto, opt => opt.Ignore())
-            .ForMember(p=>p.FilePath, opt =>opt.MapFrom(u=>u.ProfilePhoto.FilePath));
+            .ForMember(p => p.FilePath, opt => opt.MapFrom(u => u.ProfilePhoto.FilePath));
 
         CreateMap<Guid, UserInterest>()
             .ForMember(dest => dest.InterestId, opt => opt.MapFrom(src => src));

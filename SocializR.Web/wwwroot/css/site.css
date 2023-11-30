@@ -1,12 +1,21 @@
-﻿.form-control-dark {
+﻿body {
+    color: dimgray;
+}
+
+hr {
+    height: 2px;
+    background: black;
+}
+
+.form-control-dark {
     color: #fff;
     background-color: rgba(255, 255, 255, .1);
     border-color: rgba(255, 255, 255, .1);
 }
 
-.avatar-image{
-    height: 10vw;
-    width: 10vw;
+.avatar-image {
+    height: 12vw;
+    width: 12vw;
     object-fit: contain;
 }
 
@@ -14,16 +23,12 @@
     margin: 0;
 }
 
-body {
-    background-color: #e8edf2;
-}
-
 .pre {
     white-space: pre-line;
 }
 
 .textarea-padding {
-    padding:10px;
+    padding: 10px;
 }
 
 .modal-content {
@@ -32,7 +37,7 @@ body {
 }
 
 .inherited-size {
-    max-height:790px;
+    max-height: 790px;
 }
 
 .top-bottom-margin {
@@ -83,7 +88,7 @@ h3 {
 }
 
 .text-bold {
-    font-weight:bold;
+    font-weight: bold;
 }
 
 .selected {
@@ -99,7 +104,7 @@ h3 {
 }
 
 .no-padding-left {
-    padding-left:0;
+    padding-left: 0;
 }
 
 .custom-margin-2 {
@@ -121,8 +126,8 @@ h3 {
 }
 
 #brand {
-/*    color: whitesmoke;*/
-/*    font-family: 'Script MT';*/
+    /*    color: whitesmoke;*/
+    /*    font-family: 'Script MT';*/
 }
 
 .float-right {
@@ -158,10 +163,12 @@ nav {
     color: whitesmoke;
 }
 
-    nav a {
-        color: whitesmoke;
-        text-decoration: none;
-    }
+nav a {
+    color: lightslategrey;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: large;
+}
 
 #UserName {
     font-weight: 600;
@@ -170,10 +177,6 @@ nav {
 .custom-margin {
     margin-left: 15%;
     margin-right: 15%;
-}
-
-#sidebarMenu li {
-    border-bottom: 1px solid #ddd;
 }
 
 .head {

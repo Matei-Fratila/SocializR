@@ -1,17 +1,11 @@
 ﻿namespace SocializR.DataAccess.Base;
 
-public class BaseRepository<TEntity> : IRepository<TEntity>
+public class BaseRepository<TEntity>(SocializRContext context) : IRepository<TEntity>
         where TEntity : class, IEntity, new()
 {
-    protected SocializRContext Context { get; }
+    protected SocializRContext Context { get; } = context;
 
-    public BaseRepository(SocializRContext context)
-    {
-        Context = context;
-        Query = context.Set<TEntity>();
-    }
-
-    public IQueryable<TEntity> Query { get; }
+    public IQueryable<TEntity> Query { get; } = context.Set<TEntity>();
 
     public virtual void Add(TEntity entity)
     {

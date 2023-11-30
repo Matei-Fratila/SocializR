@@ -25,6 +25,9 @@ public class ViewProfileMapper : Profile
             {
                 opt.PreCondition(src => src.ProfilePhoto != null);
                 opt.MapFrom(u => u.ProfilePhoto.FilePath);
-            });
+            })
+            .ForMember(dest => dest.NrOfFriends, opt => opt.MapFrom(src => src.FriendsFirstUser.Count()))
+            .ForMember(dest => dest.NrOfPhotos, opt => opt.MapFrom(src => src.Albums.SelectMany(a => a.Media).Count()))
+            .ForMember(dest => dest.NrOfPosts, opt => opt.MapFrom(src => src.Posts.Count()));
     }
 }

@@ -33,10 +33,13 @@ public class FriendshipService : BaseService
     {
         totalFriendsCount = UnitOfWork.Friendships.Query
             .Include(u => u.SecondUser)
-            .Where(u => u.FirstUserId == currentUser.Id && u.SecondUser.IsDeleted == false).Count();
+            .Where(u => u.FirstUserId == currentUser.Id 
+                && u.SecondUser.IsDeleted == false)
+            .Count();
 
         return UnitOfWork.Friendships.Query
-            .Where(u => u.FirstUserId == currentUser.Id && u.SecondUser.IsDeleted == false)
+            .Where(u => u.FirstUserId == currentUser.Id 
+                && u.SecondUser.IsDeleted == false)
             .ProjectTo<UserViewModel>(mapper.ConfigurationProvider)
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
