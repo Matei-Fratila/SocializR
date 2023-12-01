@@ -12,7 +12,7 @@ public class PostVM
     public string LastName { get; set; }
     public string Title { get; set; }
     public string Body { get; set; }
-    public DateTime CreatedOn { get; set; }
+    public string CreatedOn { get; set; }
     public int NumberOfLikes { get; set; }
     public int NumberOfComments { get; set; }
 

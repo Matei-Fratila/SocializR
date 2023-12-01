@@ -8,8 +8,10 @@ public class AccountController(CountyService _countyService,
     SignInManager<User> _signInManager) : BaseController(_mapper)
 {
     [HttpGet]
-    public IActionResult Login(string returnUrl)
+    public async Task<IActionResult> LoginAsync(string returnUrl)
     {
+        await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
         var model = new LogInViewModel
         {
             ReturnUrl = returnUrl
@@ -20,53 +22,29 @@ public class AccountController(CountyService _countyService,
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LogInViewModel model)
+    public async Task<IActionResult> LoginAsync(LogInViewModel model)
     {
-        //var context = Request;
-
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        var user = await _userManager.FindByEmailAsync(model.Email);
+        var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 
-        if (user != null)
+        if (result.Succeeded)
         {
-            var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, true);
-            if (result.Succeeded)
+            if (string.IsNullOrEmpty(model.ReturnUrl))
             {
-                if (string.IsNullOrEmpty(model.ReturnUrl))
-                    return RedirectToAction(nameof(HomeController.Index), nameof(HomeController).RemoveControllerSuffix());
-
-                return Redirect(model.ReturnUrl);
+                return RedirectToAction(nameof(HomeController.Index), nameof(HomeController).RemoveControllerSuffix());
             }
+
+            return Redirect(model.ReturnUrl);
         }
 
-        //var encription = new Pbkdf2();
+        ModelState.AddModelError(string.Empty, "Invalid login attempt");
 
-        //var user = AccountService.Login(model.Email);
-
-        //if (user == null)
-        //{
-        //    model.AreCredentialsInvalid = true;
-        //    return View(model);
-        //}
-
-        //if (!encription.CheckMatch(user.Password, model.Password))
-        //{
-        //    model.AreCredentialsInvalid = true;
-        //    return View(model);
-        //}
-
-        //await LogInCookie(user);
-
-        //if (model.ReturnUrl != null)
-        //{
-        //    return Redirect(model.ReturnUrl);
-        //}
-
-        return RedirectToAction(nameof(HomeController.Index), nameof(HomeController).RemoveControllerSuffix());
+        return View();
+        //return RedirectToAction(nameof(HomeController.Index), nameof(HomeController).RemoveControllerSuffix());
     }
 
     [HttpGet]
@@ -76,7 +54,7 @@ public class AccountController(CountyService _countyService,
 
         await _signInManager.SignOutAsync();
 
-        return RedirectToAction(nameof(Login));
+        return RedirectToAction(nameof(LoginAsync));
     }
 
     [HttpGet]
@@ -116,7 +94,7 @@ public class AccountController(CountyService _countyService,
             return RedirectToAction(nameof(HomeController.Index), nameof(HomeController).RemoveControllerSuffix());
         }
 
-        foreach(IdentityError error in result.Errors)
+        foreach (IdentityError error in result.Errors)
         {
             ModelState.AddModelError("Password", error.Description);
         }

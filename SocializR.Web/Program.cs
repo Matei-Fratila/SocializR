@@ -13,22 +13,25 @@ builder.Services.AddSqlServer<ApplicationDbContext>(connectionString, options =>
 
 builder.Services.AddIdentity<User, Role>(options =>
 {
+    //Password settings
     options.Password.RequiredLength = 8;
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = false;
-    options.User.RequireUniqueEmail = true;
+
+    //Lockout settings
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
+
+    options.User.RequireUniqueEmail = true;
 })
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddAuthentication("SocializRCookies")
-        .AddCookie("SocializRCookies", options =>
-        {
-            options.AccessDeniedPath = new PathString("/Account/Login");
-            options.LoginPath = new PathString("/Account/Login");
-        });
+builder.Services.AddAuthentication("SocializRCookies").AddCookie("SocializRCookies", options =>
+{
+    options.AccessDeniedPath = new PathString("/Account/Login");
+    options.LoginPath = new PathString("/Account/Login");
+});
 
 builder.Services.AddCurrentUser();
 
@@ -88,6 +91,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

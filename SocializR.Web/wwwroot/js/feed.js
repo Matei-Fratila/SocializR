@@ -134,7 +134,7 @@ jQuery(function ($) {
     }
 
     //Infinite Scroll
-    $(window).trigger('scroll', function () {
+    $(window).on("scroll", function () {
         if ($(window).scrollTop() === $(document).height() - $(window).height()) {
 
             $.ajax({

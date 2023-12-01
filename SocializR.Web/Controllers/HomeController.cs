@@ -38,6 +38,11 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     {
         var model = _feedService.GetNextPosts(page, _configuration.CurrentValue.PostsPerPage, _configuration.CurrentValue.PostsPerPage);
 
+        foreach (var post in model.Posts)
+        {
+            post.UserPhoto = _imageStorage.UriFor(post.UserPhoto ?? _configuration.CurrentValue.DefaultProfilePicture);
+        }
+
         foreach (var comment in model.Posts.SelectMany(p => p.Comments))
         {
             comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _configuration.CurrentValue.DefaultProfilePicture);

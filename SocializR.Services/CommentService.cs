@@ -1,4 +1,6 @@
-﻿namespace SocializR.Services;
+﻿using Utils;
+
+namespace SocializR.Services;
 
 public class CommentService(CurrentUser _currentUser,
     SocializRUnitOfWork unitOfWork,
@@ -50,7 +52,7 @@ public class CommentService(CurrentUser _currentUser,
                 .Select(u => u.ProfilePhoto)
                 .FirstOrDefault()?
                 .FilePath,
-            CreatedOn = DateTime.Now,
+            CreatedOn = DateTime.Now.TimeAgo(),
             IsCurrentUserComment = true
         };
     }

@@ -9,5 +9,5 @@ public class CommentViewModel
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Body { get; set; }
-    public DateTime CreatedOn { get; set; }
+    public string CreatedOn { get; set; }
 }
