@@ -1,8 +1,8 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize(Roles = "Administrator")]
-public class InterestController(IMapper _mapper, InterestService _interestService) 
-    : BaseController(_mapper)
+public class InterestController(IMapper _mapper, 
+    InterestService _interestService) : BaseController(_mapper)
 {
     [HttpGet]
     public IActionResult Index()
@@ -36,7 +36,7 @@ public class InterestController(IMapper _mapper, InterestService _interestServic
             return InternalServerErrorView();
         }
 
-        return RedirectToAction("Index", "Interest");
+        return RedirectToAction(nameof(Index));
 
     }
 
@@ -62,7 +62,7 @@ public class InterestController(IMapper _mapper, InterestService _interestServic
 
         _interestService.AddInterest(model);
 
-        return RedirectToAction("Index", "Interest");
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
@@ -75,6 +75,6 @@ public class InterestController(IMapper _mapper, InterestService _interestServic
             return InternalServerErrorView();
         }
 
-        return RedirectToAction("Index", "Interest");
+        return RedirectToAction(nameof(Index));
     }
 }

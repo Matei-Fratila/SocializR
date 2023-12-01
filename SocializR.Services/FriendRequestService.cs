@@ -1,23 +1,13 @@
 ﻿namespace SocializR.Services;
 
-public class FriendRequestService : BaseService
+public class FriendRequestService(CurrentUser _currentUser, SocializRUnitOfWork unitOfWork, IMapper _mapper) : BaseService(unitOfWork)
 {
-    private readonly CurrentUser currentUser;
-    private readonly IMapper mapper;
-
-    public FriendRequestService(CurrentUser currentUser, SocializRUnitOfWork unitOfWork, IMapper mapper) 
-        : base(unitOfWork)
-    {
-        this.mapper = mapper;
-        this.currentUser = currentUser;
-    }
-
     public List<FriendrequestViewModel> GetAllFriendRequests()
     {
         var friends1 = UnitOfWork.FriendRequests.Query
             //.Include(u => u.RequesterUser)
-            .Where(u => u.RequestedUserId == currentUser.Id && u.RequesterUser.IsDeleted==false)
-                .ProjectTo<FriendrequestViewModel>(mapper.ConfigurationProvider)
+            .Where(u => u.RequestedUserId == _currentUser.Id && u.RequesterUser.IsDeleted==false)
+                .ProjectTo<FriendrequestViewModel>(_mapper.ConfigurationProvider)
             .ToList();
 
         return friends1;
@@ -27,12 +17,12 @@ public class FriendRequestService : BaseService
     {
         totalRequestsCount = UnitOfWork.FriendRequests.Query
             .Include(u => u.RequesterUser)
-            .Where(u => u.RequestedUserId == currentUser.Id && u.RequesterUser.IsDeleted == false).Count();
+            .Where(u => u.RequestedUserId == _currentUser.Id && u.RequesterUser.IsDeleted == false).Count();
 
         return UnitOfWork.FriendRequests.Query
             //.Include(u => u.RequesterUser)
-            .Where(u => u.RequestedUserId == currentUser.Id && u.RequesterUser.IsDeleted == false)
-                .ProjectTo<FriendrequestViewModel>(mapper.ConfigurationProvider)
+            .Where(u => u.RequestedUserId == _currentUser.Id && u.RequesterUser.IsDeleted == false)
+                .ProjectTo<FriendrequestViewModel>(_mapper.ConfigurationProvider)
                 .Skip(pageSize * pageIndex)
             .Take(pageSize)
             .ToList();
@@ -42,8 +32,8 @@ public class FriendRequestService : BaseService
     {
         var friendrequest = UnitOfWork.FriendRequests.Query
             .Where(f => f.RequesterUserId == id 
-            && f.RequestedUserId == currentUser.Id 
-            || f.RequesterUserId == currentUser.Id 
+            && f.RequestedUserId == _currentUser.Id 
+            || f.RequesterUserId == _currentUser.Id 
             && f.RequestedUserId == id)
             .FirstOrDefault();
 
@@ -62,7 +52,7 @@ public class FriendRequestService : BaseService
         var friendRequest = new FriendRequest
         {
             RequestedUserId = id,
-            RequesterUserId = currentUser.Id,
+            RequesterUserId = _currentUser.Id,
             CreatedOn = DateTime.Now
         };
 

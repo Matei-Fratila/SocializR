@@ -1,29 +1,19 @@
 ﻿namespace SocializR.Services;
 
-public class FriendshipService : BaseService
+public class FriendshipService(CurrentUser _currentUser, SocializRUnitOfWork unitOfWork, IMapper _mapper) : BaseService(unitOfWork)
 {
-    private readonly CurrentUser currentUser;
-    private readonly IMapper mapper;
-
-    public FriendshipService(CurrentUser currentUser, SocializRUnitOfWork unitOfWork, IMapper mapper)
-        : base(unitOfWork)
-    {
-        this.currentUser = currentUser;
-        this.mapper = mapper;
-    }
-
     public int CountMutualFriends(Guid id)
     {
         return UnitOfWork.Friendships.Query
-            .Where(u => u.FirstUserId == currentUser.Id && u.SecondUser.FriendsFirstUser.Where(f => f.SecondUserId == id).Any())
+            .Where(u => u.FirstUserId == _currentUser.Id && u.SecondUser.FriendsFirstUser.Where(f => f.SecondUserId == id).Any())
             .Count();
     }
 
     public List<UserViewModel> GetAllFriends()
     {
         var friends = UnitOfWork.Friendships.Query
-            .Where(u => u.FirstUserId == currentUser.Id && u.SecondUser.IsDeleted == false)
-            .ProjectTo<UserViewModel>(mapper.ConfigurationProvider)
+            .Where(u => u.FirstUserId == _currentUser.Id && u.SecondUser.IsDeleted == false)
+            .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
             .ToList();
 
         return friends;
@@ -33,14 +23,14 @@ public class FriendshipService : BaseService
     {
         totalFriendsCount = UnitOfWork.Friendships.Query
             .Include(u => u.SecondUser)
-            .Where(u => u.FirstUserId == currentUser.Id 
+            .Where(u => u.FirstUserId == _currentUser.Id 
                 && u.SecondUser.IsDeleted == false)
             .Count();
 
         return UnitOfWork.Friendships.Query
-            .Where(u => u.FirstUserId == currentUser.Id 
+            .Where(u => u.FirstUserId == _currentUser.Id 
                 && u.SecondUser.IsDeleted == false)
-            .ProjectTo<UserViewModel>(mapper.ConfigurationProvider)
+            .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
             .ToList();
@@ -59,16 +49,14 @@ public class FriendshipService : BaseService
     {
         var friendships = new List<Friendship>()
         {
-            new Friendship
-            {
+            new() {
                 FirstUserId = id,
-                SecondUserId = currentUser.Id,
+                SecondUserId = _currentUser.Id,
                 CreatedDate=DateTime.Now
 
             },
-            new Friendship
-            {
-                FirstUserId = currentUser.Id,
+            new() {
+                FirstUserId = _currentUser.Id,
                 SecondUserId = id,
                 CreatedDate=DateTime.Now
             }
@@ -83,8 +71,8 @@ public class FriendshipService : BaseService
     public bool Unfriend(string id)
     {
         var requests = UnitOfWork.Friendships.Query
-            .Where(f => f.FirstUserId.ToString() == id && f.SecondUserId == currentUser.Id ||
-            f.SecondUserId.ToString() == id && f.FirstUserId == currentUser.Id)
+            .Where(f => f.FirstUserId.ToString() == id && f.SecondUserId == _currentUser.Id ||
+            f.SecondUserId.ToString() == id && f.FirstUserId == _currentUser.Id)
             .ToList();
 
         if (requests != null)

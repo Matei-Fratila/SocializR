@@ -22,6 +22,7 @@ public class PostMapper : Profile
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.User.LastName))
             .ForMember(dest => dest.UserPhoto, opt => opt.MapFrom(src => src.User.ProfilePhoto.FilePath))
             .ForMember(dest => dest.NumberOfComments, opt => opt.MapFrom(src => src.Comments.Count));
+            //.ForMember(dest => dest.Media.SelectMany(m => m.FilePath), opt => opt.MapFrom(src => src.Media.SelectMany(m => m.FilePath)));
             //.ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments.OrderBy(c=>c.CreatedOn)));
     }
 }

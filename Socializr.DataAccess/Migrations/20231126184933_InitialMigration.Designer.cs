@@ -11,7 +11,7 @@ using SocializR.DataAccess;
 
 namespace SocializR.DataAccess.Migrations
 {
-    [DbContext(typeof(SocializRContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20231126184933_InitialMigration")]
     partial class InitialMigration
     {

@@ -1,19 +1,10 @@
 ﻿namespace SocializR.Services;
 
-public class MediaService : BaseService
+public class MediaService(CurrentUser _currentUser, 
+    SocializRUnitOfWork unitOfWork, 
+    IMapper _mapper, 
+    FriendshipService _friendshipService) : BaseService(unitOfWork)
 {
-    private readonly CurrentUser currentUser;
-    private readonly FriendshipService friendshipService;
-    private readonly IMapper mapper;
-
-    public MediaService(CurrentUser currentUser, SocializRUnitOfWork unitOfWork, IMapper mapper, FriendshipService friendshipService)
-        : base(unitOfWork)
-    {
-        this.currentUser = currentUser;
-        this.friendshipService = friendshipService;
-        this.mapper = mapper;
-    }
-
     public bool IsAllowed(bool isAdmin, string id)
     {
         var owner = UnitOfWork.Media.Query
@@ -31,7 +22,7 @@ public class MediaService : BaseService
             return false;
         }
 
-        if (owner.Id == currentUser.Id)
+        if (owner.Id == _currentUser.Id)
         {
             return true;
         }
@@ -41,7 +32,7 @@ public class MediaService : BaseService
             return true;
         }
 
-        if (friendshipService.AreFriends(currentUser.Id, owner.Id) == true)
+        if (_friendshipService.AreFriends(_currentUser.Id, owner.Id) == true)
         {
             return true;
         }
@@ -54,7 +45,7 @@ public class MediaService : BaseService
         var images = UnitOfWork.Media.Query
             .Where(u => u.AlbumId.ToString() == id)
             .OrderByDescending(u => u.Id)
-            .ProjectTo<MediaViewModel>(mapper.ConfigurationProvider)
+            .ProjectTo<MediaViewModel>(_mapper.ConfigurationProvider)
             .ToList();
 
         return images;
@@ -82,22 +73,19 @@ public class MediaService : BaseService
             return null;
         }
 
-        if(associatedPost == null)
-        {
-            associatedPost = new Post
+        associatedPost ??= new Post
             {
-                Body = $"{currentUser.FirstName} {currentUser.LastName} uploaded a new profile picture",
-                UserId = currentUser.Id,
+                Body = $"{_currentUser.FirstName} {_currentUser.LastName} uploaded a new profile picture",
+                UserId = _currentUser.Id,
                 CreatedOn = DateTime.Now
             };
-        }
 
         var media = new Media
         {
             FilePath = fileName,
             AlbumId = albumId,
             Type = type,
-            UserId = currentUser.Id,
+            UserId = _currentUser.Id,
             Post = associatedPost
         };
 

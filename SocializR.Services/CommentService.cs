@@ -1,15 +1,13 @@
 ﻿namespace SocializR.Services;
 
 public class CommentService(CurrentUser _currentUser,
-    SocializRUnitOfWork _unitOfWork,
-    IMapper _mapper) : BaseService(_unitOfWork)
+    SocializRUnitOfWork unitOfWork,
+    IMapper _mapper) : BaseService(unitOfWork)
 {
     public string AddComment(Comment comment)
     {
         UnitOfWork.Comments.Add(comment);
-
         UnitOfWork.SaveChanges();
-
         return comment.Id.ToString();
     }
 
@@ -47,9 +45,13 @@ public class CommentService(CurrentUser _currentUser,
             FirstName = _currentUser.FirstName,
             LastName = _currentUser.LastName,
             UserPhoto = UnitOfWork.Users.Query
+                .Include(u => u.ProfilePhoto)
                 .Where(u => u.Id == _currentUser.Id)
-                .Select(u => u.ProfilePhotoId).FirstOrDefault().ToString(),
-            CreatedOn = DateTime.Now
+                .Select(u => u.ProfilePhoto)
+                .FirstOrDefault()?
+                .FilePath,
+            CreatedOn = DateTime.Now,
+            IsCurrentUserComment = true
         };
     }
 }

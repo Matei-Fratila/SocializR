@@ -1,20 +1,13 @@
 ﻿namespace SocializR.Services.UserServices;
 
-public class AccountService : BaseService
+public class AccountService(SocializRUnitOfWork unitOfWork, 
+    IMapper _mapper) : BaseService(unitOfWork)
 {
-    private readonly IMapper mapper;
-
-    public AccountService(SocializRUnitOfWork unitOfWork, IMapper mapper)
-        : base(unitOfWork)
-    {
-        this.mapper = mapper;
-    }
-
     public CurrentUser Get(string email)
     {
         return UnitOfWork.Users.Query
-                .Where(u=>u.Email==email)
-                .ProjectTo<CurrentUser>(mapper.ConfigurationProvider)
+            .Where(u=>u.Email==email)
+            .ProjectTo<CurrentUser>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
     }
 

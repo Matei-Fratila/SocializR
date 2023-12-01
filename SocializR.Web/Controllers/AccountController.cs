@@ -1,4 +1,6 @@
-﻿namespace SocializR.Web.Controllers;
+﻿using Utils;
+
+namespace SocializR.Web.Controllers;
 
 public class AccountController(CountyService _countyService,
     IMapper _mapper,
@@ -35,7 +37,7 @@ public class AccountController(CountyService _countyService,
             if (result.Succeeded)
             {
                 if (string.IsNullOrEmpty(model.ReturnUrl))
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction(nameof(HomeController.Index), nameof(HomeController).RemoveControllerSuffix());
 
                 return Redirect(model.ReturnUrl);
             }
@@ -64,7 +66,7 @@ public class AccountController(CountyService _countyService,
         //    return Redirect(model.ReturnUrl);
         //}
 
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction(nameof(HomeController.Index), nameof(HomeController).RemoveControllerSuffix());
     }
 
     [HttpGet]
@@ -74,7 +76,7 @@ public class AccountController(CountyService _countyService,
 
         await _signInManager.SignOutAsync();
 
-        return RedirectToAction("Login", "Account");
+        return RedirectToAction(nameof(Login));
     }
 
     [HttpGet]
@@ -111,7 +113,7 @@ public class AccountController(CountyService _countyService,
         if (result.Succeeded)
         {
             await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Email, user.Email));
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(HomeController.Index), nameof(HomeController).RemoveControllerSuffix());
         }
 
         foreach(IdentityError error in result.Errors)

@@ -1,6 +1,7 @@
 ﻿namespace SocializR.Web.Controllers;
 
-public class CityController(CityService _cityService, IMapper _mapper) : BaseController(_mapper)
+public class CityController(CityService _cityService, 
+    IMapper _mapper) : BaseController(_mapper)
 {
     [HttpGet]
     public JsonResult Index(string id)

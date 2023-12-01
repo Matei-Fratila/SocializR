@@ -1,18 +1,18 @@
 ﻿namespace SocializR.DataAccess.UnitOfWork;
 
-public class SocializRUnitOfWork(SocializRContext context) : BaseUnitOfWork(context)
+public class SocializRUnitOfWork(ApplicationDbContext context) : BaseUnitOfWork(context)
 {
     private IRepository<User> _users;
     public IRepository<User> Users
     {
         get
         {
-            if (_users == null)
-                _users = new BaseRepository<User>(DbContext);
+            _users ??= new BaseRepository<User>(DbContext);
 
             return _users;
         }
     }
+
 
     private IRepository<County> _counties;
     public IRepository<County> Counties 

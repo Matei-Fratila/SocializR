@@ -2,7 +2,7 @@
 
 class SeedRolesPermissions
 {
-    public void Seed(SocializRContext context)
+    public void Seed(ApplicationDbContext context)
     {
         if (context.Roles.Any())
         {

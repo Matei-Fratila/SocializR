@@ -4,7 +4,7 @@ namespace Utils;
 
 public class DateGenerator
 {
-    private readonly Random generator = new Random();
+    private readonly Random generator = new();
     public DateTime MyDate { get; set; }
     public int Range { get; set; }
 

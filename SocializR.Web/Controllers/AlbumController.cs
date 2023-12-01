@@ -28,7 +28,7 @@ public class AlbumController(AlbumService _albumService,
     {
         if (!ModelState.IsValid)
         {
-            RedirectToAction("Index", "Album");
+            RedirectToAction(nameof(Index));
         }
 
         var result = _albumService.Add(model);
@@ -38,7 +38,7 @@ public class AlbumController(AlbumService _albumService,
             return InternalServerErrorView();
         }
 
-        return RedirectToAction("Index", "Album");
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
@@ -50,11 +50,11 @@ public class AlbumController(AlbumService _albumService,
 
             if (!result)
             {
-                return RedirectToAction("Index", "Album");
+                return RedirectToAction(nameof(Index));
             }
         }
 
-        return RedirectToAction("Index", "Album");
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]

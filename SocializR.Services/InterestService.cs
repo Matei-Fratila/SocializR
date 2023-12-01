@@ -1,22 +1,12 @@
 ﻿namespace SocializR.Services;
 
-public class InterestService : BaseService
+public class InterestService(CurrentUser _currentUser, SocializRUnitOfWork unitOfWork, IMapper _mapper) : BaseService(unitOfWork)
 {
-    private readonly CurrentUser currentUser;
-    private readonly IMapper mapper;
-
-    public InterestService(CurrentUser currentUser, SocializRUnitOfWork unitOfWork, IMapper mapper)
-        : base(unitOfWork)
-    {
-        this.mapper = mapper;
-        this.currentUser = currentUser;
-    }
-
     public List<InterestViewModel> GetAllInterests()
     {
         var interests = UnitOfWork.Interests.Query
             .OrderBy(i => i.Name)
-            .ProjectTo<InterestViewModel>(mapper.ConfigurationProvider)
+            .ProjectTo<InterestViewModel>(_mapper.ConfigurationProvider)
             .ToList();
 
         return interests;
@@ -64,7 +54,7 @@ public class InterestService : BaseService
     {
         var model = UnitOfWork.Interests.Query
             .Where(i => i.Id.ToString() == id)
-            .ProjectTo<EditInterestViewModel>(mapper.ConfigurationProvider)
+            .ProjectTo<EditInterestViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
 
         model.Interests = GetAll();
@@ -76,7 +66,7 @@ public class InterestService : BaseService
     {
         if (id == Guid.Empty)
         {
-            id = currentUser.Id;
+            id = _currentUser.Id;
         }
 
         var interests = UnitOfWork.UserInterests.Query
@@ -103,7 +93,7 @@ public class InterestService : BaseService
             .Where(i => i.Id.ToString() == model.Id)
             .FirstOrDefault();
 
-        mapper.Map(model, interest);
+        _mapper.Map(model, interest);
 
         if (model.ParentId == null)
         {

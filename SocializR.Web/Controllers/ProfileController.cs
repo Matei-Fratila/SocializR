@@ -1,4 +1,6 @@
-﻿namespace SocializR.Web.Controllers;
+﻿using Utils;
+
+namespace SocializR.Web.Controllers;
 
 [Authorize]
 public class ProfileController(UserManager<User> _userManager,
@@ -187,10 +189,10 @@ public class ProfileController(UserManager<User> _userManager,
 
         if (await _userManager.IsInRoleAsync(currentUser, "Administrator") && model.Id != currentUser.Id)
         {
-            return RedirectToAction("Index", "User");
+            return RedirectToAction(nameof(UserController.Index), nameof(UserController).RemoveControllerSuffix());
         }
 
-        return RedirectToAction("Index", "Profile", new { id = currentUser.Id });
+        return RedirectToAction(nameof(Index), new { id = currentUser.Id });
     }
 
     [HttpGet]
@@ -202,7 +204,7 @@ public class ProfileController(UserManager<User> _userManager,
 
         if (media == null)
         {
-            return Ok(_imageStorage.UriFor("noprofile.png"));
+            return Ok(_imageStorage.UriFor(_configuration.CurrentValue.DefaultProfilePicture));
         }
 
         return Ok(_imageStorage.UriFor(media));

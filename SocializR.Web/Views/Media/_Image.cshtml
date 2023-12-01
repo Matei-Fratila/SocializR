@@ -4,7 +4,9 @@
     ViewData["Title"] = "_Media";
 }
 
-<figure class="media-body">
+<img src="@Url.Content(Model.FilePath)" class="card-img-bottom">
+
+@* <figure class="media-body">
     <input type="hidden" asp-for="Id" value="@Model.Id" class="image-id" />
     <img src="@Url.Content(Model.Id)" class="figure-img img-fluid rounded" alt="A generic square placeholder image with rounded corners in a figure.">
     <div class="figure-caption row">
@@ -13,7 +15,7 @@
             <span class="fa fa-trash"></span>
         </button>
     </div>
-</figure>
+</figure> *@
 
 
 

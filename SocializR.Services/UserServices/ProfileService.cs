@@ -1,17 +1,9 @@
 ﻿namespace SocializR.Services.UserServices;
 
-public class ProfileService : BaseService
+public class ProfileService(CurrentUser _currentUser, 
+    SocializRUnitOfWork unitOfWork, 
+    IMapper _mapper) : BaseService(unitOfWork)
 {
-    private readonly CurrentUser _currentUser;
-    private readonly IMapper _mapper;
-
-    public ProfileService(CurrentUser currentUser, SocializRUnitOfWork unitOfWork, IMapper mapper)
-        : base(unitOfWork)
-    {
-        _currentUser = currentUser;
-        _mapper = mapper;
-    }
-
     public byte[] ConvertToByteArray(IFormFile content)
     {
         using (var memoryStream = new MemoryStream())

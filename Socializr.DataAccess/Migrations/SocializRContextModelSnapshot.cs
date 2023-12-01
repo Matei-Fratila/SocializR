@@ -10,7 +10,7 @@ using SocializR.DataAccess;
 
 namespace SocializR.DataAccess.Migrations
 {
-    [DbContext(typeof(SocializRContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     partial class SocializRContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

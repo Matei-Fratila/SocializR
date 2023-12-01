@@ -3,8 +3,8 @@
 public class FeedService(PostService _postService, 
     CommentService _commentService, 
     LikeService _likeService, 
-    SocializRUnitOfWork _unitOfWork,
-    CurrentUser _currentUser) : BaseService(_unitOfWork)
+    SocializRUnitOfWork unitOfWork,
+    CurrentUser _currentUser) : BaseService(unitOfWork)
 {
     public bool AddPost(string userId, string title, string body, List<Media> media)
     {

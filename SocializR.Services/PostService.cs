@@ -1,31 +1,22 @@
 ﻿namespace SocializR.Services;
 
-public class PostService : BaseService
+public class PostService(CurrentUser _currentUser, 
+    SocializRUnitOfWork unitOfWork, 
+    IMapper _mapper, 
+    CommentService commentService) : BaseService(unitOfWork)
 {
-    private readonly CurrentUser currentUser;
-    private readonly CommentService commentService;
-    private readonly IMapper mapper;
-
-    public PostService(CurrentUser currentUser, SocializRUnitOfWork unitOfWork, IMapper mapper, CommentService commentService)
-        : base(unitOfWork)
-    {
-        this.mapper = mapper;
-        this.currentUser = currentUser;
-        this.commentService = commentService;
-    }
-
     public List<PostVM> GetNextPosts(Guid currentUserId, int page, int postsPerPage, int commentsPerPage)
     {
         var posts = UnitOfWork.Posts.Query
             .Include(p => p.User)
             .Include(u => u.Media)
-            .Where(p => p.User.FriendsFirstUser.FirstOrDefault(f => f.SecondUserId == currentUser.Id 
+            .Where(p => p.User.FriendsFirstUser.FirstOrDefault(f => f.SecondUserId == _currentUser.Id 
             && f.FirstUser.IsDeleted == false) != null 
             || p.UserId == currentUserId)
             .OrderByDescending(p => p.CreatedOn)
             .Skip(page * postsPerPage)
             .Take(postsPerPage)
-            .ProjectTo<PostVM>(mapper.ConfigurationProvider)
+            .ProjectTo<PostVM>(_mapper.ConfigurationProvider)
             .ToList();
 
         foreach (var post in posts)

@@ -1,23 +1,13 @@
-﻿using SocializR.Models.Entities;
+﻿namespace SocializR.Services;
 
-namespace SocializR.Services;
-
-public class AlbumService : BaseService
+public class AlbumService(CurrentUser _currentUser, 
+    SocializRUnitOfWork unitOfWork, 
+    IMapper _mapper) : BaseService(unitOfWork)
 {
-    private readonly CurrentUser currentUser;
-    private readonly IMapper mapper;
-
-    public AlbumService(CurrentUser currentUser, SocializRUnitOfWork unitOfWork, IMapper mapper)
-        : base(unitOfWork)
-    {
-        this.currentUser = currentUser;
-        this.mapper = mapper;
-    }
-
     public Guid GetPostsAlbum()
     {
         var album = UnitOfWork.Albums.Query
-            .Where(a => a.Name == "Posts Photos" && a.UserId == currentUser.Id)
+            .Where(a => a.Name == "Posts Photos" && a.UserId == _currentUser.Id)
             .FirstOrDefault();
 
         if (album == null)
@@ -25,11 +15,10 @@ public class AlbumService : BaseService
             album = new Album
             {
                 Name = "Posts Photos",
-                UserId = currentUser.Id
+                UserId = _currentUser.Id
             };
 
             UnitOfWork.Albums.Add(album);
-
             UnitOfWork.SaveChanges();
         }
 
@@ -39,8 +28,8 @@ public class AlbumService : BaseService
     public List<AlbumViewModel> GetAll()
     {
         var albums = UnitOfWork.Albums.Query
-            .Where(u => u.UserId == currentUser.Id)
-            .ProjectTo<AlbumViewModel>(mapper.ConfigurationProvider)
+            .Where(u => u.UserId == _currentUser.Id)
+            .ProjectTo<AlbumViewModel>(_mapper.ConfigurationProvider)
             .OrderBy(i => i.Name)
             .ToList();
 
@@ -51,7 +40,7 @@ public class AlbumService : BaseService
     {
         return UnitOfWork.Albums.Query
             .Where(a => a.Id.ToString() == id)
-            .ProjectTo<EditAlbumViewModel>(mapper.ConfigurationProvider)
+            .ProjectTo<EditAlbumViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
     }
 
@@ -59,7 +48,7 @@ public class AlbumService : BaseService
     {
         UnitOfWork.Albums.Add(new Album
         {
-            UserId = currentUser.Id,
+            UserId = _currentUser.Id,
             Name = model.Name
         });
 
@@ -75,7 +64,6 @@ public class AlbumService : BaseService
         };
 
         UnitOfWork.Albums.Add(album);
-
         UnitOfWork.SaveChanges();
 
         return album.Id;
@@ -94,7 +82,6 @@ public class AlbumService : BaseService
         }
 
         UnitOfWork.Albums.Remove(album);
-
         return UnitOfWork.SaveChanges() != 0;
     }
 
@@ -110,7 +97,6 @@ public class AlbumService : BaseService
         }
 
         album.Name = model.Name;
-
         UnitOfWork.SaveChanges();
 
         return true;

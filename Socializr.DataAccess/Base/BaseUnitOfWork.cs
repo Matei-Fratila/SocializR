@@ -1,13 +1,8 @@
 ﻿namespace SocializR.DataAccess.Base;
 
-public class BaseUnitOfWork : IUnitOfWork, IDisposable
+public class BaseUnitOfWork(ApplicationDbContext context) : IUnitOfWork, IDisposable
 {
-    protected readonly SocializRContext DbContext;
-
-    public BaseUnitOfWork(SocializRContext context)
-    {
-        this.DbContext = context;
-    }
+    protected readonly ApplicationDbContext DbContext = context;
 
     public int SaveChanges()
     {

@@ -2,7 +2,7 @@
 
 static class SeedMedia
 {
-    public static void Seed(SocializRContext context)
+    public static void Seed(ApplicationDbContext context)
     {
         if (context.Media.Any())
         {

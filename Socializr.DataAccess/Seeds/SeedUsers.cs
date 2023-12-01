@@ -2,7 +2,7 @@
 
 public static class SeedUsers
 {
-    public static async Task Seed(UserManager<User> userManager, SocializRContext context)
+    public static async Task Seed(UserManager<User> userManager, ApplicationDbContext context)
     {
         if (userManager.Users.Any())
         {

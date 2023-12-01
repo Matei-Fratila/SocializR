@@ -94,7 +94,7 @@ jQuery(function ($) {
                 },
                 type: 'POST',
                 url: 'Home/DeleteComment',
-                dara: { commentId: commentId },
+                data: { commentId: commentId },
                 success: function () {
                     ChangeComments($($(ev.target).closest('.post-container')).find('.see-comments .nr-of-comments'), -1);
                     $(ev.target).closest('.comment-container').remove();
@@ -107,25 +107,11 @@ jQuery(function ($) {
     };
 
     (function PutDeleteCommentButtons() {
-        $('.delete-comment-container').each(function (index, elem) {
-            if ($(elem.parentElement).find('.is-current-user-comment').val() === 'True') {
-                var deleteButton = $('<button class="float-right delete-comment-btn close" type="button" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
-                $(elem).append(deleteButton);
-            }
-        });
-
         $('.delete-comment-btn').on('click', deleteCommentHandler);
 
     }());
 
     function PutDeleteCommentButtons(elems) {
-        $(elems).find('.delete-comment-container').each(function (index, elem) {
-
-            var deleteButton = $('<button class="float-right delete-comment-btn close" type="button" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
-            $(elem).append(deleteButton);
-
-        });
-
         $(elems).find('.delete-comment-btn').on('click', deleteCommentHandler);
     }
 
@@ -331,7 +317,7 @@ jQuery(function ($) {
                         var elem = $(newelement[1]).find('.search-for-link');
                         var text = $(elem).text().trim();
                         elem.text(text);
-                        $(newelement[1]).linkify();
+                        //$(newelement[1]).linkify();
                         $(e.target).closest('.comments-container').find('.fresh-comments-container').append(newelement[1]);
                         $(newelement).find('.comment-id').val(response.id);
                         PutDeleteCommentButtons(newelement);
@@ -438,7 +424,7 @@ jQuery(function ($) {
             url: 'Home/Like',
             data: { id: id },
             success: function () {
-                var text = $(elem).text().split(" ");
+                var text = $(elem).text().trim().split(" ");
                 var nrOfLikes = text[0];
                 var likesIncremented = parseInt(nrOfLikes) + 1;
                 $(elem).text(likesIncremented.toString() + ' Hearts');
@@ -458,7 +444,7 @@ jQuery(function ($) {
             url: 'Home/DeleteLike',
             data: { id: id },
             success: function () {
-                var text = $(elem).text().split(" ");
+                var text = $(elem).text().trim().split(" ");
                 var nrOfLikes = text[0];
                 var likesIncremented = parseInt(nrOfLikes) - 1;
                 $(elem).text(likesIncremented.toString() + ' Hearts');

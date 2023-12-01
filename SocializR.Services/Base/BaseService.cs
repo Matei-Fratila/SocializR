@@ -1,13 +1,8 @@
 ﻿namespace SocializR.Services.Base;
 
-public class BaseService : IDisposable
+public class BaseService(SocializRUnitOfWork unitOfWork) : IDisposable
 {
-    protected readonly SocializRUnitOfWork UnitOfWork;
-
-    public BaseService(SocializRUnitOfWork unitOfWork)
-    {
-        UnitOfWork = unitOfWork;
-    }
+    protected readonly SocializRUnitOfWork UnitOfWork = unitOfWork;
 
     public void Dispose()
     {

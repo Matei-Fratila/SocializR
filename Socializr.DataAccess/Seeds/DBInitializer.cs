@@ -2,7 +2,7 @@
 
 public static class DBInitializer
 {
-    public static void ApplySeeds(SocializRContext context, UserManager<User> userManager, RoleManager<Role> roleManager)
+    public static void ApplySeeds(ApplicationDbContext context, UserManager<User> userManager, RoleManager<Role> roleManager)
     {
         SeedCountiesCities.Seed(context);
         SeedInterests.Seed(context);

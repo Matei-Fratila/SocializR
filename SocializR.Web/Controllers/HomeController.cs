@@ -1,7 +1,4 @@
-﻿using Common.Interfaces;
-using System.Web;
-
-namespace SocializR.Web.Controllers;
+﻿namespace SocializR.Web.Controllers;
 
 [Authorize]
 public class HomeController(IOptionsMonitor<AppSettings> _configuration,
@@ -9,7 +6,6 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     AlbumService _albumService,
     FeedService _feedService,
     MediaService _mediaService,
-    IHostEnvironment _hostingEnvironment,
     UserManager<User> _userManager,
     CommentService _commentService,
     IImageStorage _imageStorage) : BaseController(_mapper)
@@ -18,6 +14,16 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     public IActionResult Index()
     {
         var model = _feedService.GetNextPosts(0, _configuration.CurrentValue.PostsPerPage, _configuration.CurrentValue.CommentsPerPage);
+
+        foreach(var media in model.Posts.SelectMany(x => x.Media))
+        {
+            media.FilePath = _imageStorage.UriFor(media.FilePath ?? _configuration.CurrentValue.DefaultProfilePicture);
+        }
+
+        foreach(var post in model.Posts)
+        {
+            post.UserPhoto = _imageStorage.UriFor(post.UserPhoto ?? _configuration.CurrentValue.DefaultProfilePicture);
+        }
 
         foreach (var comment in model.Posts.SelectMany(p => p.Comments))
         {
@@ -57,7 +63,7 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     public async Task<IActionResult> AddPost(AddPostViewModel model)
     {
         var media = new List<Media>();
-        var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, _configuration.CurrentValue.FileUploadLocation);
+
         if (model.Media != null)
         {
             foreach (var file in model.Media)
@@ -69,13 +75,8 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
                     var type = file.ContentType.ToString().Split('/');
                     if (type[0] == "image" || type[0] == "video")
                     {
-                        var filePath = Path.Combine(uploads, Path.GetRandomFileName() + '.' + type[1]);
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await file.CopyToAsync(fileStream);
-                        }
-
-                        media.Add(_mediaService.Add(id, Path.GetRelativePath("wwwroot", filePath), type[0] == "image" ? MediaTypes.Image : MediaTypes.Video));
+                        var name = await _imageStorage.SaveImage(file.OpenReadStream(), type[1]);
+                        media.Add(_mediaService.Add(id, name, type[0] == "image" ? MediaTypes.Image : MediaTypes.Video));
                     }
                 }
             }
@@ -121,7 +122,7 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     [HttpPost]
     public JsonResult AddComment([FromBody] AddCommentViewModel comment)
     {
-        var id = _feedService.AddComment(_userManager.GetUserId(User), HttpUtility.HtmlEncode(comment.Body), comment.PostId);
+        var id = _feedService.AddComment(_userManager.GetUserId(User), comment.Body, comment.PostId);
 
         return Json(new { id });
     }
@@ -156,6 +157,8 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     public IActionResult GetCommentWidget(string body)
     {
         var comment = _feedService.CurrentUserComment(body);
+
+        comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _configuration.CurrentValue.DefaultProfilePicture);
 
         return PartialView("Views/Home/_Comment.cshtml", comment);
     }

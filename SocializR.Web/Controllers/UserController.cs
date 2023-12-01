@@ -26,7 +26,7 @@ public class UserController(IOptionsMonitor<AppSettings> _configuration,
             return ForbidView();
         }
 
-        return RedirectToAction("Index", new { page = 1 });
+        return RedirectToAction(nameof(Index), new { page = 1 });
     }
 
     [HttpPost]
@@ -39,6 +39,6 @@ public class UserController(IOptionsMonitor<AppSettings> _configuration,
             return ForbidView();
         }
 
-        return RedirectToAction("Index", new { page = 1 });
+        return RedirectToAction(nameof(Index), new { page = 1 });
     }
 }

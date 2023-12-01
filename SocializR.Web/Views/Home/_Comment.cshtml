@@ -1,7 +1,5 @@
 ﻿@using SocializR.Web.Code.Converters
 @model CommentViewModel
-@{
-}
 
 <div class="comment-container mt-3">
     <div class="row">
@@ -13,14 +11,18 @@
         <div class="col-sm-11 no-padding-left">
             <div class="card panel-default">
                 <div class="card-header">
-                        <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.UserId" class="text-bold">@Model.FirstName @Model.LastName</a>
-                        <span class="text-muted">@DateConverter.Convert(Model.CreatedOn)</span>
+                    <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.UserId" class="text-bold">@Model.FirstName @Model.LastName</a>
+                    <span class="text-muted">@DateConverter.Convert(Model.CreatedOn)</span>
                     <div class="delete-comment-container btn-group-xs float-right">
                         <input asp-for="@Model.IsCurrentUserComment" value="@Model.IsCurrentUserComment" name="@Model.IsCurrentUserComment" type="hidden" class="is-current-user-comment" />
                         <input asp-for="@Model.Id" value="@Model.Id" name="@Model.Id" type="hidden" class="comment-id" />
+                        @if (Model.IsCurrentUserComment)
+                        {
+                            <a class="float-right delete-comment-btn close ms-2"><i class="fa fa-trash"></i></a>
+                        }
                     </div>
                 </div>
-                <div class="card-body pre search-for-link">
+                <div class="card-body search-for-link">
                     @Model.Body
                 </div>
             </div>

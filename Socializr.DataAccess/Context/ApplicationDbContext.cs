@@ -1,13 +1,13 @@
 ﻿namespace SocializR.DataAccess;
 
-public partial class SocializRContext : IdentityDbContext<User, Role, Guid>
+public partial class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
 {
-    public SocializRContext()
+    public ApplicationDbContext()
     {
         this.ChangeTracker.LazyLoadingEnabled = false;
     }
 
-    public SocializRContext(DbContextOptions<SocializRContext> options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
         this.ChangeTracker.LazyLoadingEnabled = false;

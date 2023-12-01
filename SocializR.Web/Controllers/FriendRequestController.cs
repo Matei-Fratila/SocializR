@@ -1,4 +1,6 @@
-﻿namespace SocializR.Web.Controllers;
+﻿using Utils;
+
+namespace SocializR.Web.Controllers;
 
 [Authorize]
 public class FriendRequestController(IOptionsMonitor<AppSettings> _configuration,
@@ -24,7 +26,9 @@ public class FriendRequestController(IOptionsMonitor<AppSettings> _configuration
             return InternalServerErrorView();
         }
 
-        return RedirectToAction("Get", "Profile", new { id });
+        return RedirectToAction(nameof(ProfileController.Index), 
+            nameof(ProfileController).RemoveControllerSuffix(), 
+            new { id });
     }
 
     [HttpPost]
@@ -36,6 +40,8 @@ public class FriendRequestController(IOptionsMonitor<AppSettings> _configuration
             return InternalServerErrorView();
         }
 
-        return RedirectToAction("Get", "Profile", new { id });
+        return RedirectToAction(nameof(ProfileController.Index),
+            nameof(ProfileController).RemoveControllerSuffix(),
+            new { id });
     }
 }

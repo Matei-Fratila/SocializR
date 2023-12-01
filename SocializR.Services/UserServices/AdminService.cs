@@ -1,22 +1,15 @@
 ﻿namespace SocializR.Services.UserServices;
 
-public class AdminService : BaseService
+public class AdminService(SocializRUnitOfWork unitOfWork, 
+    IMapper _mapper) : BaseService(unitOfWork)
 {
-    private readonly IMapper mapper;
-
-    public AdminService(SocializRUnitOfWork unitOfWork, IMapper mapper)
-        : base(unitOfWork)
-    {
-        this.mapper = mapper;
-    }
-
     public List<UserViewModel> GetAllUsers(int pageIndex, int pageSize, out int totalUserCount)
     {
         totalUserCount = UnitOfWork.Users.Query.Count();
 
         return UnitOfWork.Users.Query
             .OrderBy(u=>u.FirstName)
-            .ProjectTo<UserViewModel>(mapper.ConfigurationProvider)
+            .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
             .ToList();

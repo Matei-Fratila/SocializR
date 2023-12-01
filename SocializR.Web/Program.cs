@@ -6,7 +6,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddSqlServer<SocializRContext>(connectionString, options =>
+builder.Services.AddSqlServer<ApplicationDbContext>(connectionString, options =>
 {
     options.EnableRetryOnFailure().CommandTimeout(60);
 });
@@ -21,7 +21,7 @@ builder.Services.AddIdentity<User, Role>(options =>
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
 })
-    .AddEntityFrameworkStores<SocializRContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddAuthentication("SocializRCookies")
         .AddCookie("SocializRCookies", options =>
@@ -70,7 +70,7 @@ if (app.Environment.IsDevelopment())
     if (app.Configuration.GetValue<bool>("RebuildDatabase"))
     {
         using var scope = app.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<SocializRContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
         dbContext.Database.EnsureCreated();

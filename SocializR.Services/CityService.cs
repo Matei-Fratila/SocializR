@@ -1,17 +1,7 @@
 ﻿namespace SocializR.Services;
 
-public class CityService : BaseService
+public class CityService(SocializRUnitOfWork unitOfWork, IMapper _mapper) : BaseService(unitOfWork)
 {
-    private readonly CurrentUser currentUser;
-    private readonly IMapper mapper;
-
-    public CityService(CurrentUser currentUser, SocializRUnitOfWork unitOfWork, IMapper mapper)
-        : base(unitOfWork)
-    {
-        this.mapper = mapper;
-        this.currentUser = currentUser;
-    }
-
     public bool AddCity(string name, string countyId)
     {
         var city = new City
@@ -21,7 +11,6 @@ public class CityService : BaseService
         };
 
         UnitOfWork.Cities.Add(city);
-
         return UnitOfWork.SaveChanges() != 0;
     }
 
@@ -36,8 +25,8 @@ public class CityService : BaseService
         }
 
         city.Name = name;
-        UnitOfWork.Cities.Update(city);
 
+        UnitOfWork.Cities.Update(city);
         return UnitOfWork.SaveChanges() != 0;
     }
 
@@ -46,7 +35,7 @@ public class CityService : BaseService
         return UnitOfWork.Cities.Query
             .Where(u => u.CountyId.ToString() == countyId)
             .OrderBy(u => u.Name)
-            .ProjectTo<CityViewModel>(mapper.ConfigurationProvider)
+            .ProjectTo<CityViewModel>(_mapper.ConfigurationProvider)
             .ToList();
     }
 
@@ -91,7 +80,6 @@ public class CityService : BaseService
         }
 
         UnitOfWork.Cities.Remove(city);
-
         return UnitOfWork.SaveChanges() != 0;
     }
 }

@@ -1,18 +1,8 @@
 ﻿namespace SocializR.Services;
 
-public class CountyService : BaseService
+public class CountyService(SocializRUnitOfWork unitOfWork, IMapper _mapper) : BaseService(unitOfWork)
 {
-    private readonly SocializRUnitOfWork unitOfWork;
-    private readonly IMapper mapper;
-
-    public CountyService(SocializRUnitOfWork unitOfWork, IMapper mapper)
-        : base(unitOfWork)
-    {
-        this.mapper = mapper;
-        this.unitOfWork = unitOfWork;
-    }
-
-    public bool AddCounty(String name, String shortName)
+    public bool AddCounty(string name, string shortName)
     {
         var county = new County
         {
@@ -20,16 +10,15 @@ public class CountyService : BaseService
             ShortName = shortName
         };
 
-        unitOfWork.Counties.Add(county);
-
-        return unitOfWork.SaveChanges() != 0;
+        UnitOfWork.Counties.Add(county);
+        return UnitOfWork.SaveChanges() != 0;
     }
 
     public List<CountyViewModel> GetCounties()
     {
-        return unitOfWork.Counties.Query
+        return UnitOfWork.Counties.Query
             .Where(c=>true==true)
-            .ProjectTo<CountyViewModel>(mapper.ConfigurationProvider)
+            .ProjectTo<CountyViewModel>(_mapper.ConfigurationProvider)
             .OrderBy(c => c.ShortName)
             .ToList();
             
@@ -37,7 +26,7 @@ public class CountyService : BaseService
 
     public bool EditCounty(string id, string name, string shortname)
     {
-        var city = unitOfWork.Counties.Query
+        var city = UnitOfWork.Counties.Query
             .FirstOrDefault(c => c.Id.ToString() == id);
 
         if (city == null)
@@ -47,14 +36,14 @@ public class CountyService : BaseService
 
         city.Name = name;
         city.ShortName = shortname;
-        unitOfWork.Counties.Update(city);
 
-        return unitOfWork.SaveChanges() != 0;
+        UnitOfWork.Counties.Update(city);
+        return UnitOfWork.SaveChanges() != 0;
     }
 
     public int DeleteCounty(string id)
     {
-        var county = unitOfWork.Counties.Query
+        var county = UnitOfWork.Counties.Query
             .Include(c=>c.Cities)
             .Where(c => c.Id.ToString() == id)
             .FirstOrDefault();
@@ -69,9 +58,8 @@ public class CountyService : BaseService
             return 2;
         }
 
-        unitOfWork.Counties.Remove(county);
-
-        return unitOfWork.SaveChanges() == 0 ? 1 : 0;
+        UnitOfWork.Counties.Remove(county);
+        return UnitOfWork.SaveChanges() == 0 ? 1 : 0;
     }
 
     public List<SelectListItem> GetSelectCounties()
@@ -88,7 +76,6 @@ public class CountyService : BaseService
 
     public List<County> GetAll()
     {
-        return UnitOfWork.Counties.Query
-            .ToList();
+        return UnitOfWork.Counties.Query.ToList();
     }
 }
