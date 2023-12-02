@@ -5,7 +5,7 @@
     // var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
     // var showBanner = !consentFeature?.CanTrack ?? false;
 }
-<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow" id="top-navbar">
     <a class="navbar-brand col-lg-2 me-0 px-3 text-center" asp-area="" asp-controller="Home" asp-action="Index"><h1>SocializR</h1></a>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -17,7 +17,7 @@
     @if (CurrentUser.FirstName != null)
     {
         <div class="navbar-nav nav-item text-nowrap">
-            <a class="nav-link px-3" asp-controller="Profile" asp-action="Get" asp-route-id="@UserManager.GetUserId(User)">
+            <a class="nav-link px-3" asp-controller="Profile" asp-action="Index" asp-route-id="@UserManager.GetUserId(User)">
                 @CurrentUser.FirstName <i class="fa fa-user"></i>
             </a>
         </div>

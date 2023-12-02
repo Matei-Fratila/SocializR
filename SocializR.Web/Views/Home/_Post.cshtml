@@ -1,10 +1,6 @@
 ﻿@inject UserManager<User> userManager
 @model PostVM
 
-@section Scripts {
-
-}
-
 <div class="container post-container mt-5">
     <div class="row">
         <div class="col-sm-1">
@@ -18,7 +14,7 @@
                     <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.UserId" class="text-bold">@Model.FirstName @Model.LastName</a>
                     @if (Model.IsCurrentUserPost)
                     {
-                        <a class="float-right ms-2"><i class="fa fa-trash"></i></a>
+                        <a class="float-right ms-2 delete-post-btn"><i class="fa fa-trash"></i></a>
                     }
                     <span class="float-right">@Model.CreatedOn</span>
                 </div>

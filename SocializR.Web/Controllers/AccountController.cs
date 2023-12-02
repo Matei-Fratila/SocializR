@@ -48,13 +48,13 @@ public class AccountController(CountyService _countyService,
     }
 
     [HttpGet]
-    public async Task<IActionResult> Logout()
+    public async Task<IActionResult> LogoutAsync()
     {
         //await LogOutCookie();
 
         await _signInManager.SignOutAsync();
 
-        return RedirectToAction(nameof(LoginAsync));
+        return RedirectToAction(nameof(LoginAsync).RemoveAsyncSuffix());
     }
 
     [HttpGet]

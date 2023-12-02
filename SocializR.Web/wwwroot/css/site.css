@@ -2,6 +2,33 @@
     color: dimgray;
 }
 
+#top-navbar{
+    height: 60px;
+    z-index: 999;
+}
+
+#side-menu{
+    padding-top: 60px!important;
+    width: 250px;
+    z-index: 1;
+}
+
+main{
+    margin-top: 60px;
+    margin-left: 250px;
+}
+
+@media screen and (max-width: 768px) {
+    #top-navbar {
+        height: 150px; /* Adjust the height for smaller screens */
+    }
+
+    main{
+        margin-top: 200px!important;
+        margin-left: auto;
+    }
+}
+
 .user-photo {
     width: 68px !important;
     height: 68px !important;

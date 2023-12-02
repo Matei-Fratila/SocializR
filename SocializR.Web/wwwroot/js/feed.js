@@ -55,15 +55,15 @@ jQuery(function ($) {
         var result = confirm("Are you sure you want to delete this post?");
 
         if (result === true) {
-            var postId = $(ev.target).closest('.delete-post-container').find('.post-id').val();
+            var postId = $(ev.target).closest('.post-container').find('#Id').val();
 
             $.ajax({
                 headers: {
                     'Accept': 'application/json'
                 },
                 type: 'POST',
-                url: Router.action('Home', 'DeletePost', { postId: postId }),
-                data: { postId: postId},
+                url: 'Home/DeletePost',
+                data: { postId: postId },
                 success: function () {
                     $(ev.target).closest('.post-container').remove();
                 },
@@ -298,7 +298,7 @@ jQuery(function ($) {
         var comment = $(parent).find('.comment-body').val();
 
         parent = e.target.parentElement.parentElement.parentElement;
-        var postId = $(parent).find('.post-id').val();
+        var postId = $(parent).find('#Id').val();
 
         if (comment !== "") {
             $.ajax({
@@ -336,7 +336,7 @@ jQuery(function ($) {
     $('.more-comments').on('click', function (elem) {
         var container = $(elem.target).closest('.post-footer').find('.comments-container');
         var page = $(elem.target).closest('.post-footer').find('.comments-page').val();
-        var postId = $(elem.target).closest('.post-footer').find('.post-id').val();
+        var postId = $(elem.target).closest('.post-footer').find('#Id').val();
         $.get('Home/NextComments', { page: page, postId: postId }), function (response) {
             var requests = Array();
             for (var i = 0; i < response.length; i++) {
@@ -379,7 +379,7 @@ jQuery(function ($) {
         for (i = 0; i < likes.length; i++) {
             (function () {
                 var like = likes[i];
-                var id = $(like.parentElement).find('.post-id').val();
+                var id = $(like.parentElement).find('#Id').val();
 
                 like.addEventListener("click", function (e) {
 
