@@ -3,7 +3,7 @@
 [Authorize(Roles = "Administrator")]
 public class UserController(IOptionsMonitor<AppSettings> _configuration, 
     IMapper _mapper, 
-    AdminService _userAdminService) : BaseController(_mapper)
+    IAdminService _userAdminService) : BaseController(_mapper)
 {
     [HttpGet]
     public IActionResult Index(int? page)
@@ -17,9 +17,9 @@ public class UserController(IOptionsMonitor<AppSettings> _configuration,
     }
 
     [HttpPost]
-    public IActionResult Delete(string id)
+    public async Task<IActionResult> DeleteAsync(string id)
     {
-        var result = _userAdminService.DeleteUser(id);
+        var result = await _userAdminService.DeleteUser(id);
 
         if (!result)
         {
@@ -30,9 +30,9 @@ public class UserController(IOptionsMonitor<AppSettings> _configuration,
     }
 
     [HttpPost]
-    public IActionResult Activate(string id)
+    public async Task<IActionResult> Activate(string id)
     {
-        var result = _userAdminService.ActivateUser(id);
+        var result = await _userAdminService.ActivateUser(id);
 
         if (!result)
         {

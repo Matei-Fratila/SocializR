@@ -1,9 +1,9 @@
 ﻿namespace SocializR.Services;
 
 public class MediaService(CurrentUser _currentUser, 
-    SocializRUnitOfWork unitOfWork, 
+    ApplicationUnitOfWork unitOfWork, 
     IMapper _mapper, 
-    FriendshipService _friendshipService) : BaseService(unitOfWork)
+    IFriendshipService _friendshipService) : BaseService<Media, MediaService>(unitOfWork), IMediaService
 {
     public bool IsAllowed(bool isAdmin, string id)
     {
@@ -66,9 +66,9 @@ public class MediaService(CurrentUser _currentUser,
         return result;
     }
 
-    public Media Add(Guid albumId, string fileName, MediaTypes type, Post associatedPost = null)
+    public Media Add(Album album, string fileName, MediaTypes type, Post associatedPost = null)
     {
-        if (fileName == null || albumId == Guid.Empty)
+        if (fileName == null || album == null)
         {
             return null;
         }
@@ -83,15 +83,13 @@ public class MediaService(CurrentUser _currentUser,
         var media = new Media
         {
             FilePath = fileName,
-            AlbumId = albumId,
+            Album = album,
             Type = type,
             UserId = _currentUser.Id,
             Post = associatedPost
         };
 
         UnitOfWork.Media.Add(media);
-
-        UnitOfWork.SaveChanges();
 
         return media;
     }

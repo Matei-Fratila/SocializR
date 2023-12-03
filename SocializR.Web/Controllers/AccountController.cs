@@ -1,8 +1,9 @@
-﻿using Utils;
+﻿
+using Utils;
 
 namespace SocializR.Web.Controllers;
 
-public class AccountController(CountyService _countyService,
+public class AccountController(ICountyService _countyService,
     IMapper _mapper,
     UserManager<User> _userManager,
     SignInManager<User> _signInManager) : BaseController(_mapper)

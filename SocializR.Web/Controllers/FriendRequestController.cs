@@ -4,7 +4,7 @@ namespace SocializR.Web.Controllers;
 
 [Authorize]
 public class FriendRequestController(IOptionsMonitor<AppSettings> _configuration,
-    FriendRequestService _friendRequestService, 
+    IFriendRequestService _friendRequestService, 
     IMapper _mapper) : BaseController(_mapper)
 {
     [HttpGet]

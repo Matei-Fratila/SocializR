@@ -1,45 +1,30 @@
-﻿using Utils;
-
-namespace SocializR.Services;
+﻿namespace SocializR.Services;
 
 public class CommentService(CurrentUser _currentUser,
-    SocializRUnitOfWork unitOfWork,
-    IMapper _mapper) : BaseService(unitOfWork)
+    ApplicationUnitOfWork unitOfWork,
+    IImageStorage _imageStorage,
+    IMapper _mapper) : BaseService<Comment, CommentService>(unitOfWork), ICommentService
 {
-    public string AddComment(Comment comment)
+    public List<CommentViewModel> GetPaginated(Guid postId, int commentsPerPage, int page, string defaultProfilePicture)
     {
-        UnitOfWork.Comments.Add(comment);
-        UnitOfWork.SaveChanges();
-        return comment.Id.ToString();
-    }
-
-    public List<CommentViewModel> GetComments(Guid postId, int commentsPerPage, int page)
-        => UnitOfWork.Comments.Query
+        var comments = UnitOfWork.Comments.Query
             .Where(c => c.PostId == postId)
             .OrderByDescending(c => c.CreatedOn)
             .Skip(page * commentsPerPage)
             .Take(commentsPerPage)
             .ProjectTo<CommentViewModel>(_mapper.ConfigurationProvider)
-            .ToList();
+        .ToList();
 
-
-    public bool DeleteComment(string commentId)
-    {
-        var comment = UnitOfWork.Comments.Query
-            .Where(c => c.Id.ToString() == commentId)
-            .FirstOrDefault();
-
-        if (comment == null)
+        //To do: try to map this
+        foreach (var comment in comments)
         {
-            return false;
+            comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? defaultProfilePicture);
         }
 
-        UnitOfWork.Comments.Remove(comment);
-
-        return UnitOfWork.SaveChanges() != 0;
+        return comments;
     }
 
-    public CommentViewModel CurrentUserComment(string body)
+    public CommentViewModel GetCurrentUserCommentViewModel(string body)
     {
         return new CommentViewModel
         {

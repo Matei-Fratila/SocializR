@@ -1,22 +1,26 @@
-﻿using Utils;
-
-namespace SocializR.Web.Controllers;
+﻿namespace SocializR.Web.Controllers;
 
 [Authorize]
 public class ProfileController(UserManager<User> _userManager,
-    ProfileService _profileService,
-    CountyService _countyService,
-    CityService _cityService,
-    InterestService _interestService,
-    MediaService _mediaService,
-    AlbumService _albumService,
-    FriendshipService _friendshipService,
-    PostService _postService,
-    IOptionsMonitor<AppSettings> _configuration,
+    ApplicationUnitOfWork _unitOfWork,
+    IProfileService _profileService,
+    ICountyService _countyService,
+    ICityService _cityService,
+    IInterestService _interestService,
+    IMediaService _mediaService,
+    IAlbumService _albumService,
+    IFriendshipService _friendshipService,
+    IPostService _postService,
+    IOptionsMonitor<AppSettings> _appSettings,
     IHostEnvironment _hostingEnvironment,
     IImageStorage _imageStorage,
     IMapper _mapper) : BaseController(_mapper)
 {
+    private readonly string _profilePicturesAlbumName = _appSettings.CurrentValue.ProfilePicturesAlbumName;
+    private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
+    private readonly string _defaultAlbumCover = _appSettings.CurrentValue.DefaultAlbumCover;
+    private readonly string _fileUploadLocation = _appSettings.CurrentValue.FileUploadLocation;
+
     [HttpGet]
     [AllowAnonymous]
     public async Task<IActionResult> Index(Guid id)
@@ -31,10 +35,10 @@ public class ProfileController(UserManager<User> _userManager,
 
         model = _profileService.GetViewProfileVM(id);
 
-        model.FilePath = _imageStorage.UriFor(model.FilePath ?? _configuration.CurrentValue.DefaultProfilePicture);
+        model.FilePath = _imageStorage.UriFor(model.FilePath ?? _defaultProfilePicture);
         foreach (var album in model.Albums)
         {
-            album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath ?? _configuration.CurrentValue.DefaultAlbumCover);
+            album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath ?? _defaultAlbumCover);
         }
 
         if (model == null)
@@ -129,7 +133,7 @@ public class ProfileController(UserManager<User> _userManager,
         if (!ModelState.IsValid)
         {
             ViewData["Counties"] = _countyService.GetSelectCounties();
-            ViewData["Cities"] = _cityService.GetCities(model.CountyId);
+            ViewData["Cities"] = _cityService.GetAllByCounty(model.CountyId);
 
             model.Interests = _interestService.GetByUser(model.Id);
             ViewData["Interests"] = _interestService.GetAllWithSelected(model.Interests);
@@ -138,35 +142,37 @@ public class ProfileController(UserManager<User> _userManager,
         }
 
         var currentUser = await _userManager.GetUserAsync(User);
-        var result = _profileService.UpdateUser(model);
+        var result = await _profileService.UpdateUser(model);
         var file = model.ProfilePhoto;
 
         if (file != null && result)
         {
-            var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, _configuration.CurrentValue.FileUploadLocation);
+            var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, _fileUploadLocation);
             var type = file.ContentType.ToString().Split('/');
 
             if (file.Length > 0)
             {
                 if (type[0] == "image")
                 {
-                    var albumId = _albumService.GetIdByUserId(model.Id);
-                    if (albumId == Guid.Empty)
+                    var album = _albumService.Get(_profilePicturesAlbumName, model.Id);
+                    if (album == null)
                     {
-                        albumId = _albumService.Create(model.Id);
+                        album = new Album { UserId = model.Id, Name = _profilePicturesAlbumName };
+                        _albumService.Add(album);
                     }
 
                     try
                     {
                         var imageName = await _imageStorage.SaveImage(file.OpenReadStream(), type[1]);
-                        var image = _mediaService.Add(albumId, imageName, MediaTypes.Image);
+                        var image = _mediaService.Add(album, imageName, MediaTypes.Image);
+                        _unitOfWork.SaveChanges();
 
                         if (image == null)
                         {
                             return InternalServerErrorView();
                         }
 
-                        var hasModified = _profileService.ChangeProfilePhoto(image.Id, model.Id);
+                        var hasModified = await _profileService.ChangeProfilePhoto(image.Id, model.Id);
 
                         if (hasModified)
                         {
@@ -204,7 +210,7 @@ public class ProfileController(UserManager<User> _userManager,
 
         if (media == null)
         {
-            return Ok(_imageStorage.UriFor(_configuration.CurrentValue.DefaultProfilePicture));
+            return Ok(_imageStorage.UriFor(_defaultProfilePicture));
         }
 
         return Ok(_imageStorage.UriFor(media));

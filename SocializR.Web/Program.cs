@@ -35,7 +35,7 @@ builder.Services.AddAuthentication("SocializRCookies").AddCookie("SocializRCooki
 
 builder.Services.AddCurrentUser();
 
-builder.Services.AddScoped<SocializRUnitOfWork>();
+builder.Services.AddScoped<ApplicationUnitOfWork>();
 builder.Services.AddBusinessLogic(builder.Environment);
 
 if (builder.Environment.IsDevelopment())

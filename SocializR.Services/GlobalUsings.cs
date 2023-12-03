@@ -1,12 +1,11 @@
 ﻿global using System;
 global using System.IO;
 global using System.Linq;
-global using System.Transactions;
+global using System.Threading.Tasks;
 global using System.Collections.Generic;
 
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Mvc.Rendering;
-global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Http;
 
 global using SocializR.DataAccess.UnitOfWork;
@@ -20,10 +19,13 @@ global using SocializR.Models.ViewModels.Map;
 global using SocializR.Models.ViewModels.Feed;
 global using SocializR.Models.ViewModels.Media;
 global using SocializR.Models.ViewModels.Album;
-global using SocializR.Models.ViewModels.Search;
 global using SocializR.Models.ViewModels.Profile;
 global using SocializR.Models.ViewModels.Friend;
 global using SocializR.Models.ViewModels.Interest;
 global using SocializR.Models.Entities;
 global using SocializR.Models.Enums;
+global using SocializR.Services.Interfaces;
+
+global using Common.Interfaces;
+global using Utils;
 

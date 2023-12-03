@@ -1,52 +1,25 @@
 ﻿namespace SocializR.Services;
 
-public class CityService(SocializRUnitOfWork unitOfWork, IMapper _mapper) : BaseService(unitOfWork)
+public class CityService(ApplicationUnitOfWork unitOfWork, IMapper _mapper) : BaseService<City, CityService>(unitOfWork), ICityService
 {
-    public bool AddCity(string name, string countyId)
-    {
-        var city = new City
-        {
-            Name = name,
-            CountyId = Guid.Parse(countyId)
-        };
-
-        UnitOfWork.Cities.Add(city);
-        return UnitOfWork.SaveChanges() != 0;
-    }
-
-    public bool EditCity(string id, string name)
-    {
-        var city = UnitOfWork.Cities.Query
-            .FirstOrDefault(c => c.Id.ToString() == id);
-
-        if (city == null)
-        {
-            return false;
-        }
-
-        city.Name = name;
-
-        UnitOfWork.Cities.Update(city);
-        return UnitOfWork.SaveChanges() != 0;
-    }
-
-    public List<CityViewModel> GetCitiesByCountyId(string countyId)
+    #region Read
+    public List<CityViewModel> GetAllByCountyId(Guid countyId)
     {
         return UnitOfWork.Cities.Query
-            .Where(u => u.CountyId.ToString() == countyId)
+            .Where(u => u.CountyId == countyId)
             .OrderBy(u => u.Name)
             .ProjectTo<CityViewModel>(_mapper.ConfigurationProvider)
             .ToList();
     }
 
-    public List<SelectListItem> GetCities(Guid? id)
+    public List<SelectListItem> GetAllByCounty(Guid? countyId)
     {
-        if (id == null)
+        if (countyId == null)
         {
             return null;
         }
 
-        var cities = GetAll(id);
+        var cities = GetAll(countyId).OrderBy(c => c.Name);
 
         return cities.Select(c => new SelectListItem
         {
@@ -67,11 +40,45 @@ public class CityService(SocializRUnitOfWork unitOfWork, IMapper _mapper) : Base
             .Where(c => c.CountyId == countyId)
             .ToList();
     }
+    #endregion
 
-    public bool Delete(string cityId)
+    #region Create
+    public bool Create(string name, string countyId)
+    {
+        var city = new City
+        {
+            Name = name,
+            CountyId = Guid.Parse(countyId)
+        };
+
+        UnitOfWork.Cities.Add(city);
+        return UnitOfWork.SaveChanges() != 0;
+    }
+    #endregion
+
+    #region Update
+    public bool EditCity(string id, string name)
     {
         var city = UnitOfWork.Cities.Query
-            .Where(c => c.Id.ToString() == cityId)
+            .FirstOrDefault(c => c.Id.ToString() == id);
+
+        if (city == null)
+        {
+            return false;
+        }
+
+        city.Name = name;
+
+        UnitOfWork.Cities.Update(city);
+        return UnitOfWork.SaveChanges() != 0;
+    }
+    #endregion
+
+    #region Delete
+    public bool Delete(string id)
+    {
+        var city = UnitOfWork.Cities.Query
+            .Where(c => c.Id.ToString() == id)
             .FirstOrDefault();
 
         if (city == null)
@@ -82,4 +89,5 @@ public class CityService(SocializRUnitOfWork unitOfWork, IMapper _mapper) : Base
         UnitOfWork.Cities.Remove(city);
         return UnitOfWork.SaveChanges() != 0;
     }
+    #endregion
 }

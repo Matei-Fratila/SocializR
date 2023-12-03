@@ -1,6 +1,9 @@
 ﻿namespace SocializR.Services;
 
-public class FriendshipService(CurrentUser _currentUser, SocializRUnitOfWork unitOfWork, IMapper _mapper) : BaseService(unitOfWork)
+public class FriendshipService(CurrentUser _currentUser, 
+    ApplicationUnitOfWork unitOfWork, 
+    IMapper _mapper) 
+    : BaseService<Friendship, FriendshipService>(unitOfWork), IFriendshipService
 {
     public int CountMutualFriends(Guid id)
     {

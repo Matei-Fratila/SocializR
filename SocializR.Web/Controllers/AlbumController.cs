@@ -1,8 +1,8 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize]
-public class AlbumController(AlbumService _albumService,
-    MediaService _mediaService,
+public class AlbumController(IAlbumService _albumService,
+    IMediaService _mediaService,
     IImageStorage _imageStorage,
     IMapper _mapper,
     IOptionsMonitor<AppSettings> _configuration) : BaseController(_mapper)
@@ -31,7 +31,7 @@ public class AlbumController(AlbumService _albumService,
             RedirectToAction(nameof(Index));
         }
 
-        var result = _albumService.Add(model);
+        var result = _albumService.Create(model);
 
         if (!result)
         {

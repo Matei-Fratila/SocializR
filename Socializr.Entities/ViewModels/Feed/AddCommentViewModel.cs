@@ -4,5 +4,5 @@ public class AddCommentViewModel
 {
     public string Body { get; set; }
 
-    public string PostId { get; set; }
+    public Guid PostId { get; set; }
 }

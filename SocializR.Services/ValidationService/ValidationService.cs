@@ -1,24 +1,16 @@
-﻿using Common.Interfaces;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace SocializR.Services.ValidationService;
 
-public class ValidationService : BaseService, IValidationService 
+public class ValidationService(UserManager<User> _userManager, IAlbumService _albumService) : IValidationService 
 {
-    public ValidationService(SocializRUnitOfWork unitOfWork)
-        :base(unitOfWork)
-    {
-
-    }
-
     public bool EmailExists(string email)
     {
-        return UnitOfWork.Users.Query
-            .Any(u => u.Email == email);
+        return _userManager.Users.Any(u => u.Email == email);
     }
 
     public bool AlbumExists(string name, string id)
     {
-        return UnitOfWork.Albums.Query
-            .Any(a => a.Name == name && a.Id.ToString() != id);
+        return _albumService.Query.Any(a => a.Name == name && a.Id.ToString() != id);
     }
 }

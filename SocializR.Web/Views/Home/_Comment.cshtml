@@ -2,30 +2,30 @@
 @model CommentViewModel
 
 <div class="comment-container mt-3">
-    <div class="row">
-        <div class="col-1">
-            <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.UserId">
+    @*         <div class="col-2">
+    <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.UserId">
+    <img class="rounded-circle img-thumbnail small-user-photo float-right" src="@Url.Content(Model.UserPhoto)">
+    </a>
+    </div>
+    <div class="col-sm-10 no-padding-left"> *@
+    <div class="card panel-default">
+        <div class="card-header">
+            <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.UserId" class="text-bold">
                 <img class="rounded-circle img-thumbnail small-user-photo" src="@Url.Content(Model.UserPhoto)">
+                @Model.FirstName @Model.LastName
             </a>
-        </div>
-        <div class="col-sm-11 no-padding-left">
-            <div class="card panel-default">
-                <div class="card-header">
-                    <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.UserId" class="text-bold">@Model.FirstName @Model.LastName</a>
-                    <div class="delete-comment-container btn-group-xs float-right">
-                        <input asp-for="@Model.IsCurrentUserComment" value="@Model.IsCurrentUserComment" name="@Model.IsCurrentUserComment" type="hidden" class="is-current-user-comment" />
-                        <input asp-for="@Model.Id" value="@Model.Id" name="@Model.Id" type="hidden" class="comment-id" />
-                        @if (Model.IsCurrentUserComment)
-                        {
-                            <a class="float-right delete-comment-btn close ms-2"><i class="fa fa-trash"></i></a>
-                        }
-                    </div>
-                    <span class="text-muted float-right">@Model.CreatedOn</span>
-                </div>
-                <div class="card-body search-for-link">
-                    @Model.Body
-                </div>
+            <div class="delete-comment-container btn-group-xs float-right">
+                <input asp-for="@Model.IsCurrentUserComment" value="@Model.IsCurrentUserComment" name="@Model.IsCurrentUserComment" type="hidden" class="is-current-user-comment" />
+                <input asp-for="@Model.Id" value="@Model.Id" name="@Model.Id" type="hidden" class="comment-id" />
+                @if (Model.IsCurrentUserComment)
+                {
+                    <a class="float-right delete-comment-btn close ms-2"><i class="fa fa-trash"></i></a>
+                }
             </div>
+            <span class="text-muted float-right">@Model.CreatedOn</span>
+        </div>
+        <div class="card-body search-for-link">
+            @Model.Body
         </div>
     </div>
 </div>

@@ -63,7 +63,7 @@ jQuery(function ($) {
                 },
                 type: 'POST',
                 url: 'Home/DeletePost',
-                data: { postId: postId },
+                data: { id: postId },
                 success: function () {
                     $(ev.target).closest('.post-container').remove();
                 },
@@ -94,7 +94,7 @@ jQuery(function ($) {
                 },
                 type: 'POST',
                 url: 'Home/DeleteComment',
-                data: { commentId: commentId },
+                data: { id: commentId },
                 success: function () {
                     ChangeComments($($(ev.target).closest('.post-container')).find('.see-comments .nr-of-comments'), -1);
                     $(ev.target).closest('.comment-container').remove();
@@ -319,7 +319,7 @@ jQuery(function ($) {
                         elem.text(text);
                         //$(newelement[1]).linkify();
                         $(e.target).closest('.comments-container').find('.fresh-comments-container').append(newelement[1]);
-                        $(newelement).find('.comment-id').val(response.id);
+                        $(newelement).find('.comment-id').val(response);
                         PutDeleteCommentButtons(newelement);
                     });
 

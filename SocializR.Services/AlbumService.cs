@@ -1,29 +1,13 @@
 ﻿namespace SocializR.Services;
 
 public class AlbumService(CurrentUser _currentUser, 
-    SocializRUnitOfWork unitOfWork, 
-    IMapper _mapper) : BaseService(unitOfWork)
+    ApplicationUnitOfWork unitOfWork, 
+    IMapper _mapper) : BaseService<Album, AlbumService>(unitOfWork), IAlbumService
 {
-    public Guid GetPostsAlbum()
-    {
-        var album = UnitOfWork.Albums.Query
-            .Where(a => a.Name == "Posts Photos" && a.UserId == _currentUser.Id)
+    public Album Get(string name, Guid userId)
+        => UnitOfWork.Albums.Query
+            .Where(a => a.Name == name && a.UserId == userId)
             .FirstOrDefault();
-
-        if (album == null)
-        {
-            album = new Album
-            {
-                Name = "Posts Photos",
-                UserId = _currentUser.Id
-            };
-
-            UnitOfWork.Albums.Add(album);
-            UnitOfWork.SaveChanges();
-        }
-
-        return album.Id;
-    }
 
     public List<AlbumViewModel> GetAll()
     {
@@ -44,7 +28,7 @@ public class AlbumService(CurrentUser _currentUser,
             .FirstOrDefault();
     }
 
-    public bool Add(CreateAlbumViewModel model)
+    public bool Create(CreateAlbumViewModel model)
     {
         UnitOfWork.Albums.Add(new Album
         {
@@ -52,36 +36,6 @@ public class AlbumService(CurrentUser _currentUser,
             Name = model.Name
         });
 
-        return UnitOfWork.SaveChanges() != 0;
-    }
-
-    public Guid Create(Guid userId, string albumName = "Profile Pictures")
-    {
-        var album = new Album
-        {
-            UserId = userId,
-            Name = albumName
-        };
-
-        UnitOfWork.Albums.Add(album);
-        UnitOfWork.SaveChanges();
-
-        return album.Id;
-    }
-
-    public bool Delete(string albumId)
-    {
-        var album = UnitOfWork.Albums.Query
-            .Where(a => a.Id.ToString() == albumId)
-            .Include(a => a.Media)
-            .FirstOrDefault();
-
-        if (album == null)
-        {
-            return false;
-        }
-
-        UnitOfWork.Albums.Remove(album);
         return UnitOfWork.SaveChanges() != 0;
     }
 
@@ -102,11 +56,19 @@ public class AlbumService(CurrentUser _currentUser,
         return true;
     }
 
-    public Guid GetIdByUserId(Guid id, string albumName = "Profile Pictures")
+    public bool Delete(string albumId)
     {
-        return UnitOfWork.Albums.Query
-            .Where(u => u.UserId == id && u.Name == albumName)
-            .Select(u => u.Id)
+        var album = UnitOfWork.Albums.Query
+            .Where(a => a.Id.ToString() == albumId)
+            .Include(a => a.Media)
             .FirstOrDefault();
+
+        if (album == null)
+        {
+            return false;
+        }
+
+        UnitOfWork.Albums.Remove(album);
+        return UnitOfWork.SaveChanges() != 0;
     }
 }

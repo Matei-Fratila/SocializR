@@ -34,7 +34,7 @@
 <form method="post" enctype="multipart/form-data" asp-controller="Profile" asp-action="Edit">
     <div class="row mt-5">
         <div class="col-sm-3">
-            <img class="rounded-circle shadow avatar-image" alt="Avatar" src="@Url.Content(Model.FilePath)" />
+            <img class="img-thumbnail rounded-circle shadow-lg avatar-image" alt="Avatar" src="@Url.Content(Model.FilePath)" />
             <input asp-for="ProfilePhoto" type="file" accept="image/*" value="Add Photo">
             <span asp-validation-for="ProfilePhoto"></span>
         </div>
@@ -70,9 +70,15 @@
                     <div class="form-group row mb-3" row>
                         <label asp-for="Gender" class="col-sm-4 col-form-label">Gender</label>
                         <div class="col-sm-8">
-                            @Html.RadioButtonFor(m => m.Gender, GenderTypes.Unspecified, new { id = "" }) @GenderTypes.Unspecified
-                            @Html.RadioButtonFor(m => m.Gender, GenderTypes.Female, new { id = "" }) @GenderTypes.Female
-                            @Html.RadioButtonFor(m => m.Gender, GenderTypes.Male, new { id = "" }) @GenderTypes.Male
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(m => m.Gender, @GenderTypes.Male, new { id = "", @class = "form-check-input", type = "radio" }) @GenderTypes.Male.ToString()
+                            </div>
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(m => m.Gender, @GenderTypes.Female, new { id = "", @class = "form-check-input", type = "radio" }) @GenderTypes.Female.ToString()
+                            </div>
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(m => m.Gender, @GenderTypes.Unspecified, new { id = "", @class = "form-check-input", type = "radio" }) @GenderTypes.Unspecified.ToString()
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -95,9 +101,11 @@
 
                     <div class="form-group row mb-3" row>
                         <label asp-for="IsPrivate" class="col-sm-3 col-form-label">Privacy</label>
-                        <div class="col-sm-8">
-                            @Html.RadioButtonFor(m => m.IsPrivate, false, new { id = "" }) Public
-                            @Html.RadioButtonFor(m => m.IsPrivate, true, new { id = "" }) Private
+                        <div class="col-sm-8 col-form-label">
+                            <div class="form-check form-switch">
+                                <input asp-for="IsPrivate" class="form-check-input" type="checkbox">
+                                Private
+                            </div>
                         </div>
                     </div>
 

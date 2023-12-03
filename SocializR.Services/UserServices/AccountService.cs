@@ -1,25 +1,27 @@
-﻿namespace SocializR.Services.UserServices;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
-public class AccountService(SocializRUnitOfWork unitOfWork, 
-    IMapper _mapper) : BaseService(unitOfWork)
+namespace SocializR.Services.UserServices;
+
+public class AccountService(UserManager<User> _userManager, IMapper _mapper) : IAccountService
 {
     public CurrentUser Get(string email)
     {
-        return UnitOfWork.Users.Query
+        return _userManager.Users
             .Where(u=>u.Email==email)
             .ProjectTo<CurrentUser>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
     }
 
     //TODO: add users in PublicUser role
-    public bool Register(User user)
+    public async Task<bool> Register(User user)
     {
         user.IsActive = true;
         user.IsDeleted = false;
         user.CreatedOn = DateTime.Now;
 
-        UnitOfWork.Users.Add(user);
+        var result = await _userManager.CreateAsync(user);
 
-        return UnitOfWork.SaveChanges() != 0;
+        return result.Succeeded;
     }
 }

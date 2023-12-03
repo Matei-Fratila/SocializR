@@ -16,7 +16,7 @@
                 <span class="city-name">{{name}}</span>
             </td>
             <td>
-                <button class="btn btn-xs edit px-0" title="Edit" data-toggle="tooltip" data-title="Edit"><span class="fa fa-pencil"></span></button>
+                <button class="btn btn-xs edit px-0" title="Edit" data-toggle="tooltip" data-title="Edit"><span class="fa fa-pencil"></span></button> |
                 <button class="btn btn-xs delete px-0" title="Delete" data-toggle="tooltip" data-title="Delete"><span class="fa fa-trash"></span></button>
             </td>
         </tr>
@@ -24,7 +24,7 @@
 }
 
 <div class="row">
-    <div class="column col-sm-4">
+    <div class="column col-sm-6">
         <h3>Counties</h3>
         <p>
             <button id="new-county" class="btn btn-success"><i class="fa fa-plus"></i></button>
@@ -52,8 +52,8 @@
                         </td>
 
                         <td>
-                            <button class="btn btn-xs edit px-0" title="Edit" data-title="Edit" data-toggle="tooltip" data-target="#modal-edit-form"><span class="fa fa-pencil"></span></button>
-                            <button class="btn btn-xs delete px-0" title="Delete" data-title="Delete" data-toggle="tooltip" data-target="#delete"><span class="fa fa-trash"></span></button>
+                            <a class="btn btn-xs edit px-0" title="Edit" data-title="Edit" data-toggle="tooltip" data-target="#modal-edit-form"><span class="fa fa-pencil"></span></a> |
+                            <a class="btn btn-xs delete px-0" title="Delete" data-title="Delete" data-toggle="tooltip" data-target="#delete"><span class="fa fa-trash"></span></a>
                         </td>
 
                     </tr>
@@ -62,7 +62,7 @@
         </table>
     </div>
     <div class="col-sm-1"></div>
-    <div class="column col-sm-4">
+    <div class="column col-sm-5">
         <h3>Cities</h3>
         <p>
             <button id="new-city" class="btn btn-success"><i class="fa fa-plus"></i></button>

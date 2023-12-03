@@ -1,5 +1,5 @@
 ﻿@inject CurrentUser currentUser
-@model FeedViewModel
+@model List<PostVM>
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -14,9 +14,9 @@
 
 <div class="container post-container">
     <div class="row">
-        <div class="col-sm-1">
+        <div class="col-sm-2">
         </div>
-        <div class="col-sm-8 mt-lg-5">
+        <div class="col-sm-8">
             <h3><i class="fa fa-pencil"></i> What's on your mind?</h3>
             <div class="card shadow">
                 <input class="card-header" id="post-title" placeholder="Title..."/>
@@ -24,7 +24,7 @@
                 <img src="" class="card-img-bottom">
                 <div class="card-footer">
                     <button id="share" type="button" class="btn btn-primary">
-                        <i class="fa fa-share"></i> Share
+                        <i class="fa fa-share"></i> Post
                     </button>
                     <span class="btn btn-secondary btn-file float-right">
                         <i class="fa fa-camera"></i> Add file
@@ -37,7 +37,7 @@
 </div>
 
 <div id="posts-container">
-    @foreach (var post in Model.Posts)
+    @foreach (var post in Model)
     {
         @await Html.PartialAsync("_Post", post)
     }

@@ -1,24 +1,12 @@
-﻿namespace SocializR.Web.Code.ExtensionMethods;
+﻿using SocializR.Services.Configuration;
+
+namespace SocializR.Web.Code.ExtensionMethods;
 
 public static class ConfigurationExtensionMethods
 {
     public static IServiceCollection AddBusinessLogic(this IServiceCollection services, IHostEnvironment env)
     {
-        services.AddScoped<CountyService>();
-        services.AddScoped<CityService>();
-        services.AddScoped<AccountService>();
-        services.AddScoped<ProfileService>();
-        services.AddScoped<InterestService>();
-        services.AddScoped<AlbumService>();
-        services.AddScoped<FriendRequestService>();
-        services.AddScoped<FriendshipService>();
-        services.AddScoped<PostService>();
-        services.AddScoped<CommentService>();
-        services.AddScoped<LikeService>();
-        services.AddScoped<FeedService>();
-        services.AddScoped<AdminService>();
-        services.AddScoped<SearchService>();
-        services.AddScoped<MediaService>();
+        services.ConfigureServices();
         services.AddScoped<IValidationService, ValidationService>();
 
         if (env.IsProduction())
@@ -40,8 +28,8 @@ public static class ConfigurationExtensionMethods
             var contextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
             var context = contextAccessor.HttpContext;
             var mail = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value ?? string.Empty;
-            var userService = serviceProvider.GetService<AccountService>();
-            var user = userService.Get(mail);
+            var _accountService= serviceProvider.GetService<IAccountService>();
+            var user = _accountService.Get(mail);
 
             if (user != null)
             {

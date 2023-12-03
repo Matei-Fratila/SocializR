@@ -10,4 +10,6 @@ public class AppSettings
     public string FileUploadWriteLocation { get; set; }
     public string DefaultProfilePicture { get; set; }
     public string DefaultAlbumCover { get; set; }
+    public string PostsAlbumName { get; set; }
+    public string ProfilePicturesAlbumName { get; set; }
 }

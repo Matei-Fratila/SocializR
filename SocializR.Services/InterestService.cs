@@ -1,6 +1,9 @@
 ﻿namespace SocializR.Services;
 
-public class InterestService(CurrentUser _currentUser, SocializRUnitOfWork unitOfWork, IMapper _mapper) : BaseService(unitOfWork)
+public class InterestService(CurrentUser _currentUser, 
+    ApplicationUnitOfWork unitOfWork, 
+    IMapper _mapper) 
+    : BaseService<Interest, InterestService>(unitOfWork), IInterestService
 {
     public List<InterestViewModel> GetAllInterests()
     {

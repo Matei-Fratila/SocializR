@@ -1,8 +1,10 @@
 ﻿namespace SocializR.Services;
 
-public class CountyService(SocializRUnitOfWork unitOfWork, IMapper _mapper) : BaseService(unitOfWork)
+public class CountyService(ApplicationUnitOfWork unitOfWork, IMapper _mapper) 
+    : BaseService<County, CountyService>(unitOfWork), ICountyService
 {
-    public bool AddCounty(string name, string shortName)
+    #region Create
+    public bool Create(string name, string shortName)
     {
         var county = new County
         {
@@ -13,8 +15,10 @@ public class CountyService(SocializRUnitOfWork unitOfWork, IMapper _mapper) : Ba
         UnitOfWork.Counties.Add(county);
         return UnitOfWork.SaveChanges() != 0;
     }
+    #endregion
 
-    public List<CountyViewModel> GetCounties()
+    #region Read
+    public List<CountyViewModel> GetAllCities()
     {
         return UnitOfWork.Counties.Query
             .Where(c=>true==true)
@@ -24,7 +28,26 @@ public class CountyService(SocializRUnitOfWork unitOfWork, IMapper _mapper) : Ba
             
     }
 
-    public bool EditCounty(string id, string name, string shortname)
+    public List<SelectListItem> GetSelectCounties()
+    {
+        var counties = GetAll();
+
+        return counties.Select(c => new SelectListItem
+        {
+            Text = c.Name,
+            Value = c.Id.ToString()
+        })
+        .ToList();
+    }
+
+    public List<County> GetAll()
+    {
+        return UnitOfWork.Counties.Query.ToList();
+    }
+    #endregion
+
+    #region Update
+    public bool Update(string id, string name, string shortname)
     {
         var city = UnitOfWork.Counties.Query
             .FirstOrDefault(c => c.Id.ToString() == id);
@@ -40,8 +63,10 @@ public class CountyService(SocializRUnitOfWork unitOfWork, IMapper _mapper) : Ba
         UnitOfWork.Counties.Update(city);
         return UnitOfWork.SaveChanges() != 0;
     }
+    #endregion
 
-    public int DeleteCounty(string id)
+    #region Delete
+    public int Delete(string id)
     {
         var county = UnitOfWork.Counties.Query
             .Include(c=>c.Cities)
@@ -61,21 +86,5 @@ public class CountyService(SocializRUnitOfWork unitOfWork, IMapper _mapper) : Ba
         UnitOfWork.Counties.Remove(county);
         return UnitOfWork.SaveChanges() == 0 ? 1 : 0;
     }
-
-    public List<SelectListItem> GetSelectCounties()
-    {
-        var counties = GetAll();
-
-        return counties.Select(c => new SelectListItem
-        {
-            Text = c.Name,
-            Value = c.Id.ToString()
-        })
-        .ToList();
-    }
-
-    public List<County> GetAll()
-    {
-        return UnitOfWork.Counties.Query.ToList();
-    }
+    #endregion
 }

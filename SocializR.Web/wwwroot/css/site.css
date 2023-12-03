@@ -29,10 +29,20 @@ main{
     }
 }
 
+@media screen and (max-width: 575px) {
+    .avatar-float{
+        float: left!important;
+    }
+}
+
 .user-photo {
-    width: 68px !important;
-    height: 68px !important;
+    width: 90px !important;
+    height: 90px !important;
     object-fit: cover;
+}
+
+.avatar-float{
+    float: right;
 }
 
 hr {

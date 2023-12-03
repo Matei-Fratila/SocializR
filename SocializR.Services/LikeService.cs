@@ -1,43 +1,40 @@
 ﻿namespace SocializR.Services;
 
-public class LikeService(SocializRUnitOfWork unitOfWork) : BaseService(unitOfWork)
+public class LikeService(ApplicationUnitOfWork unitOfWork, CurrentUser _currentUser) : BaseService<Like, LikeService>(unitOfWork), ILikeService
 {
-    public bool AddLike(string currentUserId, string postId)
+    public void AddLike(Guid postId)
     {
         var like = UnitOfWork.Likes.Query
-            .Where(l => l.PostId.ToString() == postId && l.UserId.ToString() == currentUserId)
+            .Where(l => l.PostId == postId && l.UserId == _currentUser.Id)
             .FirstOrDefault();
 
         if (like != null)
         {
-            return false;
+            return;
         }
 
         like = new Like
         {
-            PostId = new Guid(postId),
-            UserId = new Guid(currentUserId)
+            PostId = postId,
+            UserId = _currentUser.Id
         };
 
-        UnitOfWork.Likes.Add(like);
-        var sucess = UnitOfWork.SaveChanges() != 0;
+        Add(like);
 
-        return sucess;
+        return;
     }
 
-    public bool DeleteLike(string currentUserId, string postId)
+    public void DeleteLike(Guid postId)
     {
         var like = UnitOfWork.Likes.Query
-            .Where(l => l.PostId.ToString() == postId && l.UserId.ToString() == currentUserId)
+            .Where(l => l.PostId == postId && l.UserId == _currentUser.Id)
             .FirstOrDefault();
 
         if (like != null)
         {
-            UnitOfWork.Likes.Remove(like);
+            Remove(like);
         }
 
-        var sucess = UnitOfWork.SaveChanges() != 0;
-
-        return sucess;
+        return;
     }
 }

@@ -1,13 +1,15 @@
-﻿namespace SocializR.Services.UserServices;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
-public class AdminService(SocializRUnitOfWork unitOfWork, 
-    IMapper _mapper) : BaseService(unitOfWork)
+namespace SocializR.Services.UserServices;
+
+public class AdminService(UserManager<User> _userManager, IMapper _mapper) : IAdminService
 {
     public List<UserViewModel> GetAllUsers(int pageIndex, int pageSize, out int totalUserCount)
     {
-        totalUserCount = UnitOfWork.Users.Query.Count();
+        totalUserCount = _userManager.Users.Count();
 
-        return UnitOfWork.Users.Query
+        return _userManager.Users
             .OrderBy(u=>u.FirstName)
             .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
             .Skip(pageSize * pageIndex)
@@ -15,9 +17,9 @@ public class AdminService(SocializRUnitOfWork unitOfWork,
             .ToList();
     }
 
-    public bool DeleteUser(string id)
+    public async Task<bool> DeleteUser(string id)
     {
-        var user = UnitOfWork.Users.Query
+        var user = _userManager.Users
             .Where(u => u.Id.ToString() == id)
             .FirstOrDefault();
 
@@ -27,13 +29,14 @@ public class AdminService(SocializRUnitOfWork unitOfWork,
         }
 
         user.IsDeleted = true;
-        UnitOfWork.Users.Update(user);
-        return UnitOfWork.SaveChanges() != 0;
+        var result = await _userManager.UpdateAsync(user);
+
+        return result.Succeeded;
     }
 
-    public bool ActivateUser(string id)
+    public async Task<bool> ActivateUser(string id)
     {
-        var user = UnitOfWork.Users.Query
+        var user = _userManager.Users
             .Where(u => u.Id.ToString() == id)
             .FirstOrDefault();
 
@@ -43,7 +46,8 @@ public class AdminService(SocializRUnitOfWork unitOfWork,
         }
 
         user.IsDeleted = false;
-        UnitOfWork.Users.Update(user);
-        return UnitOfWork.SaveChanges() != 0;
+        var result = await _userManager.UpdateAsync(user);
+
+        return result.Succeeded;
     }
 }

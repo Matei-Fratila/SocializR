@@ -2,7 +2,7 @@
 
 [Authorize(Roles = "Administrator")]
 public class InterestController(IMapper _mapper, 
-    InterestService _interestService) : BaseController(_mapper)
+    IInterestService _interestService) : BaseController(_mapper)
 {
     [HttpGet]
     public IActionResult Index()

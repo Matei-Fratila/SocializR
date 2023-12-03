@@ -1,8 +1,13 @@
-﻿namespace SocializR.Services.UserServices;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
+
+namespace SocializR.Services.UserServices;
 
 public class ProfileService(CurrentUser _currentUser, 
-    SocializRUnitOfWork unitOfWork, 
-    IMapper _mapper) : BaseService(unitOfWork)
+    IFriendshipService _friendshipService,
+    IFriendRequestService _friendRequestService,
+    UserManager<User> _userManager,
+    IMapper _mapper) : IProfileService
 {
     public byte[] ConvertToByteArray(IFormFile content)
     {
@@ -13,34 +18,36 @@ public class ProfileService(CurrentUser _currentUser,
         }
     }
 
-    public bool ChangeProfilePhoto(Guid photoId, Guid userId)
+    public async Task<bool> ChangeProfilePhoto(Guid photoId, Guid userId)
     {
-        var user = UnitOfWork.Users.Query.FirstOrDefault(u => u.Id == userId);
+        var user = _userManager.Users.FirstOrDefault(u => u.Id == userId);
         user.ProfilePhotoId = photoId;
-        return UnitOfWork.SaveChanges() != 0;
+
+        var result = await _userManager.UpdateAsync(user);
+        return result.Succeeded;
     }
 
     public string GetUserPhoto(string id)
     {
-        return UnitOfWork.Users.Query
+        return _userManager.Users
             .Where(u => u.Id.ToString() == id)
             .Select(u => u.ProfilePhoto.FilePath)
             .FirstOrDefault();
     }
 
     public ProfileViewModel GetEditProfileVM() =>
-        UnitOfWork.Users.Query
+        _userManager.Users
             .Where(u => u.Id == _currentUser.Id)
             .ProjectTo<ProfileViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
 
     public ProfileViewModel GetEditProfileVM(Guid id)
     {
-        var user = UnitOfWork.Users.Query
+        var user = _userManager.Users
             .Where(u => u.Id == id && u.IsDeleted == false)
             .FirstOrDefault();
 
-        var profile = UnitOfWork.Users.Query
+        var profile = _userManager.Users
             .Where(u => u.Id == id && u.IsDeleted == false)
             .ProjectTo<ProfileViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
@@ -50,7 +57,7 @@ public class ProfileService(CurrentUser _currentUser,
 
     public ViewProfileViewModel GetViewProfileVM(Guid id)
     {
-        var result = UnitOfWork.Users.Query
+        var result = _userManager.Users
            .Include(u => u.ProfilePhoto)
            .Where(u => u.Id == id && u.IsDeleted == false)
            .ProjectTo<ViewProfileViewModel>(_mapper.ConfigurationProvider)
@@ -59,9 +66,9 @@ public class ProfileService(CurrentUser _currentUser,
         return result;
     }
 
-    public bool UpdateUser(ProfileViewModel model)
+    public async Task<bool> UpdateUser(ProfileViewModel model)
     {
-        var user = UnitOfWork.Users.Query
+        var user = _userManager.Users
             .Include(u => u.City)
             .Include(u => u.UserInterests)
                 .ThenInclude(i => i.Interest)
@@ -75,22 +82,22 @@ public class ProfileService(CurrentUser _currentUser,
 
         _mapper.Map<ProfileViewModel, User>(model, user);
 
-        UnitOfWork.Users.Update(user);
+        var result = await _userManager.UpdateAsync(user);
 
-        return UnitOfWork.SaveChanges() != 0;
+        return result.Succeeded;
     }
 
-    public bool UpdateCurrentUser(ProfileViewModel model)
+    public async Task<bool> UpdateCurrentUser(ProfileViewModel model)
     {
-        var user = UnitOfWork.Users.Query
+        var user = _userManager.Users
             .Where(u => u.Id == _currentUser.Id)
             .FirstOrDefault();
 
         _mapper.Map<ProfileViewModel, User>(model, user);
 
-        UnitOfWork.Users.Update(user);
+        var result = await _userManager.UpdateAsync(user);
 
-        return UnitOfWork.SaveChanges() != 0;
+        return result.Succeeded;
     }
 
     public RelationTypes GetRelationToCurrentUser(string currentUserId, string id)
@@ -105,7 +112,7 @@ public class ProfileService(CurrentUser _currentUser,
             return RelationTypes.Unknown;
         }
 
-        var hasEntries = UnitOfWork.Friendships.Query
+        var hasEntries = _friendshipService.Query
             .Where(f => f.FirstUserId.ToString() == id && f.SecondUserId == _currentUser.Id)
             .Any();
 
@@ -114,7 +121,7 @@ public class ProfileService(CurrentUser _currentUser,
             return RelationTypes.Friends;
         }
 
-        hasEntries = UnitOfWork.Friendships.Query
+        hasEntries = _friendshipService.Query
             .Where(f => f.SecondUserId.ToString() == id && f.FirstUserId == _currentUser.Id)
             .Any();
 
@@ -123,7 +130,7 @@ public class ProfileService(CurrentUser _currentUser,
             return RelationTypes.Friends;
         }
 
-        hasEntries = UnitOfWork.FriendRequests.Query
+        hasEntries = _friendRequestService.Query
             .Where(f => f.RequesterUserId.ToString() == id && f.RequestedUserId == _currentUser.Id)
             .Any();
 
@@ -132,7 +139,7 @@ public class ProfileService(CurrentUser _currentUser,
             return RelationTypes.PendingAccept;
         }
 
-        hasEntries = UnitOfWork.FriendRequests.Query
+        hasEntries = _friendRequestService.Query
             .Where(f => f.RequestedUserId.ToString() == id && f.RequesterUserId == _currentUser.Id)
             .Any();
 

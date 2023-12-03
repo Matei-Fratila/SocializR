@@ -1,6 +1,9 @@
 ﻿namespace SocializR.Services;
 
-public class FriendRequestService(CurrentUser _currentUser, SocializRUnitOfWork unitOfWork, IMapper _mapper) : BaseService(unitOfWork)
+public class FriendRequestService(CurrentUser _currentUser, 
+    ApplicationUnitOfWork unitOfWork, 
+    IMapper _mapper) :
+    BaseService<FriendRequest, FriendRequestService>(unitOfWork), IFriendRequestService
 {
     public List<FriendrequestViewModel> GetAllFriendRequests()
     {

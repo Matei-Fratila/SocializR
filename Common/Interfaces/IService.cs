@@ -1,5 +1,7 @@
 ﻿namespace Common.Interfaces;
 
-class IService
+public interface IService<TEntity>
+    where TEntity : IEntity, new()
 {
+
 }

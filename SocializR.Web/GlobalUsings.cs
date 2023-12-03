@@ -53,3 +53,6 @@ global using SocializR.Services.ValidationService;
 global using SocializR.DataAccess;
 global using SocializR.DataAccess.Seeds;
 global using SocializR.DataAccess.UnitOfWork;
+
+global using SocializR.Services.Interfaces;
+global using Utils;

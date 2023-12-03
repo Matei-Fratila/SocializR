@@ -2,9 +2,10 @@
 
 [Authorize]
 public class MediaController(IMapper _mapper,
-    AlbumService _albumService,
-    MediaService _mediaService,
+    IAlbumService _albumService,
+    IMediaService _mediaService,
     UserManager<User> _userManager,
+    CurrentUser _currentUser,
     IImageStorage _imageStorage) : BaseController(_mapper)
 {
     [HttpGet]
@@ -73,7 +74,7 @@ public class MediaController(IMapper _mapper,
     }
 
     [HttpPost]
-    public async Task<JsonResult> Upload(List<IFormFile> media, Guid id)
+    public async Task<JsonResult> Upload(List<IFormFile> media, Guid id, string albumName)
     {
         var ids = new List<string>();
 
@@ -87,9 +88,15 @@ public class MediaController(IMapper _mapper,
                 {
                     try
                     {
-                        var imageId = await _imageStorage.SaveImage(file.OpenReadStream(), type[1]);
+                        var imageName = await _imageStorage.SaveImage(file.OpenReadStream(), type[1]);
 
-                        var result = _mediaService.Add(id, imageId, type[0] == "image" ? MediaTypes.Image : MediaTypes.Video);
+                        var album = _albumService.Get(albumName, _currentUser.Id);
+                        if (album == null)
+                        {
+                            _albumService.Add(new Album { Name = albumName, UserId = _currentUser.Id });
+                        }
+
+                        var result = _mediaService.Add(album, imageName, type[0] == "image" ? MediaTypes.Image : MediaTypes.Video);
 
                         if (result == null)
                         {

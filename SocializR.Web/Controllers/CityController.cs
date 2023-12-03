@@ -1,12 +1,13 @@
 ﻿namespace SocializR.Web.Controllers;
 
-public class CityController(CityService _cityService, 
+public class CityController(ICityService _cityService, 
     IMapper _mapper) : BaseController(_mapper)
 {
     [HttpGet]
-    public JsonResult Index(string id)
+    public JsonResult Index(Guid id)
     {
-        var cities = _cityService.GetCitiesByCountyId(id);
+        var cities = _cityService.GetAllByCountyId(id);
+
         return Json(cities);
     }
 
@@ -14,7 +15,7 @@ public class CityController(CityService _cityService,
     [AllowAnonymous]
     public List<SelectListItem> GetAllByCounty(Guid id)
     {
-        return _cityService.GetCities(id);
+        return _cityService.GetAllByCounty(id);
     }
 
     [HttpPost]
@@ -46,7 +47,7 @@ public class CityController(CityService _cityService,
     [HttpPost]
     public IActionResult Add(string name, string countyId)
     {
-        var result = _cityService.AddCity(name, countyId);
+        var result = _cityService.Create(name, countyId);
 
         if (!result)
         {

@@ -1,34 +1,25 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize]
-public class HomeController(IOptionsMonitor<AppSettings> _configuration,
-    IMapper _mapper,
-    AlbumService _albumService,
-    FeedService _feedService,
-    MediaService _mediaService,
-    UserManager<User> _userManager,
-    CommentService _commentService,
+public class HomeController(IMapper _mapper,
+    ApplicationUnitOfWork _applicationUnitOfWork,
+    IPostService _postService,
+    ICommentService _commentService,
+    ILikeService _likeService,
+    IOptionsMonitor<AppSettings> _appSettings,
+    CurrentUser _currentUser,
     IImageStorage _imageStorage) : BaseController(_mapper)
 {
+    private readonly int _postsPerPage = _appSettings.CurrentValue.PostsPerPage;
+    private readonly int _commentsPerFirstPage = _appSettings.CurrentValue.CommentsPerFirstPage;
+    private readonly int _commentsPerPage = _appSettings.CurrentValue.CommentsPerPage;
+    private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
+    private readonly string _defaultPostsAlbumName = _appSettings.CurrentValue.PostsAlbumName;
+
     [HttpGet]
     public IActionResult Index()
     {
-        var model = _feedService.GetNextPosts(0, _configuration.CurrentValue.PostsPerPage, _configuration.CurrentValue.CommentsPerPage);
-
-        foreach(var media in model.Posts.SelectMany(x => x.Media))
-        {
-            media.FilePath = _imageStorage.UriFor(media.FilePath ?? _configuration.CurrentValue.DefaultProfilePicture);
-        }
-
-        foreach(var post in model.Posts)
-        {
-            post.UserPhoto = _imageStorage.UriFor(post.UserPhoto ?? _configuration.CurrentValue.DefaultProfilePicture);
-        }
-
-        foreach (var comment in model.Posts.SelectMany(p => p.Comments))
-        {
-            comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _configuration.CurrentValue.DefaultProfilePicture);
-        }
+        var model = _postService.GetPaginated(_currentUser.Id, 0, _postsPerPage, _commentsPerFirstPage, _defaultProfilePicture);
 
         return View(model);
     }
@@ -36,17 +27,7 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     [HttpGet]
     public JsonResult NextPosts(int page)
     {
-        var model = _feedService.GetNextPosts(page, _configuration.CurrentValue.PostsPerPage, _configuration.CurrentValue.PostsPerPage);
-
-        foreach (var post in model.Posts)
-        {
-            post.UserPhoto = _imageStorage.UriFor(post.UserPhoto ?? _configuration.CurrentValue.DefaultProfilePicture);
-        }
-
-        foreach (var comment in model.Posts.SelectMany(p => p.Comments))
-        {
-            comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _configuration.CurrentValue.DefaultProfilePicture);
-        }
+        var model = _postService.GetPaginated(_currentUser.Id, page, _postsPerPage, _commentsPerPage, _defaultProfilePicture);
 
         return Json(model);
     }
@@ -54,12 +35,7 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     [HttpGet]
     public JsonResult NextComments(int page, Guid postId)
     {
-        var comments = _commentService.GetComments(postId, _configuration.CurrentValue.CommentsPerPage, page);
-
-        foreach (var comment in comments)
-        {
-            comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _configuration.CurrentValue.DefaultProfilePicture);
-        }
+        var comments = _commentService.GetPaginated(postId, _commentsPerPage, page, _defaultProfilePicture);
 
         return Json(comments);
     }
@@ -67,43 +43,9 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     [HttpPost]
     public async Task<IActionResult> AddPost(AddPostViewModel model)
     {
-        var media = new List<Media>();
+        await _postService.AddPost(model, _defaultPostsAlbumName);
 
-        if (model.Media != null)
-        {
-            foreach (var file in model.Media)
-            {
-                var id = _albumService.GetPostsAlbum();
-
-                if (file.Length > 0)
-                {
-                    var type = file.ContentType.ToString().Split('/');
-                    if (type[0] == "image" || type[0] == "video")
-                    {
-                        var name = await _imageStorage.SaveImage(file.OpenReadStream(), type[1]);
-                        media.Add(_mediaService.Add(id, name, type[0] == "image" ? MediaTypes.Image : MediaTypes.Video));
-                    }
-                }
-            }
-        }
-
-        var result = _feedService.AddPost(_userManager.GetUserId(User), model.Title, model.Body, media);
-
-        if (!result)
-        {
-            return InternalServerErrorView();
-        }
-
-        return Ok();
-
-    }
-
-    [HttpPost]
-    public IActionResult DeletePost(string postId)
-    {
-        var result = _feedService.DeletePost(postId);
-
-        if (!result)
+        if (_applicationUnitOfWork.SaveChanges() == 0)
         {
             return InternalServerErrorView();
         }
@@ -112,11 +54,11 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     }
 
     [HttpPost]
-    public IActionResult Like(string id)
+    public IActionResult DeletePost(Guid id)
     {
-        var result = _feedService.LikePost(_userManager.GetUserId(User), id);
+        _postService.Remove(id);
 
-        if (!result)
+        if (_applicationUnitOfWork.SaveChanges() == 0)
         {
             return InternalServerErrorView();
         }
@@ -125,19 +67,11 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     }
 
     [HttpPost]
-    public JsonResult AddComment([FromBody] AddCommentViewModel comment)
+    public IActionResult Like(Guid id)
     {
-        var id = _feedService.AddComment(_userManager.GetUserId(User), comment.Body, comment.PostId);
+        _likeService.AddLike(id);
 
-        return Json(new { id });
-    }
-
-    [HttpPost]
-    public IActionResult DeleteComment(string commentId)
-    {
-        var result = _feedService.DeleteComment(commentId);
-
-        if (!result)
+        if (_applicationUnitOfWork.SaveChanges() == 0)
         {
             return InternalServerErrorView();
         }
@@ -146,11 +80,41 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     }
 
     [HttpPost]
-    public IActionResult DeleteLike(string id)
+    public Guid AddComment([FromBody] AddCommentViewModel comment)
     {
-        var result = _feedService.DeleteLike(_userManager.GetUserId(User), id);
+        var newComment = new Comment
+        {
+            UserId = _currentUser.Id,
+            Body = comment.Body,
+            CreatedOn = DateTime.Now,
+            PostId = comment.PostId
+        };
 
-        if (!result)
+        _commentService.Add(newComment);
+        _applicationUnitOfWork.SaveChanges();
+
+        return newComment.Id;
+    }
+
+    [HttpPost]
+    public IActionResult DeleteComment(Guid id)
+    {
+        _commentService.Remove(id);
+
+        if (_applicationUnitOfWork.SaveChanges() == 0)
+        {
+            return InternalServerErrorView();
+        }
+
+        return Ok();
+    }
+
+    [HttpPost]
+    public IActionResult DeleteLike(Guid id)
+    {
+        _likeService.DeleteLike(id);
+
+        if (_applicationUnitOfWork.SaveChanges() == 0)
         {
             return InternalServerErrorView();
         }
@@ -161,9 +125,9 @@ public class HomeController(IOptionsMonitor<AppSettings> _configuration,
     [HttpGet]
     public IActionResult GetCommentWidget(string body)
     {
-        var comment = _feedService.CurrentUserComment(body);
+        var comment = _commentService.GetCurrentUserCommentViewModel(body);
 
-        comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _configuration.CurrentValue.DefaultProfilePicture);
+        comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _defaultProfilePicture);
 
         return PartialView("Views/Home/_Comment.cshtml", comment);
     }

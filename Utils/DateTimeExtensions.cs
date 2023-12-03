@@ -3,18 +3,32 @@ public static class DateTimeExtensions
 {
     public static string TimeAgo(this DateTime dateTime)
     {
-        var timeDifference = DateTime.Now - dateTime;
+        var timeSpan = DateTime.Now - dateTime;
 
-        if (timeDifference.Minutes < 1) return timeDifference.Seconds == 1 ? "1 second ago" : $"{timeDifference.Seconds} seconds ago";
-        if (timeDifference.Hours < 1) return timeDifference.Minutes == 1 ? "1 minute ago" : $"{timeDifference.Minutes} minutes ago";
+        return timeSpan.TotalSeconds switch
+        { 
+            <= 60 => $"{timeSpan.Seconds} seconds ago",
+            _ => timeSpan.TotalMinutes switch
+            {
+                <= 1 => "1 minute ago",
+                < 60 => $"{timeSpan.Minutes} minutes ago",
+                _ => timeSpan.TotalHours switch
+                {
+                    <= 1 => "1 hour ago",
+                    < 24 => $"{timeSpan.Hours} hours ago",
+                    _ => timeSpan.TotalDays switch
+                    {
+                        <= 1 => "yesterday",
+                        <= 30 => $"{timeSpan.Days} days ago",
 
-        switch (timeDifference.Days)
-        {
-            case < 1: return timeDifference.Hours == 1 ? "1 hour ago" : $"{timeDifference.Hours} hours ago";
-            case < 7: return timeDifference.Days == 1 ? "1 day ago" : $"{timeDifference.Days} days ago";
-            case < 30: return timeDifference.Days / 7 == 1 ? "1 week ago" : $"{timeDifference.Days / 7} weeks ago";
-            case < 365: return timeDifference.Days / 30 == 1 ? "1 month ago" : $"{timeDifference.Days / 30} months ago";
-            default: return timeDifference.Days / 365 == 1 ? "1 year ago" : $"{timeDifference.Days / 365} years ago";
-        }
+                        <= 60 => "1 month ago",
+                        < 365 => $"{timeSpan.Days / 30} months ago",
+
+                        <= 365 * 2 => "1 year ago",
+                        _ => $"{timeSpan.Days / 365} years ago"
+                    }
+                }
+            }
+        };
     }
 }

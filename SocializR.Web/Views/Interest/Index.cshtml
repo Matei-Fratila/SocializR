@@ -4,14 +4,14 @@
     ViewData["Title"] = "Interests";
 }
 
-@section Scripts{
+@section Scripts {
     <script src="~/js/interest.js"></script>
 }
 
-<h2>Interests</h2>
+<h3>Interests</h3>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create"><i class="btn btn-success fa fa-plus"></i></a>
 </p>
 <table class="table table-sm table-hover shadow px-3">
     <thead>
@@ -36,9 +36,15 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @*@Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |*@
-                    <a class="delete-interest">Delete</a>
+                    @* <a class="delete-interest">Delete</a> *@
+
+                    <a class="btn btn-xs edit px-0" title="Edit" data-toggle="tooltip" data-title="Edit" asp-controller="Interest" asp-action="Edit" asp-route-id="@item.Id">
+                        <i class="fa fa-pencil"></i>
+                    </a> |
+
+                    <button class="btn btn-xs delete px-0" title="Delete" data-toggle="tooltip" data-title="Delete">
+                        <i class="fa fa-trash delete-interest"></i>
+                    </button>
                 </td>
             </tr>
         }
