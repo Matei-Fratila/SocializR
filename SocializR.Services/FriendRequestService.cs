@@ -1,66 +1,47 @@
 ﻿namespace SocializR.Services;
 
-public class FriendRequestService(CurrentUser _currentUser, 
-    ApplicationUnitOfWork unitOfWork, 
+public class FriendRequestService(ApplicationUnitOfWork unitOfWork,
     IMapper _mapper) :
     BaseService<FriendRequest, FriendRequestService>(unitOfWork), IFriendRequestService
 {
-    public List<FriendrequestViewModel> GetAllFriendRequests()
-    {
-        var friends1 = UnitOfWork.FriendRequests.Query
-            //.Include(u => u.RequesterUser)
-            .Where(u => u.RequestedUserId == _currentUser.Id && u.RequesterUser.IsDeleted==false)
-                .ProjectTo<FriendrequestViewModel>(_mapper.ConfigurationProvider)
-            .ToList();
+    public async Task<List<FriendrequestViewModel>> GetAllAsync(Guid requestedUserId)
+        => await UnitOfWork.FriendRequests.Query
+            .Where(u => u.RequestedUserId == requestedUserId
+                && u.RequesterUser.IsDeleted == false)
+            .ProjectTo<FriendrequestViewModel>(_mapper.ConfigurationProvider)
+            .ToListAsync();
 
-        return friends1;
-    }
-
-    public List<FriendrequestViewModel> GetFriendRequests(int pageIndex, int pageSize, out int totalRequestsCount)
-    {
-        totalRequestsCount = UnitOfWork.FriendRequests.Query
+    public async Task<int> GetCountAsync(Guid requestedUserId)
+        => await UnitOfWork.FriendRequests.Query
             .Include(u => u.RequesterUser)
-            .Where(u => u.RequestedUserId == _currentUser.Id && u.RequesterUser.IsDeleted == false).Count();
+            .Where(u => u.RequestedUserId == requestedUserId
+                && u.RequesterUser.IsDeleted == false)
+            .CountAsync();
 
-        return UnitOfWork.FriendRequests.Query
-            //.Include(u => u.RequesterUser)
-            .Where(u => u.RequestedUserId == _currentUser.Id && u.RequesterUser.IsDeleted == false)
-                .ProjectTo<FriendrequestViewModel>(_mapper.ConfigurationProvider)
-                .Skip(pageSize * pageIndex)
+    public async Task<List<FriendrequestViewModel>> GetPaginatedAsync(Guid requestedUserId, int pageIndex, int pageSize)
+        => await UnitOfWork.FriendRequests.Query
+            .Where(u => u.RequestedUserId == requestedUserId
+                && u.RequesterUser.IsDeleted == false)
+            .OrderBy(u => u.RequesterUser.FirstName)
+            .ProjectTo<FriendrequestViewModel>(_mapper.ConfigurationProvider)
+            .Skip(pageSize * pageIndex)
             .Take(pageSize)
-            .ToList();
-    }
+            .ToListAsync();
 
-    public bool DeleteFriendRequest(Guid id)
+    public void Delete(Guid requestedUserId, Guid requesterUserId)
     {
         var friendrequest = UnitOfWork.FriendRequests.Query
-            .Where(f => f.RequesterUserId == id 
-            && f.RequestedUserId == _currentUser.Id 
-            || f.RequesterUserId == _currentUser.Id 
-            && f.RequestedUserId == id)
+            .Where(f => f.RequesterUserId == requestedUserId
+                && f.RequestedUserId == requesterUserId
+                || f.RequesterUserId == requesterUserId
+                && f.RequestedUserId == requestedUserId)
             .FirstOrDefault();
 
         if (friendrequest == null)
         {
-            return false;
+            return;
         }
 
-        UnitOfWork.FriendRequests.Remove(friendrequest);
-
-        return UnitOfWork.SaveChanges() != 0;
-    }
-
-    public bool SendFriendRequest(Guid id)
-    {
-        var friendRequest = new FriendRequest
-        {
-            RequestedUserId = id,
-            RequesterUserId = _currentUser.Id,
-            CreatedOn = DateTime.Now
-        };
-
-        UnitOfWork.FriendRequests.Add(friendRequest);
-
-        return UnitOfWork.SaveChanges() != 0;
+        Remove(friendrequest);
     }
 }

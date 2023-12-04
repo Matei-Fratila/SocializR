@@ -29,7 +29,7 @@ public static class ConfigurationExtensionMethods
             var context = contextAccessor.HttpContext;
             var mail = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value ?? string.Empty;
             var _accountService= serviceProvider.GetService<IAccountService>();
-            var user = _accountService.Get(mail);
+            var user = _accountService.GetCurrentUser(mail);
 
             if (user != null)
             {

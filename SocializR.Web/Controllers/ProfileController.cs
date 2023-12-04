@@ -1,7 +1,10 @@
-﻿namespace SocializR.Web.Controllers;
+﻿using SocializR.Models.Entities;
+
+namespace SocializR.Web.Controllers;
 
 [Authorize]
-public class ProfileController(UserManager<User> _userManager,
+public class ProfileController(CurrentUser _currentUser,
+    UserManager<User> _userManager,
     ApplicationUnitOfWork _unitOfWork,
     IProfileService _profileService,
     ICountyService _countyService,
@@ -23,7 +26,7 @@ public class ProfileController(UserManager<User> _userManager,
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> Index(Guid id)
+    public async Task<IActionResult> IndexAsync(Guid id)
     {
         ViewProfileViewModel model = null;
         var currentUser = await _userManager.GetUserAsync(User);
@@ -48,22 +51,22 @@ public class ProfileController(UserManager<User> _userManager,
 
         if (id != currentUser.Id)
         {
-            model.MutualFriends = _friendshipService.CountMutualFriends(id);
+            model.MutualFriends = await _friendshipService.GetMutualFriendsCountAsync(id, _currentUser.Id);
         }
 
-        List<SelectListItem> selectedInterests = _interestService.GetAll();
+        var selectedInterests = await _interestService.GetSelectedSelectListAsync(model.Interests);
 
-        if (model.Interests.Any())
-        {
-            foreach (var interest in model.Interests)
-            {
-                selectedInterests.Single(i => i.Value == interest.ToString()).Selected = true;
-            }
-        }
-        else
-        {
-            selectedInterests.First().Selected = true;
-        }
+        //if (model.Interests.Any())
+        //{
+        //    foreach (var interest in model.Interests)
+        //    {
+        //        selectedInterests.Single(i => i.Value == interest.ToString()).Selected = true;
+        //    }
+        //}
+        //else
+        //{
+        //    selectedInterests.First().Selected = true;
+        //}
 
         ViewData["Interests"] = selectedInterests;
 
@@ -82,7 +85,7 @@ public class ProfileController(UserManager<User> _userManager,
     }
 
     [HttpGet]
-    public async Task<IActionResult> Edit(Guid id)
+    public async Task<IActionResult> EditAsync(Guid id)
     {
         ProfileViewModel model = null;
         var currentUser = await _userManager.GetUserAsync(User);
@@ -116,10 +119,10 @@ public class ProfileController(UserManager<User> _userManager,
         }
 
         ViewData["Counties"] = new SelectList(_countyService.GetAll(), nameof(County.Id), nameof(County.Name));
-        ViewData["Cities"] = new SelectList(_cityService.GetAll(model.CountyId), nameof(City.Id), nameof(City.Name));
+        ViewData["Cities"] = new SelectList(await _cityService.GetAllAsync(model.CountyId.Value), nameof(City.Id), nameof(City.Name));
 
-        model.Interests = _interestService.GetByUser(id);
-        ViewData["Interests"] = _interestService.GetAllWithSelected(model.Interests);
+        model.Interests = await _interestService.GetByUserAsync(id);
+        ViewData["Interests"] = await _interestService.GetSelectedSelectListAsync(model.Interests);
 
         model.FilePath = _imageStorage.UriFor(model.FilePath);
 
@@ -128,15 +131,15 @@ public class ProfileController(UserManager<User> _userManager,
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(ProfileViewModel model)
+    public async Task<IActionResult> EditAsync(ProfileViewModel model)
     {
         if (!ModelState.IsValid)
         {
-            ViewData["Counties"] = _countyService.GetSelectCounties();
-            ViewData["Cities"] = _cityService.GetAllByCounty(model.CountyId);
+            ViewData["Counties"] = await _countyService.GetSelectListAsync();
+            ViewData["Cities"] = await _cityService.GetAllAsync(model.CountyId.Value);
 
-            model.Interests = _interestService.GetByUser(model.Id);
-            ViewData["Interests"] = _interestService.GetAllWithSelected(model.Interests);
+            model.Interests = await _interestService.GetByUserAsync(model.Id);
+            ViewData["Interests"] = await _interestService.GetSelectedSelectListAsync(model.Interests);
 
             return View(model);
         }
@@ -164,8 +167,7 @@ public class ProfileController(UserManager<User> _userManager,
                     try
                     {
                         var imageName = await _imageStorage.SaveImage(file.OpenReadStream(), type[1]);
-                        var image = _mediaService.Add(album, imageName, MediaTypes.Image);
-                        _unitOfWork.SaveChanges();
+                        var image = _mediaService.Add(imageName, MediaTypes.Image, album);
 
                         if (image == null)
                         {
@@ -176,8 +178,17 @@ public class ProfileController(UserManager<User> _userManager,
 
                         if (hasModified)
                         {
-                            _postService.NotifyProfilePhotoChanged(image, model.Id);
+                            _postService.Add(new Post
+                            {
+                                UserId = model.Id,
+                                Title = "added a new profile photo",
+                                Body = "",
+                                CreatedOn = DateTime.Now,
+                                Media = [image]
+                            });
                         }
+
+                        _unitOfWork.SaveChanges();
 
                     }
                     catch (Exception e)
@@ -195,7 +206,8 @@ public class ProfileController(UserManager<User> _userManager,
 
         if (await _userManager.IsInRoleAsync(currentUser, "Administrator") && model.Id != currentUser.Id)
         {
-            return RedirectToAction(nameof(UserController.Index), nameof(UserController).RemoveControllerSuffix());
+            return RedirectToAction(nameof(UserController.IndexAsync).RemoveAsyncSuffix(),
+                nameof(UserController).RemoveControllerSuffix());
         }
 
         return RedirectToAction(nameof(Index), new { id = currentUser.Id });

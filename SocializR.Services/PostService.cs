@@ -1,16 +1,16 @@
 ﻿namespace SocializR.Services;
 
 public class PostService(CurrentUser _currentUser, 
-    ApplicationUnitOfWork unitOfWork, 
+    ApplicationUnitOfWork _unitOfWork, 
     IMapper _mapper,
     IAlbumService _albumService,
     IImageStorage _imageStorage,
     IMediaService _mediaService,
-    ICommentService _commentService) : BaseService<Post, PostService>(unitOfWork), IPostService
+    ICommentService _commentService) : BaseService<Post, PostService>(_unitOfWork), IPostService
 {
-    public List<PostVM> GetPaginated(Guid userId, int page, int postsPerPage, int commentsPerPage, string defaultProfilePicture)
+    public async Task<List<PostVM>> GetPaginatedAsync(Guid userId, int page, int postsPerPage, int commentsPerPage, string defaultProfilePicture)
     {
-        var posts = UnitOfWork.Posts.Query
+        var posts = await UnitOfWork.Posts.Query
             .Include(p => p.User)
             .Include(u => u.Media)
             .Where(p => p.User.FriendsFirstUser.FirstOrDefault(f => f.SecondUserId == _currentUser.Id 
@@ -20,12 +20,12 @@ public class PostService(CurrentUser _currentUser,
             .Skip(page * postsPerPage)
             .Take(postsPerPage)
             .ProjectTo<PostVM>(_mapper.ConfigurationProvider)
-            .ToList();
+            .ToListAsync();
 
         //To do: try to move this to mappers
         foreach (var post in posts)
         {
-            post.Comments = _commentService.GetPaginated(post.Id, commentsPerPage, 0, defaultProfilePicture);
+            post.Comments = await _commentService.GetPaginatedAsync(post.Id, commentsPerPage, 0, defaultProfilePicture);
             post.UserPhoto = _imageStorage.UriFor(post.UserPhoto ?? defaultProfilePicture);
             post.IsCurrentUserPost = post.UserId == _currentUser.Id;
             post.IsLikedByCurrentUser = post.Likes.Any(l => l.UserId == _currentUser.Id);
@@ -45,7 +45,7 @@ public class PostService(CurrentUser _currentUser,
         return posts;
     }
 
-    public async Task AddPost(AddPostViewModel model, string albumName)
+    public async Task AddAsync(AddPostViewModel model, string albumName)
     {
         var media = new List<Media>();
 
@@ -66,7 +66,9 @@ public class PostService(CurrentUser _currentUser,
                     if (type[0] == "image" || type[0] == "video")
                     {
                         var fileName = await _imageStorage.SaveImage(file.OpenReadStream(), type[1]);
-                        media.Add(_mediaService.Add(album, fileName, type[0] == "image" ? MediaTypes.Image : MediaTypes.Video));
+                        var mediaType = type[0] == "image" ? MediaTypes.Image : MediaTypes.Video;
+
+                        media.Add(_mediaService.Add(fileName, mediaType, album));
                     }
                 }
             }
@@ -80,25 +82,6 @@ public class PostService(CurrentUser _currentUser,
             CreatedOn = DateTime.Now,
             Media = media
         });
-    }
-
-    public bool NotifyProfilePhotoChanged(Media photo, Guid userId)
-    {
-        var post = new Post
-        {
-            UserId = userId,
-            Title = "added a new profile photo",
-            Body = "",
-            CreatedOn = DateTime.Now,
-            Media = new List<Media>
-            {
-                photo
-            }
-        };
-
-        UnitOfWork.Posts.Add(post);
-
-        return UnitOfWork.SaveChanges() != 0;
     }
 
     //public void Delete(Guid Id)

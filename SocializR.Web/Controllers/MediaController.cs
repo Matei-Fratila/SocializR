@@ -1,7 +1,8 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize]
-public class MediaController(IMapper _mapper,
+public class MediaController(ApplicationUnitOfWork _unitOfWork,
+    IMapper _mapper,
     IAlbumService _albumService,
     IMediaService _mediaService,
     UserManager<User> _userManager,
@@ -9,7 +10,7 @@ public class MediaController(IMapper _mapper,
     IImageStorage _imageStorage) : BaseController(_mapper)
 {
     [HttpGet]
-    public async Task<IActionResult> Index(string id)
+    public async Task<IActionResult> IndexAsync(Guid id)
     {
         var currentUser = await _userManager.GetUserAsync(User);
         var album = _albumService.GetEditAlbumVM(id);
@@ -19,7 +20,8 @@ public class MediaController(IMapper _mapper,
             return NotFoundView();
         }
 
-        if (album.UserId.ToString() != currentUser.Id.ToString() && await _userManager.IsInRoleAsync(currentUser, "Administrator") == false)
+        if (album.UserId.ToString() != currentUser.Id.ToString() 
+            && await _userManager.IsInRoleAsync(currentUser, "Administrator") == false)
         {
             return ForbidView();
         }
@@ -28,19 +30,19 @@ public class MediaController(IMapper _mapper,
     }
 
     [HttpPost]
-    public IActionResult Edit(EditedMediaViewModel model)
+    public async Task<IActionResult> EditAsync(EditedMediaViewModel model)
     {
-        _mediaService.Update(model);
+        await _mediaService.UpdateAsync(model);
 
         return Ok();
     }
 
     [HttpPost]
-    public IActionResult Delete(string id)
+    public async Task<IActionResult> DeleteAsync(Guid id)
     {
-        var result = _mediaService.Delete(id);
+        _mediaService.Remove(id);
 
-        if (result == false)
+        if (!await _unitOfWork.SaveChangesAsync())
         {
             return InternalServerErrorView();
         }
@@ -57,24 +59,24 @@ public class MediaController(IMapper _mapper,
     [HttpGet]
     public ActionResult GetImageWidget()
     {
-        return PartialView("Views/Media/_Media.cshtml", new MediaViewModel() { Id = null, Caption = "" });
+        return PartialView("Views/Media/_Media.cshtml", new MediaViewModel() { Id = Guid.Empty, Caption = "" });
     }
 
     [HttpGet]
     public ActionResult GetVideoWidget()
     {
-        return PartialView("Views/Media/_Media.cshtml", new MediaViewModel() { Id = null, Caption = "" });
+        return PartialView("Views/Media/_Media.cshtml", new MediaViewModel() { Id = Guid.Empty, Caption = "" });
     }
 
     [HttpGet]
-    public IActionResult GetGallery(string id)
+    public async Task<IActionResult> GetGalleryAsync(Guid id)
     {
-        var model = _mediaService.GetAll(id);
+        var model = await _mediaService.GetByAlbumAsync(id);
         return PartialView("Views/Media/_Gallery.cshtml", model);
     }
 
     [HttpPost]
-    public async Task<JsonResult> Upload(List<IFormFile> media, Guid id, string albumName)
+    public async Task<JsonResult> UploadAsync(List<IFormFile> media, string albumName)
     {
         var ids = new List<string>();
 
@@ -96,7 +98,8 @@ public class MediaController(IMapper _mapper,
                             _albumService.Add(new Album { Name = albumName, UserId = _currentUser.Id });
                         }
 
-                        var result = _mediaService.Add(album, imageName, type[0] == "image" ? MediaTypes.Image : MediaTypes.Video);
+                        var mediaType = type[0] == "image" ? MediaTypes.Image : MediaTypes.Video;
+                        var result = _mediaService.Add(imageName, mediaType, album);
 
                         if (result == null)
                         {
@@ -122,16 +125,16 @@ public class MediaController(IMapper _mapper,
     }
 
     [HttpGet]
-    public async Task<string> Render(string id)
+    public async Task<string> RenderAsync(Guid id)
     {
 
-        if (id == null)
+        if (id == Guid.Empty)
         {
             return _imageStorage.UriFor("default-image.jpg");
         }
         var currentUser = await _userManager.GetUserAsync(User);
 
-        if (_mediaService.IsAllowed(await _userManager.IsInRoleAsync(currentUser, "Administrator"), id) == false)
+        if (await _mediaService.IsAllowed(await _userManager.IsInRoleAsync(currentUser, "Administrator"), id) == false)
         {
             return _imageStorage.UriFor("default-image.jpg");
         }
@@ -143,7 +146,7 @@ public class MediaController(IMapper _mapper,
             return _imageStorage.UriFor("default-image.jpg");
         }
 
-        var path = _imageStorage.UriFor(media);
+        var path = _imageStorage.UriFor(media.FilePath);
 
         return path;
 

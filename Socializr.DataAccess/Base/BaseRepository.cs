@@ -12,6 +12,11 @@ public class BaseRepository<TEntity>(ApplicationDbContext context) : IBaseReposi
         return Context.Set<TEntity>().Find(id);
     }
 
+    public virtual async Task<TEntity> GetAsync(Guid id)
+    {
+        return await Context.Set<TEntity>().FindAsync(id);
+    }
+
     public virtual void Add(TEntity entity)
     {
         Context.Set<TEntity>().Add(entity);

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 
 namespace SocializR.Services.UserServices;
 
@@ -20,7 +19,7 @@ public class ProfileService(CurrentUser _currentUser,
 
     public async Task<bool> ChangeProfilePhoto(Guid photoId, Guid userId)
     {
-        var user = _userManager.Users.FirstOrDefault(u => u.Id == userId);
+        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
         user.ProfilePhotoId = photoId;
 
         var result = await _userManager.UpdateAsync(user);

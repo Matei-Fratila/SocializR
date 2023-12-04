@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace SocializR.Services.Interfaces;
+﻿namespace SocializR.Services.Interfaces;
 public interface IProfileService
 {
     byte[] ConvertToByteArray(IFormFile content);

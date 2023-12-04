@@ -26,8 +26,8 @@ public class LocalStorageService(IWebHostEnvironment _webHostEnvironment,
         return name;
     }
 
-    public string UriFor(string imageId)
+    public string UriFor(string fileName)
     {
-        return Path.Combine(_configuration.CurrentValue.FileUploadLocation, imageId);
+        return Path.Combine(_configuration.CurrentValue.FileUploadLocation, fileName);
     }
 }

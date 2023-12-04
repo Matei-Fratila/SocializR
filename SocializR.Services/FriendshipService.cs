@@ -1,88 +1,74 @@
 ﻿namespace SocializR.Services;
 
-public class FriendshipService(CurrentUser _currentUser, 
-    ApplicationUnitOfWork unitOfWork, 
+public class FriendshipService(ApplicationUnitOfWork unitOfWork, 
     IMapper _mapper) 
     : BaseService<Friendship, FriendshipService>(unitOfWork), IFriendshipService
 {
-    public int CountMutualFriends(Guid id)
-    {
-        return UnitOfWork.Friendships.Query
-            .Where(u => u.FirstUserId == _currentUser.Id && u.SecondUser.FriendsFirstUser.Where(f => f.SecondUserId == id).Any())
-            .Count();
-    }
+    public async Task<int> GetMutualFriendsCountAsync(Guid firstUserId, Guid secondUserId)
+        => await UnitOfWork.Friendships.Query
+            .Where(u => u.FirstUserId == firstUserId 
+                && u.SecondUser.FriendsFirstUser.Where(f => f.SecondUserId == secondUserId).Any())
+            .CountAsync();
 
-    public List<UserViewModel> GetAllFriends()
-    {
-        var friends = UnitOfWork.Friendships.Query
-            .Where(u => u.FirstUserId == _currentUser.Id && u.SecondUser.IsDeleted == false)
+    public async Task<List<UserViewModel>> GetAllAsync(Guid id)
+        => await UnitOfWork.Friendships.Query
+            .Where(u => u.FirstUserId == id && u.SecondUser.IsDeleted == false)
             .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
-            .ToList();
+            .ToListAsync();
 
-        return friends;
-    }
-
-    public List<UserViewModel> GetFriends(int pageIndex, int pageSize, out int totalFriendsCount)
-    {
-        totalFriendsCount = UnitOfWork.Friendships.Query
+    public async Task<int> GetCountAsync(Guid id)
+        => await UnitOfWork.Friendships.Query
             .Include(u => u.SecondUser)
-            .Where(u => u.FirstUserId == _currentUser.Id 
+            .Where(u => u.FirstUserId == id
                 && u.SecondUser.IsDeleted == false)
-            .Count();
+            .CountAsync();
 
-        return UnitOfWork.Friendships.Query
-            .Where(u => u.FirstUserId == _currentUser.Id 
+    public async Task<List<UserViewModel>> GetPaginatedAsync(Guid id, int pageIndex, int pageSize)
+        => await UnitOfWork.Friendships.Query
+            .Where(u => u.FirstUserId == id
                 && u.SecondUser.IsDeleted == false)
             .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
-            .ToList();
-    }
+            .ToListAsync();
 
-    public bool AreFriends(Guid firstUserId, Guid secondUserId)
-    {
-        return UnitOfWork.Friendships.Query
+    public async Task<bool> AreFriendsAsync(Guid firstUserId, Guid secondUserId)
+        => await UnitOfWork.Friendships.Query
             .Where(f => (f.FirstUserId == firstUserId && f.SecondUserId == secondUserId ||
-            f.FirstUserId == secondUserId && f.SecondUserId == firstUserId) &&
-            f.FirstUser.IsDeleted == false && f.SecondUser.IsDeleted == false)
-            .Any();
-    }
+                f.FirstUserId == secondUserId && f.SecondUserId == firstUserId) &&
+                f.FirstUser.IsDeleted == false && f.SecondUser.IsDeleted == false)
+            .AnyAsync();
 
-    public bool AddFriend(Guid id)
+    public void Create(Guid firstUserId, Guid secondUserId)
     {
         var friendships = new List<Friendship>()
         {
             new() {
-                FirstUserId = id,
-                SecondUserId = _currentUser.Id,
+                FirstUserId = firstUserId,
+                SecondUserId = secondUserId,
                 CreatedDate=DateTime.Now
 
             },
             new() {
-                FirstUserId = _currentUser.Id,
-                SecondUserId = id,
+                FirstUserId = secondUserId,
+                SecondUserId = firstUserId,
                 CreatedDate=DateTime.Now
             }
-
         };
 
-        UnitOfWork.Friendships.AddRange(friendships);
-
-        return UnitOfWork.SaveChanges() != 0;
+        AddRange(friendships);
     }
 
-    public bool Unfriend(string id)
+    public async Task DeleteAsync(Guid firstUserId, Guid secondUserId)
     {
-        var requests = UnitOfWork.Friendships.Query
-            .Where(f => f.FirstUserId.ToString() == id && f.SecondUserId == _currentUser.Id ||
-            f.SecondUserId.ToString() == id && f.FirstUserId == _currentUser.Id)
-            .ToList();
+        var requests = await UnitOfWork.Friendships.Query
+            .Where(f => f.FirstUserId == firstUserId && f.SecondUserId == secondUserId ||
+            f.SecondUserId == firstUserId && f.FirstUserId == secondUserId)
+            .ToListAsync();
 
-        if (requests != null)
+        if (requests.Count != 0)
         {
-            UnitOfWork.Friendships.RemoveRange(requests);
+            RemoveRange(requests);
         }
-
-        return UnitOfWork.SaveChanges() != 0;
     }
 }

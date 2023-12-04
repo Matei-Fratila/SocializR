@@ -17,25 +17,25 @@ public class HomeController(IMapper _mapper,
     private readonly string _defaultPostsAlbumName = _appSettings.CurrentValue.PostsAlbumName;
 
     [HttpGet]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var model = _postService.GetPaginated(_currentUser.Id, 0, _postsPerPage, _commentsPerFirstPage, _defaultProfilePicture);
+        var model = await _postService.GetPaginatedAsync(_currentUser.Id, 0, _postsPerPage, _commentsPerFirstPage, _defaultProfilePicture);
 
         return View(model);
     }
 
     [HttpGet]
-    public JsonResult NextPosts(int page)
+    public async Task<JsonResult> NextPosts(int page)
     {
-        var model = _postService.GetPaginated(_currentUser.Id, page, _postsPerPage, _commentsPerPage, _defaultProfilePicture);
+        var model = await _postService.GetPaginatedAsync(_currentUser.Id, page, _postsPerPage, _commentsPerPage, _defaultProfilePicture);
 
         return Json(model);
     }
 
     [HttpGet]
-    public JsonResult NextComments(int page, Guid postId)
+    public async Task<JsonResult> NextComments(int page, Guid postId)
     {
-        var comments = _commentService.GetPaginated(postId, _commentsPerPage, page, _defaultProfilePicture);
+        var comments = await _commentService.GetPaginatedAsync(postId, _commentsPerPage, page, _defaultProfilePicture);
 
         return Json(comments);
     }
@@ -43,9 +43,9 @@ public class HomeController(IMapper _mapper,
     [HttpPost]
     public async Task<IActionResult> AddPost(AddPostViewModel model)
     {
-        await _postService.AddPost(model, _defaultPostsAlbumName);
+        await _postService.AddAsync(model, _defaultPostsAlbumName);
 
-        if (_applicationUnitOfWork.SaveChanges() == 0)
+        if (!await _applicationUnitOfWork.SaveChangesAsync())
         {
             return InternalServerErrorView();
         }
@@ -67,9 +67,22 @@ public class HomeController(IMapper _mapper,
     }
 
     [HttpPost]
-    public IActionResult Like(Guid id)
+    public async Task<IActionResult> LikeAsync(Guid id)
     {
-        _likeService.AddLike(id);
+        await _likeService.AddLikeAsync(id);
+
+        if (_applicationUnitOfWork.SaveChanges() == 0)
+        {
+            return InternalServerErrorView();
+        }
+
+        return Ok();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteLikeAsync(Guid id)
+    {
+        await _likeService.DeleteLikeAsync(id);
 
         if (_applicationUnitOfWork.SaveChanges() == 0)
         {
@@ -100,19 +113,6 @@ public class HomeController(IMapper _mapper,
     public IActionResult DeleteComment(Guid id)
     {
         _commentService.Remove(id);
-
-        if (_applicationUnitOfWork.SaveChanges() == 0)
-        {
-            return InternalServerErrorView();
-        }
-
-        return Ok();
-    }
-
-    [HttpPost]
-    public IActionResult DeleteLike(Guid id)
-    {
-        _likeService.DeleteLike(id);
 
         if (_applicationUnitOfWork.SaveChanges() == 0)
         {

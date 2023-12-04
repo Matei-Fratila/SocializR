@@ -9,6 +9,11 @@ public class BaseUnitOfWork(ApplicationDbContext context) : IUnitOfWork, IDispos
         return DbContext.SaveChanges();
     }
 
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await DbContext.SaveChangesAsync() != 0;
+    }
+
     public void Dispose()
     {
         DbContext.Dispose();

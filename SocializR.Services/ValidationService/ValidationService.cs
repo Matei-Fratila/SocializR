@@ -9,8 +9,8 @@ public class ValidationService(UserManager<User> _userManager, IAlbumService _al
         return _userManager.Users.Any(u => u.Email == email);
     }
 
-    public bool AlbumExists(string name, string id)
+    public bool AlbumExists(string name, Guid id)
     {
-        return _albumService.Query.Any(a => a.Name == name && a.Id.ToString() != id);
+        return _albumService.Query.Any(a => a.Name == name && a.Id != id);
     }
 }

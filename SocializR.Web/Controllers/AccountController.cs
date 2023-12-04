@@ -59,9 +59,9 @@ public class AccountController(ICountyService _countyService,
     }
 
     [HttpGet]
-    public IActionResult Register()
+    public async Task<IActionResult> Register()
     {
-        var counties = _countyService.GetSelectCounties();
+        var counties = await _countyService.GetSelectListAsync();
 
         if (counties == null)
         {
@@ -82,7 +82,7 @@ public class AccountController(ICountyService _countyService,
     {
         if (!ModelState.IsValid)
         {
-            model.Counties = _countyService.GetSelectCounties();
+            model.Counties = await _countyService.GetSelectListAsync();
             return View(model);
         }
 
@@ -100,7 +100,7 @@ public class AccountController(ICountyService _countyService,
             ModelState.AddModelError("Password", error.Description);
         }
 
-        model.Counties = _countyService.GetSelectCounties();
+        model.Counties = await _countyService.GetSelectListAsync();
         return View(model);
 
         //var encription = new Pbkdf2();

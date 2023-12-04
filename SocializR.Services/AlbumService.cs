@@ -1,7 +1,6 @@
 ﻿namespace SocializR.Services;
 
-public class AlbumService(CurrentUser _currentUser, 
-    ApplicationUnitOfWork unitOfWork, 
+public class AlbumService(ApplicationUnitOfWork unitOfWork, 
     IMapper _mapper) : BaseService<Album, AlbumService>(unitOfWork), IAlbumService
 {
     public Album Get(string name, Guid userId)
@@ -9,66 +8,30 @@ public class AlbumService(CurrentUser _currentUser,
             .Where(a => a.Name == name && a.UserId == userId)
             .FirstOrDefault();
 
-    public List<AlbumViewModel> GetAll()
-    {
-        var albums = UnitOfWork.Albums.Query
-            .Where(u => u.UserId == _currentUser.Id)
+    public async Task<List<AlbumViewModel>> GetAllAsync(Guid userId)
+        => await UnitOfWork.Albums.Query
+            .Where(u => u.UserId == userId)
             .ProjectTo<AlbumViewModel>(_mapper.ConfigurationProvider)
             .OrderBy(i => i.Name)
-            .ToList();
+            .ToListAsync();
 
-        return albums;
-    }
-
-    public EditAlbumViewModel GetEditAlbumVM(string id)
+    public EditAlbumViewModel GetEditAlbumVM(Guid id)
     {
         return UnitOfWork.Albums.Query
-            .Where(a => a.Id.ToString() == id)
+            .Where(a => a.Id == id)
             .ProjectTo<EditAlbumViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefault();
     }
 
-    public bool Create(CreateAlbumViewModel model)
+    public void Update(CreateAlbumViewModel model)
     {
-        UnitOfWork.Albums.Add(new Album
-        {
-            UserId = _currentUser.Id,
-            Name = model.Name
-        });
-
-        return UnitOfWork.SaveChanges() != 0;
-    }
-
-    public bool Update(CreateAlbumViewModel model)
-    {
-        var album = UnitOfWork.Albums.Query
-            .Where(a => a.Id.ToString() == model.Id)
-            .FirstOrDefault();
+        var album = Get(model.Id);
 
         if (album == null)
         {
-            return false;
+            return;
         }
 
         album.Name = model.Name;
-        UnitOfWork.SaveChanges();
-
-        return true;
-    }
-
-    public bool Delete(string albumId)
-    {
-        var album = UnitOfWork.Albums.Query
-            .Where(a => a.Id.ToString() == albumId)
-            .Include(a => a.Media)
-            .FirstOrDefault();
-
-        if (album == null)
-        {
-            return false;
-        }
-
-        UnitOfWork.Albums.Remove(album);
-        return UnitOfWork.SaveChanges() != 0;
     }
 }

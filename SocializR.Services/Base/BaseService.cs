@@ -1,14 +1,11 @@
-﻿using System.Reflection;
-
-namespace SocializR.Services.Base;
+﻿namespace SocializR.Services.Base;
 
 public abstract class BaseService<TEntity, TService>(ApplicationUnitOfWork unitOfWork) : IDisposable, IBaseService<TEntity>
     where TEntity : IEntity, new()
     where TService : IBaseService<TEntity>
 {
     protected readonly ApplicationUnitOfWork UnitOfWork = unitOfWork;
-    protected readonly List<PropertyInfo> Repo0 = unitOfWork.GetType().GetProperties().ToList();
-    protected readonly IBaseRepository<TEntity> Repo
+    protected readonly IBaseRepository<TEntity> Repository
         = unitOfWork.GetType()
         .GetProperties()
         .First(p => p.PropertyType.FullName == typeof(IBaseRepository<TEntity>).FullName)
@@ -18,39 +15,42 @@ public abstract class BaseService<TEntity, TService>(ApplicationUnitOfWork unitO
     {
         get
         {
-            return Repo.Query;
+            return Repository.Query;
         }
     }
 
     public TEntity Get(Guid id)
-        => Repo.Get(id);
+        => Repository.Get(id);
+
+    public async Task<TEntity> GetAsync(Guid id)
+    => await Repository.GetAsync(id);
 
     public IEnumerable<TEntity> GetAll()
-        => Repo.Query.ToList();
+        => Repository.Query.ToList();
 
     public void Add(TEntity entity)
-        => Repo.Add(entity);
+        => Repository.Add(entity);
 
     public void AddRange(IEnumerable<TEntity> entities)
-        => Repo.AddRange(entities);
+        => Repository.AddRange(entities);
 
     public void Remove(TEntity entity)
-        => Repo.Remove(entity);
+        => Repository.Remove(entity);
 
     public void Remove(Guid id)
     {
-        var entity = Repo.Get(id);
+        var entity = Repository.Get(id);
         Remove(entity);
     }
 
     public void RemoveRange(IEnumerable<TEntity> entities)
-        => Repo.RemoveRange(entities);
+        => Repository.RemoveRange(entities);
 
     public void Update(TEntity entity)
-        => Repo.Update(entity);
+        => Repository.Update(entity);
 
     public void UpdateRange(IEnumerable<TEntity> entities)
-        => Repo.UpdateRange(entities);
+        => Repository.UpdateRange(entities);
 
     public void Dispose()
     {

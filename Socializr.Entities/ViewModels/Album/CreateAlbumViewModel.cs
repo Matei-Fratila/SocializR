@@ -4,7 +4,7 @@ public class CreateAlbumViewModel : IValidatableObject
 {
     public bool IsDataInvalid { get; set; }
 
-    public string Id { get; set; }
+    public Guid Id { get; set; }
 
     [Required]
     [MaxLength(100)]

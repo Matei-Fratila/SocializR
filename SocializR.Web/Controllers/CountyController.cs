@@ -1,38 +1,23 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize(Roles = "Administrator")]
-public class CountyController(ICountyService _countyService, 
+public class CountyController(ApplicationUnitOfWork _unitOfWork,
+    ICountyService _countyService,
     IMapper _mapper) : BaseController(_mapper)
 {
     [HttpGet]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var model = new CountiesViewModel { Counties = _countyService.GetAllCities() };
+        var model = new CountiesViewModel { Counties = await _countyService.GetAllAsync() };
         return View(model);
     }
 
     [HttpPost]
-    public JsonResult Delete(string countyId)
+    public async Task<IActionResult> DeleteAsync(Guid id)
     {
-        var result = _countyService.Delete(countyId);
+        _countyService.Remove(id);
 
-        switch (result)
-        {
-            case (1):
-                return Json(new { id = 1, message = "Ups, Something Happened!" });
-            case (2):
-                return Json(new { id = 2, message = "County has cities! Delete all cities before trying to delete county" });
-            default:
-                return Json(new { id = 0, message = "County deleted successfuly" });
-        }
-    }
-
-    [HttpPost]
-    public IActionResult Edit(string id, string name, string shortname)
-    {
-        var result = _countyService.Update(id, name, shortname);
-
-        if (!result)
+        if (!await _unitOfWork.SaveChangesAsync())
         {
             return InternalServerErrorView();
         }
@@ -41,11 +26,27 @@ public class CountyController(ICountyService _countyService,
     }
 
     [HttpPost]
-    public IActionResult Add(string name, string shortName)
+    public async Task<IActionResult> EditAsync(Guid id, string name, string shortname)
     {
-        var result = _countyService.Create(name, shortName);
+        var county = await _countyService.GetAsync(id);
+        county.Name = name;
+        county.ShortName = shortname;
+        _countyService.Update(county);
 
-        if (!result)
+        if (!await _unitOfWork.SaveChangesAsync())
+        {
+            return InternalServerErrorView();
+        }
+
+        return Ok();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddAsync(string name, string shortName)
+    {
+        _countyService.Add(new County { Name = name, ShortName = shortName });
+
+        if (!await _unitOfWork.SaveChangesAsync())
         {
             return InternalServerErrorView();
         }

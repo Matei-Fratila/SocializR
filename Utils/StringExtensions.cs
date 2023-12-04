@@ -6,5 +6,4 @@ public static class StringExtensions
 
     public static string RemoveAsyncSuffix(this string original)
         => original.Replace("Async", string.Empty, StringComparison.OrdinalIgnoreCase);
-
 }

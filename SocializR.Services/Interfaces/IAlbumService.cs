@@ -1,10 +1,8 @@
 ﻿namespace SocializR.Services.Interfaces;
 public interface IAlbumService : IBaseService<Album>
 {
-    List<AlbumViewModel> GetAll();
+    Task<List<AlbumViewModel>> GetAllAsync(Guid userId);
     Album Get(string name, Guid userId);
-    EditAlbumViewModel GetEditAlbumVM(string id);
-    bool Create(CreateAlbumViewModel model);
-    bool Update(CreateAlbumViewModel model);
-    bool Delete(string id);
+    EditAlbumViewModel GetEditAlbumVM(Guid id);
+    void Update(CreateAlbumViewModel model);
 }

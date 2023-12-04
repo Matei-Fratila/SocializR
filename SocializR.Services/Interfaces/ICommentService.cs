@@ -1,9 +1,7 @@
 ﻿namespace SocializR.Services.Interfaces;
 public interface ICommentService : IBaseService<Comment>
 {
-    #region Read
-    List<CommentViewModel> GetPaginated(Guid postId, int commentsPerPage, int page, string defaultProfilePicture);
-    #endregion
+    Task<List<CommentViewModel>> GetPaginatedAsync(Guid postId, int commentsPerPage, int page, string defaultProfilePicture);
 
     CommentViewModel GetCurrentUserCommentViewModel(string body);
 }

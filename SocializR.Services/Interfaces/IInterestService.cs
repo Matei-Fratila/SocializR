@@ -1,13 +1,13 @@
 ﻿namespace SocializR.Services.Interfaces;
 public interface IInterestService : IBaseService<Interest>
 {
-    List<InterestViewModel> GetAllInterests();
-    List<SelectListItem> GetAll();
-    List<SelectListItem> GetAllWithSelected(List<Guid> userInterests);
-    EditInterestViewModel GetEditModel(string id);
-    List<Guid> GetByUser(Guid id);
-    List<string> GetByUserId(string id);
-    bool EditInterest(EditInterestViewModel model);
-    bool AddInterest(EditInterestViewModel model);
-    bool DeleteInterest(string id);
+    Task<List<InterestViewModel>> GetAllAsync();
+    Task<List<SelectListItem>> GetSelectListAsync();
+    Task<List<SelectListItem>> GetSelectedSelectListAsync(List<Guid> userInterests);
+    Task<EditInterestViewModel> GetViewModelAsync(Guid id);
+    Task<List<Guid>> GetByUserAsync(Guid id);
+    //List<string> GetByUserId(string id);
+    Task EditAsync(EditInterestViewModel model);
+    void Add(EditInterestViewModel model);
+    Task DeleteAsync(Guid id);
 }

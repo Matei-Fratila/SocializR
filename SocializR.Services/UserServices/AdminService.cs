@@ -1,27 +1,25 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 
 namespace SocializR.Services.UserServices;
 
 public class AdminService(UserManager<User> _userManager, IMapper _mapper) : IAdminService
 {
-    public List<UserViewModel> GetAllUsers(int pageIndex, int pageSize, out int totalUserCount)
-    {
-        totalUserCount = _userManager.Users.Count();
-
-        return _userManager.Users
+    public async Task<List<UserViewModel>> GetPaginatedUsersAsync(int pageIndex, int pageSize)
+        => await _userManager.Users
             .OrderBy(u=>u.FirstName)
             .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
-            .ToList();
-    }
+            .ToListAsync();
 
-    public async Task<bool> DeleteUser(string id)
+    public async Task<int> GetUsersCountAsync()
+        => await _userManager.Users.CountAsync();
+
+    public async Task<bool> DeleteUserAsync(Guid id)
     {
-        var user = _userManager.Users
-            .Where(u => u.Id.ToString() == id)
-            .FirstOrDefault();
+        var user = await _userManager.Users
+            .Where(u => u.Id == id)
+            .FirstOrDefaultAsync();
 
         if (user == null)
         {
@@ -34,10 +32,10 @@ public class AdminService(UserManager<User> _userManager, IMapper _mapper) : IAd
         return result.Succeeded;
     }
 
-    public async Task<bool> ActivateUser(string id)
+    public async Task<bool> ActivateUserAsync(Guid id)
     {
         var user = _userManager.Users
-            .Where(u => u.Id.ToString() == id)
+            .Where(u => u.Id == id)
             .FirstOrDefault();
 
         if (user == null)

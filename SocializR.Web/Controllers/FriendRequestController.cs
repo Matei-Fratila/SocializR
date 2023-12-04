@@ -1,46 +1,56 @@
-﻿using Utils;
-
-namespace SocializR.Web.Controllers;
+﻿namespace SocializR.Web.Controllers;
 
 [Authorize]
-public class FriendRequestController(IOptionsMonitor<AppSettings> _configuration,
+public class FriendRequestController(ApplicationUnitOfWork _unitOfWork,
+    IOptionsMonitor<AppSettings> _appSettings,
+    CurrentUser _currentUser,
     IFriendRequestService _friendRequestService, 
     IMapper _mapper) : BaseController(_mapper)
 {
+    private readonly int _usersPerPage = _appSettings.CurrentValue.UsersPerPage;
+
     [HttpGet]
-    public IActionResult Index(int? page)
+    public async Task<IActionResult> IndexAsync(int? page)
     {
         var pageIndex = (page ?? 1) - 1;
-        var requests = _friendRequestService.GetFriendRequests(pageIndex, _configuration.CurrentValue.UsersPerPage, out int totalUserCount);
-        var model = new StaticPagedList<FriendrequestViewModel>(requests, pageIndex + 1, _configuration.CurrentValue.UsersPerPage, totalUserCount);
+        var totalUserCount = await _friendRequestService.GetCountAsync(_currentUser.Id);
+        var requests = await _friendRequestService.GetPaginatedAsync(_currentUser.Id, pageIndex, _usersPerPage);
+        var model = new StaticPagedList<FriendrequestViewModel>(requests, pageIndex + 1, _usersPerPage, totalUserCount);
 
         return View(model);
     }
 
     [HttpPost]
-    public IActionResult SendFriendRequest(Guid id)
+    public async Task<IActionResult> CreateAsync(Guid id)
     {
-        var result = _friendRequestService.SendFriendRequest(id);
-        if (!result)
+        _friendRequestService.Add(new FriendRequest
+        {
+            RequestedUserId = id,
+            RequesterUserId = _currentUser.Id,
+            CreatedOn = DateTime.UtcNow,
+        });
+
+        if (!await _unitOfWork.SaveChangesAsync())
         {
             return InternalServerErrorView();
         }
 
-        return RedirectToAction(nameof(ProfileController.Index), 
+        return RedirectToAction(nameof(ProfileController.IndexAsync).RemoveAsyncSuffix(), 
             nameof(ProfileController).RemoveControllerSuffix(), 
             new { id });
     }
 
     [HttpPost]
-    public IActionResult DeleteFriendRequest(Guid id)
+    public async Task<IActionResult> DeleteAsync(Guid id)
     {
-        var result = _friendRequestService.DeleteFriendRequest(id);
-        if (!result)
+        _friendRequestService.Delete(_currentUser.Id, id);
+
+        if (!await _unitOfWork.SaveChangesAsync())
         {
             return InternalServerErrorView();
         }
 
-        return RedirectToAction(nameof(ProfileController.Index),
+        return RedirectToAction(nameof(ProfileController.IndexAsync).RemoveAsyncSuffix(),
             nameof(ProfileController).RemoveControllerSuffix(),
             new { id });
     }

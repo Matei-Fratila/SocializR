@@ -2,11 +2,11 @@
 
 public class LikeService(ApplicationUnitOfWork unitOfWork, CurrentUser _currentUser) : BaseService<Like, LikeService>(unitOfWork), ILikeService
 {
-    public void AddLike(Guid postId)
+    public async Task AddLikeAsync(Guid postId)
     {
-        var like = UnitOfWork.Likes.Query
+        var like = await UnitOfWork.Likes.Query
             .Where(l => l.PostId == postId && l.UserId == _currentUser.Id)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
         if (like != null)
         {
@@ -24,11 +24,11 @@ public class LikeService(ApplicationUnitOfWork unitOfWork, CurrentUser _currentU
         return;
     }
 
-    public void DeleteLike(Guid postId)
+    public async Task DeleteLikeAsync(Guid postId)
     {
-        var like = UnitOfWork.Likes.Query
+        var like = await UnitOfWork.Likes.Query
             .Where(l => l.PostId == postId && l.UserId == _currentUser.Id)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
         if (like != null)
         {

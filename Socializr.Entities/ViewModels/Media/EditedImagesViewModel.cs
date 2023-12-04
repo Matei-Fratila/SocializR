@@ -2,6 +2,6 @@
 
 public class EditedMediaViewModel
 {
-    public string Id { get; set; }
+    public Guid Id { get; set; }
     public List<MediaViewModel> Media { get; set; }
 }

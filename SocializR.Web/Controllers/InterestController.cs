@@ -1,37 +1,38 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize(Roles = "Administrator")]
-public class InterestController(IMapper _mapper, 
+public class InterestController(ApplicationUnitOfWork _unitOfWork,
+    IMapper _mapper, 
     IInterestService _interestService) : BaseController(_mapper)
 {
     [HttpGet]
-    public IActionResult Index()
+    public async Task<IActionResult> IndexAsync()
     {
-        var interests = _interestService.GetAllInterests();
+        var interests = await _interestService.GetAllAsync();
 
         return View(interests);
     }
 
     [HttpGet]
-    public IActionResult Edit(string id)
+    public async Task<IActionResult> EditAsync(Guid id)
     {
-        var model = _interestService.GetEditModel(id);
+        var model = await _interestService.GetViewModelAsync(id);
 
         return View(model);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(EditInterestViewModel model)
+    public async Task<IActionResult> EditAsync(EditInterestViewModel model)
     {
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        var result = _interestService.EditInterest(model);
+        await _interestService.EditAsync(model);
 
-        if (!result)
+        if (!await _unitOfWork.SaveChangesAsync())
         {
             return InternalServerErrorView();
         }
@@ -41,11 +42,11 @@ public class InterestController(IMapper _mapper,
     }
 
     [HttpGet]
-    public IActionResult Create()
+    public async Task<IActionResult> CreateAsync()
     {
         var model = new EditInterestViewModel()
         {
-            Interests = _interestService.GetAll()
+            Interests = await _interestService.GetSelectListAsync()
         };
 
         return View(model);
@@ -53,24 +54,29 @@ public class InterestController(IMapper _mapper,
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(EditInterestViewModel model)
+    public async Task<IActionResult> CreateAsync(EditInterestViewModel model)
     {
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        _interestService.AddInterest(model);
+        _interestService.Add(model);
 
-        return RedirectToAction(nameof(Index));
+        if (!await _unitOfWork.SaveChangesAsync())
+        {
+            return InternalServerErrorView();
+        }
+
+        return RedirectToAction(nameof(IndexAsync).RemoveAsyncSuffix());
     }
 
     [HttpPost]
-    public IActionResult Delete(string id)
+    public async Task<IActionResult> DeleteAsync(Guid id)
     {
-        var result = _interestService.DeleteInterest(id);
+        await _interestService.DeleteAsync(id);
 
-        if (!result)
+        if (!await _unitOfWork.SaveChangesAsync())
         {
             return InternalServerErrorView();
         }

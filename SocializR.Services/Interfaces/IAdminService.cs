@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
-
-namespace SocializR.Services.Interfaces;
+﻿namespace SocializR.Services.Interfaces;
 public interface IAdminService
 {
-    List<UserViewModel> GetAllUsers(int pageIndex, int pageSize, out int totalUserCount);
-    Task<bool> DeleteUser(string id);
-    Task<bool> ActivateUser(string id);
+    Task<List<UserViewModel>> GetPaginatedUsersAsync(int pageIndex, int pageSize);
+    Task<int> GetUsersCountAsync();
+    Task<bool> DeleteUserAsync(Guid id);
+    Task<bool> ActivateUserAsync(Guid id);
 }

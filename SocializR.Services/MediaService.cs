@@ -1,21 +1,21 @@
 ﻿namespace SocializR.Services;
 
-public class MediaService(CurrentUser _currentUser, 
-    ApplicationUnitOfWork unitOfWork, 
-    IMapper _mapper, 
+public class MediaService(CurrentUser _currentUser,
+    ApplicationUnitOfWork unitOfWork,
+    IMapper _mapper,
     IFriendshipService _friendshipService) : BaseService<Media, MediaService>(unitOfWork), IMediaService
 {
-    public bool IsAllowed(bool isAdmin, string id)
+    public async Task<bool> IsAllowed(bool isAdmin, Guid id)
     {
-        var owner = UnitOfWork.Media.Query
-            .Where(m => m.Id.ToString() == id)
+        var owner = await UnitOfWork.Media.Query
+            .Where(m => m.Id == id)
             .Select(m => new
             {
                 m.Album.User.Id,
                 m.Album.User.IsPrivate,
                 m.Album.User.IsDeleted,
             })
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
         if (owner.IsDeleted == true)
         {
@@ -32,7 +32,7 @@ public class MediaService(CurrentUser _currentUser,
             return true;
         }
 
-        if (_friendshipService.AreFriends(_currentUser.Id, owner.Id) == true)
+        if (await _friendshipService.AreFriendsAsync(_currentUser.Id, owner.Id))
         {
             return true;
         }
@@ -40,33 +40,14 @@ public class MediaService(CurrentUser _currentUser,
         return false;
     }
 
-    public List<MediaViewModel> GetAll(string id)
-    {
-        var images = UnitOfWork.Media.Query
-            .Where(u => u.AlbumId.ToString() == id)
+    public async Task<List<MediaViewModel>> GetByAlbumAsync(Guid id)
+        => await UnitOfWork.Media.Query
+            .Where(u => u.AlbumId == id)
             .OrderByDescending(u => u.Id)
             .ProjectTo<MediaViewModel>(_mapper.ConfigurationProvider)
-            .ToList();
+            .ToListAsync();
 
-        return images;
-    }
-
-    public string Get(string id)
-    {
-        if (id == null)
-        {
-            return null;
-        }
-
-        var result = UnitOfWork.Media.Query
-            .Where(m => m.Id.ToString() == id)
-            .Select(m => m.FilePath)
-            .FirstOrDefault();
-
-        return result;
-    }
-
-    public Media Add(Album album, string fileName, MediaTypes type, Post associatedPost = null)
+    public Media Add(string fileName, MediaTypes type, Album album, Post associatedPost = null)
     {
         if (fileName == null || album == null)
         {
@@ -74,11 +55,11 @@ public class MediaService(CurrentUser _currentUser,
         }
 
         associatedPost ??= new Post
-            {
-                Body = $"{_currentUser.FirstName} {_currentUser.LastName} uploaded a new profile picture",
-                UserId = _currentUser.Id,
-                CreatedOn = DateTime.Now
-            };
+        {
+            Body = $"{_currentUser.FirstName} {_currentUser.LastName} uploaded a new profile picture",
+            UserId = _currentUser.Id,
+            CreatedOn = DateTime.Now
+        };
 
         var media = new Media
         {
@@ -89,42 +70,24 @@ public class MediaService(CurrentUser _currentUser,
             Post = associatedPost
         };
 
-        UnitOfWork.Media.Add(media);
+        Add(media);
 
         return media;
     }
 
-    public void Update(EditedMediaViewModel model)
+    public async Task UpdateAsync(EditedMediaViewModel model)
     {
-        if (model.Media.Any())
+        if (model.Media.Count != 0)
         {
-            var images = UnitOfWork.Media.Query
-              .Where(a => a.AlbumId.ToString() == model.Id)
-              .ToList();
+            var images = await UnitOfWork.Media.Query
+              .Where(a => a.AlbumId == model.Id)
+              .ToListAsync();
 
             foreach (var image in model.Media)
             {
-                var picture = images.Find(i => i.Id.ToString() == image.Id);
+                var picture = images.Find(i => i.Id == image.Id);
                 picture.Caption = image.Caption;
             }
-
-            UnitOfWork.SaveChanges();
         }
-    }
-
-    public bool Delete(string id)
-    {
-        var media = UnitOfWork.Media.Query
-            .Where(a => a.Id.ToString() == id)
-            .FirstOrDefault();
-
-        if (media == null)
-        {
-            return false;
-        }
-
-        UnitOfWork.Media.Remove(media);
-
-        return UnitOfWork.SaveChanges() != 0;
     }
 }

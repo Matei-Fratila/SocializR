@@ -5,15 +5,15 @@ public class CommentService(CurrentUser _currentUser,
     IImageStorage _imageStorage,
     IMapper _mapper) : BaseService<Comment, CommentService>(unitOfWork), ICommentService
 {
-    public List<CommentViewModel> GetPaginated(Guid postId, int commentsPerPage, int page, string defaultProfilePicture)
+    public async Task<List<CommentViewModel>> GetPaginatedAsync(Guid postId, int commentsPerPage, int page, string defaultProfilePicture)
     {
-        var comments = UnitOfWork.Comments.Query
+        var comments = await UnitOfWork.Comments.Query
             .Where(c => c.PostId == postId)
             .OrderByDescending(c => c.CreatedOn)
             .Skip(page * commentsPerPage)
             .Take(commentsPerPage)
             .ProjectTo<CommentViewModel>(_mapper.ConfigurationProvider)
-        .ToList();
+            .ToListAsync();
 
         //To do: try to map this
         foreach (var comment in comments)

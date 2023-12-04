@@ -1,39 +1,47 @@
 ﻿namespace SocializR.Web.Controllers;
 
 [Authorize]
-public class AlbumController(IAlbumService _albumService,
+public class AlbumController(ApplicationUnitOfWork _unitOfWork,
+    CurrentUser _currentUser,
+    IOptionsMonitor<AppSettings> _appSettings,
     IMediaService _mediaService,
     IImageStorage _imageStorage,
-    IMapper _mapper,
-    IOptionsMonitor<AppSettings> _configuration) : BaseController(_mapper)
+    IAlbumService _albumService,
+    IMapper _mapper) : BaseController(_mapper)
 {
+    private readonly string _defaultAlbumCover = _appSettings.CurrentValue.DefaultAlbumCover;
+
     [HttpGet]
-    public IActionResult Index()
+    public async Task<IActionResult> IndexAsync()
     {
         var model = new AlbumsViewModel
         {
-            Albums = _albumService.GetAll()
+            Albums = await _albumService.GetAllAsync(_currentUser.Id)
         };
 
         foreach (var album in model.Albums)
         {
-            album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath ?? _configuration.CurrentValue.DefaultAlbumCover);
+            album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath ?? _defaultAlbumCover);
         }
 
         return View(model);
     }
 
     [HttpPost]
-    public IActionResult Create(CreateAlbumViewModel model)
+    public async Task<IActionResult> CreateAsync(CreateAlbumViewModel model)
     {
         if (!ModelState.IsValid)
         {
             RedirectToAction(nameof(Index));
         }
 
-        var result = _albumService.Create(model);
+        _albumService.Add(new Album
+        {
+            UserId = _currentUser.Id,
+            Name = model.Name
+        });
 
-        if (!result)
+        if (!await _unitOfWork.SaveChangesAsync())
         {
             return InternalServerErrorView();
         }
@@ -42,46 +50,43 @@ public class AlbumController(IAlbumService _albumService,
     }
 
     [HttpPost]
-    public IActionResult Edit(CreateAlbumViewModel model)
+    public async Task<IActionResult> EditAsync(CreateAlbumViewModel model)
     {
         if (ModelState.IsValid)
         {
-            var result = _albumService.Update(model);
-
-            if (!result)
-            {
-                return RedirectToAction(nameof(Index));
-            }
+            _albumService.Update(model);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
-    public IActionResult Delete(string id)
+    public async Task<IActionResult> DeleteAsync(Guid id)
     {
-        var isSuccessStatusCode = _albumService.Delete(id);
+        _albumService.Remove(id);
+        await _unitOfWork.SaveChangesAsync();
 
         return RedirectToAction("Index", "Album");
     }
 
     [HttpGet]
     [AllowAnonymous]
-    public string RenderCoverPicture(string id)
+    public async Task<string> RenderCoverPicture(Guid id)
     {
-        if (id == null)
+        if (id == Guid.Empty)
         {
-            return _imageStorage.UriFor("default-image.jpg");
+            return _imageStorage.UriFor(_defaultAlbumCover);
         }
 
-        var media = _mediaService.Get(id);
+        var media = await _mediaService.GetAsync(id);
 
         if (media == null)
         {
-            return _imageStorage.UriFor("default-image.jpg");
+            return _imageStorage.UriFor(_defaultAlbumCover);
         }
 
-        return _imageStorage.UriFor(media);
+        return _imageStorage.UriFor(media.FilePath);
 
     }
 }

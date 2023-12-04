@@ -1,38 +1,24 @@
 ﻿namespace SocializR.Services;
 
-public class InterestService(CurrentUser _currentUser, 
-    ApplicationUnitOfWork unitOfWork, 
+public class InterestService(ApplicationUnitOfWork unitOfWork, 
     IMapper _mapper) 
     : BaseService<Interest, InterestService>(unitOfWork), IInterestService
 {
-    public List<InterestViewModel> GetAllInterests()
-    {
-        var interests = UnitOfWork.Interests.Query
+    public async Task<List<InterestViewModel>> GetAllAsync()
+        => await UnitOfWork.Interests.Query
             .OrderBy(i => i.Name)
             .ProjectTo<InterestViewModel>(_mapper.ConfigurationProvider)
-            .ToList();
+            .ToListAsync();
 
-        return interests;
-    }
+    public async Task<List<SelectListItem>> GetSelectListAsync()
+        => await UnitOfWork.Interests.Query
+            .OrderBy(i => i.Name)
+            .Select(i => new SelectListItem(i.Name, i.Id.ToString()))
+            .ToListAsync();
 
-    public List<SelectListItem> GetAll()
+    public async Task<List<SelectListItem>> GetSelectedSelectListAsync(List<Guid> userInterests)
     {
-        var interests = UnitOfWork.Interests.Query.ToList();
-
-        interests.Add(new Interest
-        {
-            Name = "No Interest",
-            Id = Guid.Empty
-        });
-
-        return new SelectList(interests, nameof(Interest.Id), nameof(Interest.Name))
-            .OrderBy(i => i.Value)
-            .ToList();
-    }
-
-    public List<SelectListItem> GetAllWithSelected(List<Guid> userInterests)
-    {
-        List<SelectListItem> selectedInterests = GetAll();
+        List<SelectListItem> selectedInterests = await GetSelectListAsync();
 
         if (userInterests.Any())
         {
@@ -53,49 +39,37 @@ public class InterestService(CurrentUser _currentUser,
         return selectedInterests;
     }
 
-    public EditInterestViewModel GetEditModel(string id)
+    public async Task<EditInterestViewModel> GetViewModelAsync(Guid id)
     {
-        var model = UnitOfWork.Interests.Query
-            .Where(i => i.Id.ToString() == id)
+        var model = await UnitOfWork.Interests.Query
+            .Where(i => i.Id == id)
             .ProjectTo<EditInterestViewModel>(_mapper.ConfigurationProvider)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
-        model.Interests = GetAll();
+        model.Interests = await GetSelectListAsync();
 
         return model;
     }
 
-    public List<Guid> GetByUser(Guid id)
-    {
-        if (id == Guid.Empty)
-        {
-            id = _currentUser.Id;
-        }
-
-        var interests = UnitOfWork.UserInterests.Query
+    public async Task<List<Guid>> GetByUserAsync(Guid id)
+        => await UnitOfWork.UserInterests.Query
             .Where(i => i.UserId == id)
             .Select(i => i.Interest.Id)
-            .ToList();
+            .ToListAsync();
 
-        return interests;
-    }
+    //public List<string> GetByUserId(string id)
+    //{
+    //    var interests = UnitOfWork.UserInterests.Query
+    //        .Where(i => i.UserId.ToString() == id)
+    //        .Select(i => i.Interest.Name)
+    //        .ToList();
 
-    public List<string> GetByUserId(string id)
+    //    return interests;
+    //}
+
+    public async Task EditAsync(EditInterestViewModel model)
     {
-        var interests = UnitOfWork.UserInterests.Query
-            .Where(i => i.UserId.ToString() == id)
-            .Select(i => i.Interest.Name)
-            .ToList();
-
-        return interests;
-    }
-
-    public bool EditInterest(EditInterestViewModel model)
-    {
-        var interest = UnitOfWork.Interests.Query
-            .Where(i => i.Id.ToString() == model.Id)
-            .FirstOrDefault();
-
+        var interest = await GetAsync(model.Id);
         _mapper.Map(model, interest);
 
         if (model.ParentId == null)
@@ -103,45 +77,33 @@ public class InterestService(CurrentUser _currentUser,
             interest.ParentId = Guid.Empty;
         }
 
-        UnitOfWork.Interests.Update(interest);
-
-        return UnitOfWork.SaveChanges() != 0;
+        Update(interest);
     }
 
-    public bool AddInterest(EditInterestViewModel model)
+    public void Add(EditInterestViewModel model)
     {
-        var interest = new Interest
-        {
-            Name = model.Name,
-            ParentId = new Guid(model.ParentId)
-        };
+        var interest = new Interest();
+        _mapper.Map(model, interest);
 
-        UnitOfWork.Interests.Add(interest);
-
-        return UnitOfWork.SaveChanges() != 0;
+        Add(interest);
     }
 
-    public bool DeleteInterest(string id)
+    public async Task DeleteAsync(Guid id)
     {
-        var interest = UnitOfWork.Interests.Query
-            .Where(i => i.Id.ToString() == id)
-            .FirstOrDefault();
-
-        var children = UnitOfWork.Interests.Query
-            .Where(i => i.ParentId.ToString() == id)
-            .ToList();
-
-        children.ForEach(c => c.ParentId = interest.ParentId);
-
-        UnitOfWork.Interests.UpdateRange(children);
+        var interest = await GetAsync(id);
 
         if (interest == null)
         {
-            return false;
+            return;
         }
 
-        UnitOfWork.Interests.Remove(interest);
+        var children = await UnitOfWork.Interests.Query
+            .Where(i => i.ParentId == id)
+            .ToListAsync();
 
-        return UnitOfWork.SaveChanges() != 0;
+        children.ForEach(c => c.ParentId = interest.ParentId);
+        UpdateRange(children);
+
+        Remove(interest);
     }
 }

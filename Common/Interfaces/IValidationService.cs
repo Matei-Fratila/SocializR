@@ -1,9 +1,11 @@
-﻿namespace Common.Interfaces
+﻿using System;
+
+namespace Common.Interfaces
 {
     public interface IValidationService
     {
         bool EmailExists(string email);
 
-        bool AlbumExists(string name, string id);
+        bool AlbumExists(string name, Guid id);
     }
 }

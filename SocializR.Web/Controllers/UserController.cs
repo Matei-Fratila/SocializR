@@ -3,23 +3,24 @@
 [Authorize(Roles = "Administrator")]
 public class UserController(IOptionsMonitor<AppSettings> _configuration, 
     IMapper _mapper, 
-    IAdminService _userAdminService) : BaseController(_mapper)
+    IAdminService _adminService) : BaseController(_mapper)
 {
     [HttpGet]
-    public IActionResult Index(int? page)
+    public async Task<IActionResult> IndexAsync(int? page)
     {
         var pageIndex = (page ?? 1) - 1;
 
-        var users = _userAdminService.GetAllUsers(pageIndex, _configuration.CurrentValue.UsersPerPage, out int totalUserCount);
-        var model = new StaticPagedList<UserViewModel>(users, pageIndex + 1, _configuration.CurrentValue.UsersPerPage, totalUserCount);
+        var totalUsersCount = await _adminService.GetUsersCountAsync();
+        var users = await _adminService.GetPaginatedUsersAsync(pageIndex, _configuration.CurrentValue.UsersPerPage);
+        var model = new StaticPagedList<UserViewModel>(users, pageIndex + 1, _configuration.CurrentValue.UsersPerPage, totalUsersCount);
 
         return View(model);
     }
 
     [HttpPost]
-    public async Task<IActionResult> DeleteAsync(string id)
+    public async Task<IActionResult> DeleteAsync(Guid id)
     {
-        var result = await _userAdminService.DeleteUser(id);
+        var result = await _adminService.DeleteUserAsync(id);
 
         if (!result)
         {
@@ -30,9 +31,9 @@ public class UserController(IOptionsMonitor<AppSettings> _configuration,
     }
 
     [HttpPost]
-    public async Task<IActionResult> Activate(string id)
+    public async Task<IActionResult> ActivateAsync(Guid id)
     {
-        var result = await _userAdminService.ActivateUser(id);
+        var result = await _adminService.ActivateUserAsync(id);
 
         if (!result)
         {

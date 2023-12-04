@@ -1,29 +1,30 @@
 ﻿namespace SocializR.Web.Controllers;
 
-public class CityController(ICityService _cityService, 
+public class CityController(ApplicationUnitOfWork _unitOfWork,
+    ICityService _cityService, 
     IMapper _mapper) : BaseController(_mapper)
 {
     [HttpGet]
-    public JsonResult Index(Guid id)
+    public async Task<JsonResult> Index(Guid id)
     {
-        var cities = _cityService.GetAllByCountyId(id);
+        var cities = await _cityService.GetAllViewModelsAsync(id);
 
         return Json(cities);
     }
 
     [HttpGet]
     [AllowAnonymous]
-    public List<SelectListItem> GetAllByCounty(Guid id)
+    public async Task<List<SelectListItem>> GetAllByCountyAsync(Guid id)
     {
-        return _cityService.GetAllByCounty(id);
+        return await _cityService.GetSelectListByCountyAsync(id);
     }
 
     [HttpPost]
-    public JsonResult Delete(string cityId)
+    public async Task<JsonResult> DeleteAsync(Guid id)
     {
-        var result = _cityService.Delete(cityId);
+        _cityService.Remove(id);
 
-        if (!result)
+        if (!await _unitOfWork.SaveChangesAsync())
         {
             return Json(new { id = 1, message = "Ups, something happened!" });
         }
@@ -32,11 +33,19 @@ public class CityController(ICityService _cityService,
     }
 
     [HttpPost]
-    public IActionResult Edit(string id, string name)
+    public async Task<IActionResult> EditAsync(Guid id, string name)
     {
-        var result = _cityService.EditCity(id, name);
+        var city = _cityService.Get(id);
 
-        if (!result)
+        if (city == null)
+        {
+            return NotFound();
+        }
+
+        city.Name = name;
+        _cityService.Update(city);
+
+        if (!await _unitOfWork.SaveChangesAsync())
         {
             return InternalServerErrorView();
         }
@@ -45,11 +54,11 @@ public class CityController(ICityService _cityService,
     }
 
     [HttpPost]
-    public IActionResult Add(string name, string countyId)
+    public async Task<IActionResult> AddAsync(string name, Guid countyId)
     {
-        var result = _cityService.Create(name, countyId);
+        _cityService.Add(new City { CountyId = countyId, Name = name});
 
-        if (!result)
+        if (! await _unitOfWork.SaveChangesAsync())
         {
             return InternalServerErrorView();
         }
