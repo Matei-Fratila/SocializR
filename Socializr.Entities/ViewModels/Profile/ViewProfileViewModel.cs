@@ -1,4 +1,6 @@
-﻿namespace SocializR.Models.ViewModels.Profile;
+﻿using SocializR.Models.ViewModels.Feed;
+
+namespace SocializR.Models.ViewModels.Profile;
 
 public class ViewProfileViewModel
 {
@@ -47,4 +49,6 @@ public class ViewProfileViewModel
     public int NrOfPosts { get; set; }
 
     public string Description { get; set; }
+
+    public List<PostVM> Posts { get; set; }
 }

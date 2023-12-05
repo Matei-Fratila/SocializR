@@ -6,7 +6,7 @@
         <ul class="nav flex-column">
             <li>
                 <a asp-controller="Profile" asp-action="Index" asp-route-id=@UserManager.GetUserId(User) aria-current="page">
-                    <img class="rounded-circle shadow img-thumbnail user-photo" id="avatar-photo" src="~/images/noprofile.png" />
+                    <img class="rounded-circle shadow img-thumbnail small-user-photo" id="avatar-photo" src="@CurrentUser.ProfilePhoto" />
                     @CurrentUser.FirstName @CurrentUser.LastName
                 </a>
             </li>

@@ -33,6 +33,8 @@ public static class ConfigurationExtensionMethods
 
             if (user != null)
             {
+                var _imageStorage = serviceProvider.GetService<IImageStorage>();
+                user.ProfilePhoto = _imageStorage.UriFor(user.ProfilePhoto);
                 user.IsAuthenticated = true;
                 return user;
             }

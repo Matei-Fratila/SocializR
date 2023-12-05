@@ -6,7 +6,7 @@ public interface IProfileService
     string GetUserPhoto(string id);
     ProfileViewModel GetEditProfileVM();
     ProfileViewModel GetEditProfileVM(Guid id);
-    ViewProfileViewModel GetViewProfileVM(Guid id);
+    Task<ViewProfileViewModel> GetViewProfileVM(Guid id);
     Task<bool> UpdateUser(ProfileViewModel model);
     Task<bool> UpdateCurrentUser(ProfileViewModel model);
     RelationTypes GetRelationToCurrentUser(string currentUserId, string id);

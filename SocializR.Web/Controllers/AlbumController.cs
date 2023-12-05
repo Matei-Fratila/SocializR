@@ -14,12 +14,9 @@ public class AlbumController(ApplicationUnitOfWork _unitOfWork,
     [HttpGet]
     public async Task<IActionResult> IndexAsync()
     {
-        var model = new AlbumsViewModel
-        {
-            Albums = await _albumService.GetAllAsync(_currentUser.Id)
-        };
+        var model = await _albumService.GetAllAsync(_currentUser.Id);
 
-        foreach (var album in model.Albums)
+        foreach (var album in model)
         {
             album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath ?? _defaultAlbumCover);
         }
@@ -27,8 +24,14 @@ public class AlbumController(ApplicationUnitOfWork _unitOfWork,
         return View(model);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> CreateAsync()
+    {
+        return View();
+    }
+
     [HttpPost]
-    public async Task<IActionResult> CreateAsync(CreateAlbumViewModel model)
+    public async Task<IActionResult> CreateAsync(AlbumViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -49,16 +52,31 @@ public class AlbumController(ApplicationUnitOfWork _unitOfWork,
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
+    public async Task<IActionResult> EditAsync(Guid id)
+    {
+        var model = await _albumService.GetViewModelAsync(id);
+
+        foreach(var media in model.Media)
+        {
+            media.FilePath = _imageStorage.UriFor(media.FilePath);
+        }
+
+        return View(model);
+    }
+
     [HttpPost]
-    public async Task<IActionResult> EditAsync(CreateAlbumViewModel model)
+    public async Task<IActionResult> EditAsync(AlbumViewModel model)
     {
         if (ModelState.IsValid)
         {
             _albumService.Update(model);
             await _unitOfWork.SaveChangesAsync();
+
+            return RedirectToAction(nameof(IndexAsync).RemoveAsyncSuffix());
         }
 
-        return RedirectToAction(nameof(Index));
+        return View(model);
     }
 
     [HttpPost]
@@ -67,7 +85,20 @@ public class AlbumController(ApplicationUnitOfWork _unitOfWork,
         _albumService.Remove(id);
         await _unitOfWork.SaveChangesAsync();
 
-        return RedirectToAction("Index", "Album");
+        return RedirectToAction(nameof(IndexAsync).RemoveAsyncSuffix());
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> DetailsAsync(Guid id)
+    {
+        var model = await _albumService.GetViewModelAsync(id);
+
+        foreach(var media in model.Media)
+        {
+            media.FilePath = _imageStorage.UriFor(media.FilePath);
+        }
+
+        return View(model);
     }
 
     [HttpGet]

@@ -33,8 +33,10 @@
 
 <form method="post" enctype="multipart/form-data" asp-controller="Profile" asp-action="Edit">
     <div class="row mt-5">
+        <h3><i class="fa fa-pencil"></i> Edit profile</h3>
+        <hr />
         <div class="col-sm-3">
-            <img class="img-thumbnail rounded-circle shadow-lg avatar-image" alt="Avatar" src="@Url.Content(Model.FilePath)" />
+            <img class="img-thumbnail rounded-circle shadow-lg avatar-image header-photo" alt="Avatar" src="@Url.Content(Model.FilePath)" />
             <input asp-for="ProfilePhoto" type="file" accept="image/*" value="Add Photo">
             <span asp-validation-for="ProfilePhoto"></span>
         </div>

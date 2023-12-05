@@ -54,15 +54,16 @@ public class ProfileService(CurrentUser _currentUser,
         return profile;
     }
 
-    public ViewProfileViewModel GetViewProfileVM(Guid id)
+    public async Task<ViewProfileViewModel> GetViewProfileVM(Guid id)
     {
-        var result = _userManager.Users
+        var model = await _userManager.Users
            .Include(u => u.ProfilePhoto)
+           .Include(u => u.Posts)
            .Where(u => u.Id == id && u.IsDeleted == false)
            .ProjectTo<ViewProfileViewModel>(_mapper.ConfigurationProvider)
-           .FirstOrDefault();
+           .FirstOrDefaultAsync();
 
-        return result;
+        return model;
     }
 
     public async Task<bool> UpdateUser(ProfileViewModel model)

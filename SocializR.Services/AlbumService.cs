@@ -3,10 +3,10 @@
 public class AlbumService(ApplicationUnitOfWork unitOfWork, 
     IMapper _mapper) : BaseService<Album, AlbumService>(unitOfWork), IAlbumService
 {
-    public Album Get(string name, Guid userId)
-        => UnitOfWork.Albums.Query
+    public async Task<Album> GetAsync(string name, Guid userId)
+        => await UnitOfWork.Albums.Query
             .Where(a => a.Name == name && a.UserId == userId)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
     public async Task<List<AlbumViewModel>> GetAllAsync(Guid userId)
         => await UnitOfWork.Albums.Query
@@ -15,15 +15,14 @@ public class AlbumService(ApplicationUnitOfWork unitOfWork,
             .OrderBy(i => i.Name)
             .ToListAsync();
 
-    public EditAlbumViewModel GetEditAlbumVM(Guid id)
-    {
-        return UnitOfWork.Albums.Query
+    public async Task<AlbumViewModel> GetViewModelAsync(Guid id)
+        => await UnitOfWork.Albums.Query
             .Where(a => a.Id == id)
-            .ProjectTo<EditAlbumViewModel>(_mapper.ConfigurationProvider)
-            .FirstOrDefault();
-    }
+            .Include(a => a.Media)
+            .ProjectTo<AlbumViewModel>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
 
-    public void Update(CreateAlbumViewModel model)
+    public void Update(AlbumViewModel model)
     {
         var album = Get(model.Id);
 

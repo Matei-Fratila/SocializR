@@ -5,10 +5,6 @@
     width: 330px;
 }
 
-.album-container {
-    padding:20px 45px;
-}
-
 .media-container {
     margin: 20px;
 }
@@ -88,4 +84,14 @@ textarea {
 figure img, figure video {
     width:330px;
     height: auto;
+}
+
+textarea {
+    overflow: hidden;
+    padding: 0;
+    /* resize: none; */
+    border-color: #ddd;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
 }

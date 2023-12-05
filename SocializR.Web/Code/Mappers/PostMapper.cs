@@ -1,6 +1,4 @@
-﻿using Utils;
-
-namespace SocializR.Web.Code.Mappers;
+﻿namespace SocializR.Web.Code.Mappers;
 
 public class PostMapper : Profile
 {
@@ -18,6 +16,9 @@ public class PostMapper : Profile
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.User.LastName))
             .ForMember(dest => dest.UserPhoto, opt => opt.MapFrom(src => src.User.ProfilePhoto.FilePath))
             .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => src.CreatedOn.TimeAgo()));
+
+        CreateMap<AddCommentViewModel, Comment>()
+            .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => DateTime.Now));
 
         CreateMap<Post, PostVM>()
             .ForMember(dest => dest.NumberOfLikes, opt => opt.MapFrom(src => src.Likes.Count))

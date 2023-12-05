@@ -29,5 +29,6 @@ public class ViewProfileMapper : Profile
             .ForMember(dest => dest.NrOfFriends, opt => opt.MapFrom(src => src.FriendsFirstUser.Count()))
             .ForMember(dest => dest.NrOfPhotos, opt => opt.MapFrom(src => src.Albums.SelectMany(a => a.Media).Count()))
             .ForMember(dest => dest.NrOfPosts, opt => opt.MapFrom(src => src.Posts.Count()));
+            //.ForMember(dest => dest.Posts, opt => opt.MapFrom(src => src.Posts));
     }
 }

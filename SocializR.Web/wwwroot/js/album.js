@@ -1,21 +1,53 @@
 ﻿jQuery(function ($) {
 
-    $('.albums-container').on('click', '.delete', function (e) {
+    $('.delete-album').on('click', function (e) {
         var container = $(e.target).closest('.album-container');
-        var id = $(container).find('.album-id').val();
+        var id = $(container).find('#Id').val();
 
         $.post('Album/Delete', { id: id }, function () {
-            alert("album deleted successfully!");
-            container.remove();
+            alert("Album deleted successfully!");
+            location.reload();
         });
     });
 
-    $('.albums-container').on('click', '.edit', function (e) {
-        var container = $(e.target).closest('.album-container');
-        var id = $(container).find('.album-id').val();
-        var name = $(container).find('.album-name').val();
+    $('.delete-media').on('click', function (e) {
+        var container = $(e.target).closest('.card');
+        var id = $(container).find('#Media_media_Id').val();
 
-        $(location).attr('href', 'Media/Index');
+        $.post('../Media/Delete', { id: id }, function () {
+            alert("Media deleted successfully!");
+            location.reload();
+        });
+    });
+
+    $('#upload-media').on('change', function (e) {
+        var files = e.target.files;
+        let formData = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            if (file.type.match('image.*')) {
+                formData.append('media', file, file.name);
+            }
+        }
+
+        var container = $(e.target).closest('form');
+        var albumId = $(container).find('#Id').val();
+        formData.append("AlbumId", albumId);
+
+        $.ajax({
+            type: 'POST',
+            url: '../Media/Upload',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                location.reload();
+            },
+            error: function (err) {
+                alert(err.statusText);
+            }
+        });
+
     });
 
     $('.show-gallery').on('click', function (e) {

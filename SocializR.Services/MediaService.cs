@@ -74,20 +74,4 @@ public class MediaService(CurrentUser _currentUser,
 
         return media;
     }
-
-    public async Task UpdateAsync(EditedMediaViewModel model)
-    {
-        if (model.Media.Count != 0)
-        {
-            var images = await UnitOfWork.Media.Query
-              .Where(a => a.AlbumId == model.Id)
-              .ToListAsync();
-
-            foreach (var image in model.Media)
-            {
-                var picture = images.Find(i => i.Id == image.Id);
-                picture.Caption = image.Caption;
-            }
-        }
-    }
 }

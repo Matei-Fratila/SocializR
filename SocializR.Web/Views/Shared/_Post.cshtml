@@ -8,7 +8,7 @@
                 <img class="rounded-circle shadow img-thumbnail user-photo avatar-float" src="@Model.UserPhoto">
             </a>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-8 card-container">
             <div class="card shadow">
                 <div class="card-header">
                     <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.UserId" class="text-bold">@Model.FirstName @Model.LastName</a>

@@ -33,10 +33,9 @@ builder.Services.AddAuthentication("SocializRCookies").AddCookie("SocializRCooki
     options.LoginPath = new PathString("/Account/Login");
 });
 
-builder.Services.AddCurrentUser();
-
 builder.Services.AddScoped<ApplicationUnitOfWork>();
 builder.Services.AddBusinessLogic(builder.Environment);
+builder.Services.AddCurrentUser();
 
 if (builder.Environment.IsDevelopment())
 {

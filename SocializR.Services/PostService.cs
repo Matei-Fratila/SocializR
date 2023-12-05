@@ -53,7 +53,7 @@ public class PostService(CurrentUser _currentUser,
         {
             foreach (var file in model.Media)
             {
-                var album = _albumService.Get(albumName, _currentUser.Id);
+                var album = await _albumService.GetAsync(albumName, _currentUser.Id);
 
                 if (album == null)
                 {

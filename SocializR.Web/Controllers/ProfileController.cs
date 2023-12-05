@@ -1,6 +1,4 @@
-﻿using SocializR.Models.Entities;
-
-namespace SocializR.Web.Controllers;
+﻿namespace SocializR.Web.Controllers;
 
 [Authorize]
 public class ProfileController(CurrentUser _currentUser,
@@ -28,7 +26,6 @@ public class ProfileController(CurrentUser _currentUser,
     [AllowAnonymous]
     public async Task<IActionResult> IndexAsync(Guid id)
     {
-        ViewProfileViewModel model = null;
         var currentUser = await _userManager.GetUserAsync(User);
 
         if (id == Guid.Empty)
@@ -36,7 +33,7 @@ public class ProfileController(CurrentUser _currentUser,
             id = currentUser.Id;
         }
 
-        model = _profileService.GetViewProfileVM(id);
+        var model = await _profileService.GetViewProfileVM(id);
 
         model.FilePath = _imageStorage.UriFor(model.FilePath ?? _defaultProfilePicture);
         foreach (var album in model.Albums)
@@ -55,19 +52,6 @@ public class ProfileController(CurrentUser _currentUser,
         }
 
         var selectedInterests = await _interestService.GetSelectedSelectListAsync(model.Interests);
-
-        //if (model.Interests.Any())
-        //{
-        //    foreach (var interest in model.Interests)
-        //    {
-        //        selectedInterests.Single(i => i.Value == interest.ToString()).Selected = true;
-        //    }
-        //}
-        //else
-        //{
-        //    selectedInterests.First().Selected = true;
-        //}
-
         ViewData["Interests"] = selectedInterests;
 
         model.RelationToCurrentUser = _profileService.GetRelationToCurrentUser(currentUser.Id.ToString(), id.ToString());
@@ -157,7 +141,7 @@ public class ProfileController(CurrentUser _currentUser,
             {
                 if (type[0] == "image")
                 {
-                    var album = _albumService.Get(_profilePicturesAlbumName, model.Id);
+                    var album = await _albumService.GetAsync(_profilePicturesAlbumName, model.Id);
                     if (album == null)
                     {
                         album = new Album { UserId = model.Id, Name = _profilePicturesAlbumName };

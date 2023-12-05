@@ -1,0 +1,25 @@
+﻿@model List<MediaViewModel>
+@inject CurrentUser CurrentUser
+
+@{
+    ViewData["Title"] = "";
+}
+@if (ViewData["UserId"].ToString() == CurrentUser.Id.ToString())
+{
+    <form asp-controller="Album" asp-action="Edit"></form>
+    <input type="submit" class="btn btn-success" />
+}
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var media in Model)
+    {
+        @if (ViewData["UserId"].ToString() == CurrentUser.Id.ToString())
+        {
+            @Html.EditorFor(x => media, "Media")
+        }
+        else
+        {
+            @Html.DisplayFor(x => media, "Media")
+        }
+    }
+</div>

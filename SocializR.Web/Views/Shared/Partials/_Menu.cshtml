@@ -17,7 +17,7 @@
     @if (CurrentUser.FirstName != null)
     {
         <div class="navbar-nav nav-item text-nowrap">
-            <a class="nav-link px-3" asp-controller="Profile" asp-action="Index" asp-route-id="@UserManager.GetUserId(User)">
+            <a class="nav-link px-3" asp-controller="Profile" asp-action="Index" asp-route-id="@CurrentUser.Id">
                 @CurrentUser.FirstName <i class="fa fa-user"></i>
             </a>
         </div>

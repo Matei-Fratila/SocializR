@@ -1,0 +1,21 @@
+﻿@model AlbumViewModel
+@inject CurrentUser CurrentUser
+
+@{
+    ViewData["Title"] = "Album details";
+}
+
+@section Styles {
+    <link href="~/css/album.css" rel="stylesheet" />
+}
+
+@section Scripts{
+    <script src="~/js/album.js"></script>
+}
+
+<h3><i class="fa fa-photo-video"></i> @Model.Name</h3>
+<p>@Model.Description</p>
+<hr />
+@Html.DisplayFor(m => m.Media, "Gallery")
+
+

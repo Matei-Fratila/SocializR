@@ -17,7 +17,7 @@ public class HomeController(IMapper _mapper,
     private readonly string _defaultPostsAlbumName = _appSettings.CurrentValue.PostsAlbumName;
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> IndexAsync()
     {
         var model = await _postService.GetPaginatedAsync(_currentUser.Id, 0, _postsPerPage, _commentsPerFirstPage, _defaultProfilePicture);
 
@@ -25,7 +25,7 @@ public class HomeController(IMapper _mapper,
     }
 
     [HttpGet]
-    public async Task<JsonResult> NextPosts(int page)
+    public async Task<JsonResult> NextPostsAsync(int page)
     {
         var model = await _postService.GetPaginatedAsync(_currentUser.Id, page, _postsPerPage, _commentsPerPage, _defaultProfilePicture);
 
@@ -33,7 +33,7 @@ public class HomeController(IMapper _mapper,
     }
 
     [HttpGet]
-    public async Task<JsonResult> NextComments(int page, Guid postId)
+    public async Task<JsonResult> NextCommentsAsync(int page, Guid postId)
     {
         var comments = await _commentService.GetPaginatedAsync(postId, _commentsPerPage, page, _defaultProfilePicture);
 
@@ -41,7 +41,7 @@ public class HomeController(IMapper _mapper,
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddPost(AddPostViewModel model)
+    public async Task<IActionResult> AddPostAsync(AddPostViewModel model)
     {
         await _postService.AddAsync(model, _defaultPostsAlbumName);
 
@@ -54,11 +54,11 @@ public class HomeController(IMapper _mapper,
     }
 
     [HttpPost]
-    public IActionResult DeletePost(Guid id)
+    public async Task<IActionResult> DeletePostAsync(Guid id)
     {
         _postService.Remove(id);
 
-        if (_applicationUnitOfWork.SaveChanges() == 0)
+        if (!await _applicationUnitOfWork.SaveChangesAsync())
         {
             return InternalServerErrorView();
         }
@@ -93,28 +93,24 @@ public class HomeController(IMapper _mapper,
     }
 
     [HttpPost]
-    public Guid AddComment([FromBody] AddCommentViewModel comment)
+    public async Task<Guid> AddCommentAsync([FromBody] AddCommentViewModel comment)
     {
-        var newComment = new Comment
-        {
-            UserId = _currentUser.Id,
-            Body = comment.Body,
-            CreatedOn = DateTime.Now,
-            PostId = comment.PostId
-        };
+        var newComment = new Comment();
+        _mapper.Map(comment, newComment);
+        newComment.UserId = _currentUser.Id;
 
         _commentService.Add(newComment);
-        _applicationUnitOfWork.SaveChanges();
+        await _applicationUnitOfWork.SaveChangesAsync();
 
         return newComment.Id;
     }
 
     [HttpPost]
-    public IActionResult DeleteComment(Guid id)
+    public async Task<IActionResult> DeleteCommentAsync(Guid id)
     {
         _commentService.Remove(id);
 
-        if (_applicationUnitOfWork.SaveChanges() == 0)
+        if (!await _applicationUnitOfWork.SaveChangesAsync())
         {
             return InternalServerErrorView();
         }
@@ -144,12 +140,6 @@ public class HomeController(IMapper _mapper,
     {
         return PartialView("Views/Home/_Post.cshtml", model);
     }
-
-    //[HttpGet]
-    //public IActionResult GetMediaWidget(MediaModel model)
-    //{
-    //    return PartialView("Views/Home/_Media.cshtml", model);
-    //}
 
     [HttpGet]
     public IActionResult GetImageWidget(MediaViewModel model)

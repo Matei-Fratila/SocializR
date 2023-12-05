@@ -145,17 +145,15 @@ jQuery(function ($) {
                 url: 'Home/NextPosts',
                 data: { page: page },
                 success: function (response) {
-                    var posts = response.posts;
-
-                    if (posts.length === 0) {
+                    if (response.length === 0) {
                         $(window).off(scroll);
                         $('#posts-container').append("<p>No more posts</p>");
                     }
 
                     var requests = Array();
 
-                    for (var i = 0; i < posts.length; i++) {
-                        var post = posts[i];
+                    for (var i = 0; i < response.length; i++) {
+                        var post = response[i];
                         requests.push(
                             $.ajax({
                                 dataType: "html",

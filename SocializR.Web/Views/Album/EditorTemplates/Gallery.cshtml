@@ -1,0 +1,21 @@
+﻿@model List<MediaViewModel>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @for (var i = 0; i < Model.Count; i++)
+    {
+        <div class="col">
+            <div class="card">
+                <input type="hidden" asp-for="@Model[i].Id" />
+                <img class="card-img-top" src="@Model[i].FilePath" alt="Card image cap">
+                <textarea asp-for=@Model[i].Caption class="card-body" placeholder="Write caption..."></textarea>
+                <div class="card-footer">
+                    <small class="text-muted">Uploaded @Model[i].CreatedDate.TimeAgo()</small>
+                    <a data-title="Delete" class="float-right delete-media">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

@@ -6,4 +6,5 @@ public class MediaViewModel
     public string Caption { get; set; }
     public Guid Id { get; set; }
     public string FilePath { get; set; }
+    public DateTime CreatedDate { get; set; }
 }

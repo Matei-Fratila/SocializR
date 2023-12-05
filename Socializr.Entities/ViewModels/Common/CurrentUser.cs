@@ -17,6 +17,7 @@ public class CurrentUser
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public bool IsAuthenticated { get; set; }
+    public string ProfilePhoto { get; set; }
     public List<Role> Roles { get; set; }
 
 }

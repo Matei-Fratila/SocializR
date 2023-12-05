@@ -1,0 +1,14 @@
+﻿@model MediaViewModel
+
+<div class="col">
+    <div class="card">
+        <input type="hidden" asp-for="Id" />
+        <img class="card-img-top" src="@Model.FilePath" alt="Card image cap">
+        <div class="card-body">
+            <p class="card-text">@Model.Caption</p>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">Uploaded @Model.CreatedDate.TimeAgo()</small>
+        </div>
+    </div>
+</div>

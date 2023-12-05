@@ -36,7 +36,8 @@ public class AccountController(ICountyService _countyService,
         {
             if (string.IsNullOrEmpty(model.ReturnUrl))
             {
-                return RedirectToAction(nameof(HomeController.Index), nameof(HomeController).RemoveControllerSuffix());
+                return RedirectToAction(nameof(HomeController.IndexAsync).RemoveAsyncSuffix(),
+                    nameof(HomeController).RemoveControllerSuffix());
             }
 
             return Redirect(model.ReturnUrl);
@@ -92,7 +93,8 @@ public class AccountController(ICountyService _countyService,
         if (result.Succeeded)
         {
             await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Email, user.Email));
-            return RedirectToAction(nameof(HomeController.Index), nameof(HomeController).RemoveControllerSuffix());
+            return RedirectToAction(nameof(HomeController.IndexAsync).RemoveAsyncSuffix(),
+                nameof(HomeController).RemoveControllerSuffix());
         }
 
         foreach (IdentityError error in result.Errors)

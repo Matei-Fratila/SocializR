@@ -13,7 +13,7 @@ public class MediaController(ApplicationUnitOfWork _unitOfWork,
     public async Task<IActionResult> IndexAsync(Guid id)
     {
         var currentUser = await _userManager.GetUserAsync(User);
-        var album = _albumService.GetEditAlbumVM(id);
+        var album = await _albumService.GetViewModelAsync(id);
 
         if (album == null)
         {
@@ -30,9 +30,17 @@ public class MediaController(ApplicationUnitOfWork _unitOfWork,
     }
 
     [HttpPost]
-    public async Task<IActionResult> EditAsync(EditedMediaViewModel model)
+    public async Task<IActionResult> EditAsync(List<MediaViewModel> model)
     {
-        await _mediaService.UpdateAsync(model);
+        List<Media> entities = new List<Media>();
+        _mapper.Map(model, entities);
+
+        _mediaService.UpdateRange(entities);
+
+        if(!await _unitOfWork.SaveChangesAsync())
+        {
+            return InternalServerErrorView();
+        }
 
         return Ok();
     }
@@ -75,11 +83,58 @@ public class MediaController(ApplicationUnitOfWork _unitOfWork,
         return PartialView("Views/Media/_Gallery.cshtml", model);
     }
 
-    [HttpPost]
-    public async Task<JsonResult> UploadAsync(List<IFormFile> media, string albumName)
-    {
-        var ids = new List<string>();
+    //[HttpPost]
+    //public async Task<JsonResult> UploadAsync(List<IFormFile> media, string albumName)
+    //{
+    //    var ids = new List<string>();
 
+    //    foreach (var file in media)
+    //    {
+    //        if (file.Length > 0)
+    //        {
+    //            var type = file.ContentType.ToString().Split('/');
+
+    //            if (type[0] == "image" || type[0] == "video")
+    //            {
+    //                try
+    //                {
+    //                    var imageName = await _imageStorage.SaveImage(file.OpenReadStream(), type[1]);
+
+    //                    var album = await _albumService.GetAsync(albumName, _currentUser.Id);
+    //                    if (album == null)
+    //                    {
+    //                        _albumService.Add(new Album { Name = albumName, UserId = _currentUser.Id });
+    //                    }
+
+    //                    var mediaType = type[0] == "image" ? MediaTypes.Image : MediaTypes.Video;
+    //                    var result = _mediaService.Add(imageName, mediaType, album);
+
+    //                    if (result == null)
+    //                    {
+    //                        return Json(false);
+    //                    }
+
+    //                    ids.Add(result.Id.ToString());
+    //                }
+    //                catch (Exception e)
+    //                {
+
+    //                }
+
+    //            }
+    //            else
+    //            {
+    //                ids.Add("null");
+    //            }
+    //        }
+    //    }
+
+    //    return Json(ids);
+    //}
+
+    [HttpPost]
+    public async Task<IActionResult> UploadAsync(List<IFormFile> media, Guid albumId)
+    {
         foreach (var file in media)
         {
             if (file.Length > 0)
@@ -92,21 +147,19 @@ public class MediaController(ApplicationUnitOfWork _unitOfWork,
                     {
                         var imageName = await _imageStorage.SaveImage(file.OpenReadStream(), type[1]);
 
-                        var album = _albumService.Get(albumName, _currentUser.Id);
+                        var album = _albumService.Get(albumId);
                         if (album == null)
                         {
-                            _albumService.Add(new Album { Name = albumName, UserId = _currentUser.Id });
+                            return NotFound();
                         }
 
                         var mediaType = type[0] == "image" ? MediaTypes.Image : MediaTypes.Video;
                         var result = _mediaService.Add(imageName, mediaType, album);
 
-                        if (result == null)
+                        if (!await _unitOfWork.SaveChangesAsync())
                         {
-                            return Json(false);
+                            return InternalServerErrorView();
                         }
-
-                        ids.Add(result.Id.ToString());
                     }
                     catch (Exception e)
                     {
@@ -114,14 +167,10 @@ public class MediaController(ApplicationUnitOfWork _unitOfWork,
                     }
 
                 }
-                else
-                {
-                    ids.Add("null");
-                }
             }
         }
 
-        return Json(ids);
+        return Ok();
     }
 
     [HttpGet]
