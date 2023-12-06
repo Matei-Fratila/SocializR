@@ -3,8 +3,6 @@
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddSqlServer<ApplicationDbContext>(connectionString, options =>
 {
@@ -36,6 +34,7 @@ builder.Services.AddAuthentication("SocializRCookies").AddCookie("SocializRCooki
 builder.Services.AddScoped<ApplicationUnitOfWork>();
 builder.Services.AddBusinessLogic(builder.Environment);
 builder.Services.AddCurrentUser();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 if (builder.Environment.IsDevelopment())
 {
@@ -96,6 +95,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}");
+    pattern: "{controller=Home}/{action=Index}")
+    .RequireAuthorization();
 
 app.Run();

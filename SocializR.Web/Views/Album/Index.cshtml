@@ -10,16 +10,13 @@
 }
 
 @section Scripts {
-    <environment include="Development">
-        <script src="~/lib/linkify-js/dist/linkify.js"></script>
-        <script src="~/lib/linkify-jquery/dist/linkify-jquery.js"></script>
-    </environment>
     <script src="~/js/gallery.js"></script>
     <script src="~/js/album.js"></script>
 }
 
 <h3><i class="fa fa-photo-film"></i> Your albums</h3>
 <hr />
+<a asp-action="Create" asp-controller="Album" class="btn btn-success mb-4"><i class="fa fa-plus"></i> Create new album</a>
 
 <div class="card-group albums-container row row-cols-1 row-cols-md-3 g-4">
     @foreach (var album in Model)

@@ -22,8 +22,7 @@
 
 @section Scripts {
     <script src="~/js/profile.js"></script>
-    <script src="~/js/gallery.js"></script>
-    <script src="~/js/album.js"></script>
+    <script src="~/js/feed.js"></script>
     <environment include="Development">
         <script src="~/lib/select2/js/select2.js"></script>
     </environment>
@@ -37,7 +36,7 @@
 }
 
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-5">
         <div class="row">
             <div class="col-sm-7">
                 <div class="row"><h1>@Model.DisplayName</h1></div>
@@ -178,13 +177,16 @@
             }
         </div>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-1"></div>
+    <div class="col-lg-5 mt-5">
         <h3><i class="fa fa-arrow-down"></i> Activity</h3>
         <hr />
-        @foreach (var post in Model.Posts)
-        {
-            @await Html.PartialAsync("../Shared/_Post", post)
-        }
+        <div id="posts-container">
+            @foreach (var post in Model.Posts)
+            {
+                @await Html.PartialAsync("_Post", post)
+            }
+        </div>
     </div>
 </div>
 

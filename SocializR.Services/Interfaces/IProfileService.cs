@@ -9,5 +9,5 @@ public interface IProfileService
     Task<ViewProfileViewModel> GetViewProfileVM(Guid id);
     Task<bool> UpdateUser(ProfileViewModel model);
     Task<bool> UpdateCurrentUser(ProfileViewModel model);
-    RelationTypes GetRelationToCurrentUser(string currentUserId, string id);
+    RelationTypes GetRelationToCurrentUser(Guid? currentUserId, Guid id);
 }

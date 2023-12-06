@@ -21,14 +21,18 @@
             <div class="card shadow">
                 <input class="card-header" id="post-title" placeholder="Title..."/>
                 <textarea class="card-body" id="post-body" placeholder="Share your thoughts..."></textarea>
-                <img src="" class="card-img-bottom">
+                <img src="" class="card-img-bottom" id="new-post-image">
+                <video controls class="no-side-padding col-sm-12 figure-img img-fluid rounded" hidden>
+                    <source src="video/mp4" id="new-post-video">
+                </video>
                 <div class="card-footer">
                     <button id="share" type="button" class="btn btn-primary">
                         <i class="fa fa-share"></i> Post
                     </button>
                     <span class="btn btn-secondary btn-file float-right">
                         <i class="fa fa-camera"></i> Add file
-                        <input title="Add photos" multiple data-toggle="tooltip" data-placement="bottom" type="file" accept="image/*, video/*" text="add photos" id="files" />
+                        <input title="Add photos" multiple data-toggle="tooltip" data-placement="bottom" 
+                        type="file" accept="image/*, video/*" text="add photos" id="files" />
                     </span>
                 </div>
             </div>

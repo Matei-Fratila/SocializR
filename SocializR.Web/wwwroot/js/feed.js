@@ -196,41 +196,35 @@ jQuery(function ($) {
     //Handle File Selects in Post
     function handleFileSelect(evt) {
         var files = evt.target.files;
+
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
+
             if (file.type.match('image.*')) {
-                formData.append('media', file, file.name);
-                var f = files[i];
+
                 var reader = new FileReader();
-                reader.onload = (function (theFile) {
+                reader.onload = (function () {
                     return function (e) {
-                        $.get("Home/GetImageWidget", function (htmlResponse) {
-                            var newelement = $.parseHTML(htmlResponse);
-                            $(newelement).find("img").attr("src", e.target.result);
-                            $(newelement).find('textarea').prop("placeholder", "say something about this picture...");
-                            $(newelement).find('textarea').prop("disabled", false);
-                            $("#media").prepend(newelement);
-                        });
+                        $('#new-post-video').parent()[0].hidden = true
+                        $('#new-post-image').attr("src", e.target.result);
+                        $('#new-post-image').show();
                     };
-                })(f);
-                reader.readAsDataURL(f);
+                })(file);
+                reader.readAsDataURL(file);
             }
             else if (file.type.match('video.*')) {
-                formData.append('media', file, file.name);
-                f = files[i];
+
                 reader = new FileReader();
-                reader.onload = (function (theFile) {
+                reader.onload = (function () {
                     return function (e) {
-                        $.get("Home/GetVideoWidget", function (htmlResponse) {
-                            var newelement = $.parseHTML(htmlResponse);
-                            $(newelement).find("source").attr("src", e.target.result);
-                            $(newelement).find('textarea').prop("placeholder", "say something about this video...");
-                            $(newelement).find('textarea').prop("disabled", false);
-                            $("#media").prepend(newelement);
-                        });
+                        $('#new-post-image').hide();
+                        var $source = $('#new-post-video');
+                        $source[0].src = URL.createObjectURL(file);
+                        $source.parent()[0].load();
+                        $source.parent()[0].hidden = false;
                     };
-                })(f);
-                reader.readAsDataURL(f);
+                })(file);
+                reader.readAsDataURL(file);
             }
         }
     }

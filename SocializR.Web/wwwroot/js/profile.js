@@ -2,8 +2,6 @@
 
     $('.select2').select2();
 
-    $('.album-container a').remove();
-
     var id = $('#Id').val();
 
     $('.unfriend').on('click', function () {

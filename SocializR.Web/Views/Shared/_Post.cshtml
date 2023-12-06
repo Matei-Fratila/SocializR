@@ -1,5 +1,6 @@
-﻿@inject UserManager<User> userManager
-@model PostVM
+﻿@model PostVM
+
+@inject CurrentUser currentUser
 
 <div class="container post-container mt-5">
     <div class="row">
@@ -12,7 +13,7 @@
             <div class="card shadow">
                 <div class="card-header">
                     <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.UserId" class="text-bold">@Model.FirstName @Model.LastName</a>
-                    @if (Model.IsCurrentUserPost)
+                    @if (Model.UserId == currentUser.Id)
                     {
                         <a class="float-right ms-2 delete-post-btn"><i class="fa fa-trash"></i></a>
                     }

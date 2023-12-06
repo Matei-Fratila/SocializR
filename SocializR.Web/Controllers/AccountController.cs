@@ -1,8 +1,6 @@
-﻿
-using Utils;
+﻿namespace SocializR.Web.Controllers;
 
-namespace SocializR.Web.Controllers;
-
+[AllowAnonymous]
 public class AccountController(ICountyService _countyService,
     IMapper _mapper,
     UserManager<User> _userManager,

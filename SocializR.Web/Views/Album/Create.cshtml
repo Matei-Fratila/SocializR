@@ -1,17 +1,17 @@
 ﻿@model AlbumViewModel
 
 @{
-    ViewData["Title"] = "Edit album";
+    ViewData["Title"] = "Create album";
 }
 
 @section Scripts {
     <script src="~/js/album.js"></script>
 }
 
-<h3><i class="fa fa-pencil"></i> Edit album</h3>
+<h3><i class="fa fa-plus"></i> Create album</h3>
 <hr />
 
-<form asp-controller="Album" asp-action="Edit" asp-route-id="@Model.Id" id="edit-album-form">
+<form asp-controller="Album" asp-action="Create" asp-route-id="@Model.Id" id="edit-album-form">
     <input type="hidden" asp-for="Id" />
     <input type="hidden" asp-for="UserId" />
     <input type="hidden" asp-for="CoverFilePath" />
@@ -31,18 +31,9 @@
         </div>
     </div>
     <div class="row mb-3">
-        <label class="col-form-label col-sm-2">Add more files</label>
-        <div class="col-sm-6">
-            <input multiple data-toggle="tooltip" type="file" accept="image/*, video/*"
-                   class="btn btn-primary" id="upload-media" />
-        </div>
-    </div>
-    <div class="row mb-3">
         <div class="col-sm-2"></div>
         <div class="col-sm-6">
             <input type="submit" value="Save changes" class="btn btn-success" />
         </div>
     </div>
-
-    @Html.EditorFor(m => m.Media, "Gallery")
 </form>

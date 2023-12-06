@@ -2,9 +2,6 @@
 
 public class PostVM
 {
-    public bool IsLikedByCurrentUser { get; set; }
-    public bool IsCurrentUserPost { get; set; }
-
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
     public string UserPhoto { get; set; }
@@ -15,6 +12,9 @@ public class PostVM
     public string CreatedOn { get; set; }
     public int NumberOfLikes { get; set; }
     public int NumberOfComments { get; set; }
+
+    public bool IsLikedByCurrentUser { get; set; }
+
 
     public List<MediaViewModel> Media { get; set; }
     public List<CommentViewModel> Comments { get; set; }

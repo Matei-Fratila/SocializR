@@ -27,8 +27,7 @@ public class PostService(CurrentUser _currentUser,
         {
             post.Comments = await _commentService.GetPaginatedAsync(post.Id, commentsPerPage, 0, defaultProfilePicture);
             post.UserPhoto = _imageStorage.UriFor(post.UserPhoto ?? defaultProfilePicture);
-            post.IsCurrentUserPost = post.UserId == _currentUser.Id;
-            post.IsLikedByCurrentUser = post.Likes.Any(l => l.UserId == _currentUser.Id);
+            //post.IsLikedByCurrentUser = post.Likes.Any(l => l.UserId == _currentUser.Id);
         }
 
         foreach (var comment in posts.SelectMany(p => p.Comments))

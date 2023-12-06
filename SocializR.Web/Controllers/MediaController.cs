@@ -1,6 +1,5 @@
 ﻿namespace SocializR.Web.Controllers;
 
-[Authorize]
 public class MediaController(ApplicationUnitOfWork _unitOfWork,
     IMapper _mapper,
     IAlbumService _albumService,

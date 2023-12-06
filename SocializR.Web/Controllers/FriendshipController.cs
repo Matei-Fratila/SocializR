@@ -1,6 +1,5 @@
 ﻿namespace SocializR.Web.Controllers;
 
-[Authorize]
 public class FriendshipController(ApplicationUnitOfWork _unitOfWork,
     IOptionsMonitor<AppSettings> _configuration,
     CurrentUser _currentUser,

@@ -1,4 +1,6 @@
-﻿namespace SocializR.Web.Code.Mappers;
+﻿using SocializR.Web.Code.Mappers.ValueResolvers;
+
+namespace SocializR.Web.Code.Mappers;
 
 public class PostMapper : Profile
 {
@@ -27,7 +29,6 @@ public class PostMapper : Profile
             .ForMember(dest => dest.UserPhoto, opt => opt.MapFrom(src => src.User.ProfilePhoto.FilePath))
             .ForMember(dest => dest.NumberOfComments, opt => opt.MapFrom(src => src.Comments.Count))
             .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => src.CreatedOn.TimeAgo()));
-        //.ForMember(dest => dest.Media.SelectMany(m => m.FilePath), opt => opt.MapFrom(src => src.Media.SelectMany(m => m.FilePath)));
-        //.ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments.OrderBy(c=>c.CreatedOn)));
+            //.ForMember(dest => dest.IsLikedByCurrentUser, opt => opt.MapFrom<IsLikedByCurrentUserResolver>());
     }
 }

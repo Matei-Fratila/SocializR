@@ -1,5 +1,6 @@
 ﻿namespace SocializR.Web.Controllers;
 
+[Authorize(Roles = "Administrator")]
 public class CityController(ApplicationUnitOfWork _unitOfWork,
     ICityService _cityService, 
     IMapper _mapper) : BaseController(_mapper)

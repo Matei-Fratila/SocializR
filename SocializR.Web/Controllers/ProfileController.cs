@@ -1,6 +1,5 @@
 ﻿namespace SocializR.Web.Controllers;
 
-[Authorize]
 public class ProfileController(CurrentUser _currentUser,
     UserManager<User> _userManager,
     ApplicationUnitOfWork _unitOfWork,
@@ -21,6 +20,8 @@ public class ProfileController(CurrentUser _currentUser,
     private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
     private readonly string _defaultAlbumCover = _appSettings.CurrentValue.DefaultAlbumCover;
     private readonly string _fileUploadLocation = _appSettings.CurrentValue.FileUploadLocation;
+    private readonly int _postsPerPage = _appSettings.CurrentValue.PostsPerPage;
+    private readonly int _commentsPerFirstPage = _appSettings.CurrentValue.CommentsPerFirstPage;
 
     [HttpGet]
     [AllowAnonymous]
@@ -41,12 +42,24 @@ public class ProfileController(CurrentUser _currentUser,
             album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath ?? _defaultAlbumCover);
         }
 
+        model.Posts = await _postService.GetPaginatedAsync(id, 0, _postsPerPage, _commentsPerFirstPage, _defaultProfilePicture);
+
+        foreach (var post in model.Posts)
+        {
+            post.UserPhoto = _imageStorage.UriFor(post.UserPhoto ?? _defaultProfilePicture);
+        }
+
+        foreach (var media in model.Posts.SelectMany(p => p.Media))
+        {
+            media.FilePath = _imageStorage.UriFor(media.FilePath);
+        }
+
         if (model == null)
         {
             return UserNotFoundView();
         }
 
-        if (id != currentUser.Id)
+        if (id != currentUser?.Id)
         {
             model.MutualFriends = await _friendshipService.GetMutualFriendsCountAsync(id, _currentUser.Id);
         }
@@ -54,7 +67,7 @@ public class ProfileController(CurrentUser _currentUser,
         var selectedInterests = await _interestService.GetSelectedSelectListAsync(model.Interests);
         ViewData["Interests"] = selectedInterests;
 
-        model.RelationToCurrentUser = _profileService.GetRelationToCurrentUser(currentUser.Id.ToString(), id.ToString());
+        model.RelationToCurrentUser = _profileService.GetRelationToCurrentUser(currentUser?.Id, id);
 
         if (model.IsPrivate
             && model.RelationToCurrentUser == RelationTypes.Strangers

@@ -1,6 +1,5 @@
 ﻿namespace SocializR.Web.Controllers;
 
-[Authorize]
 public class AlbumController(ApplicationUnitOfWork _unitOfWork,
     CurrentUser _currentUser,
     IOptionsMonitor<AppSettings> _appSettings,
@@ -27,7 +26,8 @@ public class AlbumController(ApplicationUnitOfWork _unitOfWork,
     [HttpGet]
     public async Task<IActionResult> CreateAsync()
     {
-        return View();
+        var model = new AlbumViewModel { UserId = _currentUser.Id };
+        return View(model);
     }
 
     [HttpPost]
@@ -35,7 +35,7 @@ public class AlbumController(ApplicationUnitOfWork _unitOfWork,
     {
         if (!ModelState.IsValid)
         {
-            RedirectToAction(nameof(Index));
+            return View(model);
         }
 
         _albumService.Add(new Album
@@ -49,7 +49,7 @@ public class AlbumController(ApplicationUnitOfWork _unitOfWork,
             return InternalServerErrorView();
         }
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(IndexAsync).RemoveAsyncSuffix());
     }
 
     [HttpGet]
@@ -70,8 +70,12 @@ public class AlbumController(ApplicationUnitOfWork _unitOfWork,
     {
         if (ModelState.IsValid)
         {
-            _albumService.Update(model);
-            await _unitOfWork.SaveChangesAsync();
+            await _albumService.Update(model);
+
+            if(! await _unitOfWork.SaveChangesAsync())
+            {
+                return InternalServerErrorView();
+            }
 
             return RedirectToAction(nameof(IndexAsync).RemoveAsyncSuffix());
         }

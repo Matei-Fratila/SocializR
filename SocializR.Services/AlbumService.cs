@@ -1,6 +1,7 @@
 ﻿namespace SocializR.Services;
 
 public class AlbumService(ApplicationUnitOfWork unitOfWork, 
+    IMediaService _mediaService,
     IMapper _mapper) : BaseService<Album, AlbumService>(unitOfWork), IAlbumService
 {
     public async Task<Album> GetAsync(string name, Guid userId)
@@ -22,9 +23,9 @@ public class AlbumService(ApplicationUnitOfWork unitOfWork,
             .ProjectTo<AlbumViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
 
-    public void Update(AlbumViewModel model)
+    public async Task Update(AlbumViewModel model)
     {
-        var album = Get(model.Id);
+        var album = await GetAsync(model.Id);
 
         if (album == null)
         {
@@ -32,5 +33,13 @@ public class AlbumService(ApplicationUnitOfWork unitOfWork,
         }
 
         album.Name = model.Name;
+        Update(album);
+
+        foreach(var media in model.Media)
+        {
+            var entity = await _mediaService.GetAsync(media.Id);
+            entity.Caption = media.Caption;
+            _mediaService.Update(entity);
+        }
     }
 }

@@ -23,7 +23,7 @@ public abstract class BaseService<TEntity, TService>(ApplicationUnitOfWork unitO
         => Repository.Get(id);
 
     public async Task<TEntity> GetAsync(Guid id)
-    => await Repository.GetAsync(id);
+        => await Repository.GetAsync(id);
 
     public IEnumerable<TEntity> GetAll()
         => Repository.Query.ToList();

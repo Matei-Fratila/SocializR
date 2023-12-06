@@ -13,14 +13,15 @@ public class AlbumViewModel : IValidatableObject
     public string CoverFilePath { get; set; }
     public int NrOfImages { get; set; }
     public DateTime CreatedDate { get; set; }
-    public List<MediaViewModel> Media { get; set; }
+    public List<MediaViewModel> Media { get; set; } = new List<MediaViewModel>();
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         var result = new List<ValidationResult>();
 
         var service = validationContext.GetService(typeof(IValidationService)) as IValidationService;
-        var albumExists = service.AlbumExists(Name, Id);
+
+        var albumExists = service.AlbumExists(Name, Id, UserId);
 
         if (albumExists)
         {

@@ -58,7 +58,6 @@ public class ProfileService(CurrentUser _currentUser,
     {
         var model = await _userManager.Users
            .Include(u => u.ProfilePhoto)
-           .Include(u => u.Posts)
            .Where(u => u.Id == id && u.IsDeleted == false)
            .ProjectTo<ViewProfileViewModel>(_mapper.ConfigurationProvider)
            .FirstOrDefaultAsync();
@@ -100,7 +99,7 @@ public class ProfileService(CurrentUser _currentUser,
         return result.Succeeded;
     }
 
-    public RelationTypes GetRelationToCurrentUser(string currentUserId, string id)
+    public RelationTypes GetRelationToCurrentUser(Guid? currentUserId, Guid id)
     {
         if (currentUserId == null)
         {
@@ -113,7 +112,8 @@ public class ProfileService(CurrentUser _currentUser,
         }
 
         var hasEntries = _friendshipService.Query
-            .Where(f => f.FirstUserId.ToString() == id && f.SecondUserId == _currentUser.Id)
+            .Where(f => f.FirstUserId == id 
+                && f.SecondUserId == _currentUser.Id)
             .Any();
 
         if (hasEntries)
@@ -122,7 +122,8 @@ public class ProfileService(CurrentUser _currentUser,
         }
 
         hasEntries = _friendshipService.Query
-            .Where(f => f.SecondUserId.ToString() == id && f.FirstUserId == _currentUser.Id)
+            .Where(f => f.SecondUserId == id 
+                && f.FirstUserId == _currentUser.Id)
             .Any();
 
         if (hasEntries)
@@ -131,7 +132,8 @@ public class ProfileService(CurrentUser _currentUser,
         }
 
         hasEntries = _friendRequestService.Query
-            .Where(f => f.RequesterUserId.ToString() == id && f.RequestedUserId == _currentUser.Id)
+            .Where(f => f.RequesterUserId == id 
+                && f.RequestedUserId == _currentUser.Id)
             .Any();
 
         if (hasEntries)
@@ -140,7 +142,8 @@ public class ProfileService(CurrentUser _currentUser,
         }
 
         hasEntries = _friendRequestService.Query
-            .Where(f => f.RequestedUserId.ToString() == id && f.RequesterUserId == _currentUser.Id)
+            .Where(f => f.RequestedUserId == id 
+                && f.RequesterUserId == _currentUser.Id)
             .Any();
 
         if (hasEntries)

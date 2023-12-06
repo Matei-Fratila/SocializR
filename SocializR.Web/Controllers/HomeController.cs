@@ -1,6 +1,5 @@
 ﻿namespace SocializR.Web.Controllers;
 
-[Authorize]
 public class HomeController(IMapper _mapper,
     ApplicationUnitOfWork _applicationUnitOfWork,
     IPostService _postService,
@@ -125,32 +124,19 @@ public class HomeController(IMapper _mapper,
 
         comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _defaultProfilePicture);
 
-        return PartialView("Views/Home/_Comment.cshtml", comment);
-    }
-
-    [HttpGet]
-    public IActionResult GetComment(CommentViewModel comment)
-    {
-
-        return PartialView("Views/Home/_Comment.cshtml", comment);
+        return PartialView("_Comment", comment);
     }
 
     [HttpGet]
     public IActionResult GetPostWidget(PostVM model)
     {
-        return PartialView("Views/Home/_Post.cshtml", model);
+        return PartialView("_Post", model);
     }
 
     [HttpGet]
-    public IActionResult GetImageWidget(MediaViewModel model)
+    public IActionResult GetMediaWidget(MediaViewModel model)
     {
-        return PartialView("Views/Home/_Image.cshtml", model);
-    }
-
-    [HttpGet]
-    public IActionResult GetVideoWidget(MediaViewModel model)
-    {
-        return PartialView("Views/Home/_Video.cshtml", model);
+        return PartialView("_Media", model);
     }
 
     public IActionResult About()

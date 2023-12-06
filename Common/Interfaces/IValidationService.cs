@@ -6,6 +6,6 @@ namespace Common.Interfaces
     {
         bool EmailExists(string email);
 
-        bool AlbumExists(string name, Guid id);
+        bool AlbumExists(string name, Guid albumId, Guid userId);
     }
 }
