@@ -15,21 +15,21 @@ static class SeedMedia
             {
                 User = context.Users.FirstOrDefault(),
                 Type = MediaTypes.Image,
-                FilePath = @"images\uploads\blep.jpg",
+                FileName = @"blep.jpg",
             },
 
             new Media
             {
                 User = context.Users.FirstOrDefault(),
                 Type = MediaTypes.Image,
-                FilePath = @"images\uploads\doggo.jpg",
+                FileName = @"doggo.jpg",
             },
 
             new Media
             {
                 User = context.Users.FirstOrDefault(),
                 Type = MediaTypes.Image,
-                FilePath = @"images\uploads\pupper.jpg",
+                FileName = @"pupper.jpg",
             },
         };
 

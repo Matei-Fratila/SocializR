@@ -1,4 +1,4 @@
-﻿namespace SocializR.Web.Code.Mappers;
+﻿namespace SocializR.Services.Mappers;
 
 public class ViewProfileMapper : Profile
 {
@@ -24,7 +24,7 @@ public class ViewProfileMapper : Profile
             .ForMember(dest => dest.FilePath, opt =>
             {
                 opt.PreCondition(src => src.ProfilePhoto != null);
-                opt.MapFrom(u => u.ProfilePhoto.FilePath);
+                opt.MapFrom(u => u.ProfilePhoto.FileName);
             })
             .ForMember(dest => dest.NrOfFriends, opt => opt.MapFrom(src => src.FriendsFirstUser.Count()))
             .ForMember(dest => dest.NrOfPhotos, opt => opt.MapFrom(src => src.Albums.SelectMany(a => a.Media).Count()))

@@ -59,7 +59,7 @@ public class AlbumController(ApplicationUnitOfWork _unitOfWork,
 
         foreach(var media in model.Media)
         {
-            media.FilePath = _imageStorage.UriFor(media.FilePath);
+            media.FileName = _imageStorage.UriFor(media.FileName);
         }
 
         return View(model);
@@ -99,7 +99,7 @@ public class AlbumController(ApplicationUnitOfWork _unitOfWork,
 
         foreach(var media in model.Media)
         {
-            media.FilePath = _imageStorage.UriFor(media.FilePath);
+            media.FileName = _imageStorage.UriFor(media.FileName);
         }
 
         return View(model);
@@ -121,7 +121,7 @@ public class AlbumController(ApplicationUnitOfWork _unitOfWork,
             return _imageStorage.UriFor(_defaultAlbumCover);
         }
 
-        return _imageStorage.UriFor(media.FilePath);
+        return _imageStorage.UriFor(media.FileName);
 
     }
 }

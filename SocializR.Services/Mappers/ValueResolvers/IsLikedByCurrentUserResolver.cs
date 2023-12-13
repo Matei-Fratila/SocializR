@@ -1,4 +1,4 @@
-﻿namespace SocializR.Web.Code.Mappers.ValueResolvers;
+﻿namespace SocializR.Services.Mappers.ValueResolvers;
 
 public class IsLikedByCurrentUserResolver(CurrentUser _currentUser) : IValueResolver<Post, PostVM, bool>
 {

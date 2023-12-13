@@ -33,7 +33,7 @@ public partial class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //{
     //    optionsBuilder.UseSqlServer(@"server=MATEI\\MSSQLSERVER01;initial catalog=SocializR;Integrated Security=true;Encrypt=False;");
-    //    optionsBuilder.UseLoggerFactory(new SocializRConsoleLoggerFactory());
+    //    //optionsBuilder.UseLoggerFactory(new SocializRConsoleLoggerFactory());
     //}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

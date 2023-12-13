@@ -194,7 +194,7 @@ public class MediaController(ApplicationUnitOfWork _unitOfWork,
             return _imageStorage.UriFor("default-image.jpg");
         }
 
-        var path = _imageStorage.UriFor(media.FilePath);
+        var path = _imageStorage.UriFor(media.FileName);
 
         return path;
 

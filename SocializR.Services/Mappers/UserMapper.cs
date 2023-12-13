@@ -1,4 +1,6 @@
-﻿namespace SocializR.Web.Code.Mappers;
+﻿using SocializR.Models.ViewModels.Search;
+
+namespace SocializR.Services.Mappers;
 
 public class UserMapper : Profile
 {

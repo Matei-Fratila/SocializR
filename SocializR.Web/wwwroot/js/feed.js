@@ -1,7 +1,6 @@
 ﻿var formData = new FormData();
 
 jQuery(function ($) {
-
     $('video').on('play', function () {
         var id = this.id;
         $('video').each(function (index) {
@@ -32,14 +31,7 @@ jQuery(function ($) {
     }
 
     //Puts user likes on new elements or at page refresh
-    (function PutUserLikes() {
-        $('.like').each(function (index, elem) {
-            if ($(elem.parentElement).find('.is-liked').val() === 'True') {
-                $(elem).addClass('liked');
-            }
-        });
-        LikeOrUnlike($('.like'));
-    }());
+    (() => PutUserLikes($('.row')))();
 
     function PutUserLikes(elems) {
         $(elems).find('.like').each(function (index, elem) {
@@ -106,10 +98,7 @@ jQuery(function ($) {
         } 
     };
 
-    (function PutDeleteCommentButtons() {
-        $('.delete-comment-btn').on('click', deleteCommentHandler);
-
-    }());
+    (() => $('.delete-comment-btn').on('click', deleteCommentHandler))();
 
     function PutDeleteCommentButtons(elems) {
         $(elems).find('.delete-comment-btn').on('click', deleteCommentHandler);
@@ -136,14 +125,14 @@ jQuery(function ($) {
     //Infinite Scroll
     $(window).on("scroll", function () {
         if ($(window).scrollTop() === $(document).height() - $(window).height()) {
-
+            let userId = $('#Id').val();
             $.ajax({
                 headers: {
                     'Accept': 'application/json'
                 },
                 type: 'GET',
                 url: 'Home/NextPosts',
-                data: { page: page },
+                data: { userId: userId, page: page , isProfileView: false},
                 success: function (response) {
                     if (response.length === 0) {
                         $(window).off(scroll);

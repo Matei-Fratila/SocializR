@@ -10,13 +10,13 @@
         <input type="hidden" asp-for="Id" value="@Model.Id" class="image-id" />
         @if (Model.Type == MediaTypes.Image)
         {
-            <img src="@Url.Content(Model.FilePath)" class="card-img-bottom">
+            <img src="@Url.Content(Model.FileName)" class="card-img-bottom">
         }
         else if(Model.Type == MediaTypes.Video)
         {
             <video controls class="no-side-padding col-sm-12 figure-img img-fluid rounded" alt="A generic square placeholder image with rounded corners in a figure.">
-                <source src="@Url.Content(Model.FilePath)" type="video/mp4">
-                <source src="@Url.Content(Model.FilePath)" type="video/m4v">
+                <source src="@Url.Content(Model.FileName)" type="video/mp4">
+                <source src="@Url.Content(Model.FileName)" type="video/m4v">
             </video>
         }
     </figure>

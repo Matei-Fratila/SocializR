@@ -3,7 +3,7 @@
 <div class="col">
     <div class="card">
         <input type="hidden" asp-for="Id" />
-        <img class="card-img-top" src="@Model.FilePath" alt="Card image cap">
+        <img class="card-img-top" src="@Model.FileName" alt="Card image cap">
         <textarea asp-for=Caption class="card-body" placeholder="Write caption..."></textarea>
         <div class="card-footer">
             <small class="text-muted">Uploaded @Model.CreatedDate.TimeAgo()</small>

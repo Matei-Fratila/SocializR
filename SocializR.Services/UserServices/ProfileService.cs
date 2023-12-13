@@ -30,7 +30,7 @@ public class ProfileService(CurrentUser _currentUser,
     {
         return _userManager.Users
             .Where(u => u.Id.ToString() == id)
-            .Select(u => u.ProfilePhoto.FilePath)
+            .Select(u => u.ProfilePhoto.FileName)
             .FirstOrDefault();
     }
 

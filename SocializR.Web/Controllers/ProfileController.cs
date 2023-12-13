@@ -42,7 +42,7 @@ public class ProfileController(CurrentUser _currentUser,
             album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath ?? _defaultAlbumCover);
         }
 
-        model.Posts = await _postService.GetPaginatedAsync(id, 0, _postsPerPage, _commentsPerFirstPage, _defaultProfilePicture);
+        model.Posts = await _postService.GetPaginatedAsync(id, 0, _postsPerPage, _commentsPerFirstPage, _defaultProfilePicture, isProfileView: true);
 
         foreach (var post in model.Posts)
         {
@@ -51,7 +51,7 @@ public class ProfileController(CurrentUser _currentUser,
 
         foreach (var media in model.Posts.SelectMany(p => p.Media))
         {
-            media.FilePath = _imageStorage.UriFor(media.FilePath);
+            media.FileName = _imageStorage.UriFor(media.FileName);
         }
 
         if (model == null)
@@ -121,7 +121,7 @@ public class ProfileController(CurrentUser _currentUser,
         model.Interests = await _interestService.GetByUserAsync(id);
         ViewData["Interests"] = await _interestService.GetSelectedSelectListAsync(model.Interests);
 
-        model.FilePath = _imageStorage.UriFor(model.FilePath);
+        model.FileName = _imageStorage.UriFor(model.FileName ?? _defaultProfilePicture);
 
         return View(model);
     }

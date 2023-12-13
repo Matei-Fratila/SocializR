@@ -6,7 +6,7 @@ public class ProfileViewModel
 
     public Guid Id { get; set; }
 
-    public string FilePath { get; set; }
+    public string FileName { get; set; }
 
     [Required]
     [MaxLength(100)]

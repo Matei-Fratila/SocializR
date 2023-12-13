@@ -1,4 +1,4 @@
-﻿namespace SocializR.Web.Code.Mappers;
+﻿namespace SocializR.Services.Mappers;
 
 public class MediaMapper : Profile
 {

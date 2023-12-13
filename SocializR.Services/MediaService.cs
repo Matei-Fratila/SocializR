@@ -63,7 +63,7 @@ public class MediaService(CurrentUser _currentUser,
 
         var media = new Media
         {
-            FilePath = fileName,
+            FileName = fileName,
             Album = album,
             Type = type,
             UserId = _currentUser.Id,

@@ -1,4 +1,6 @@
-﻿namespace SocializR.Web.Code.Mappers;
+﻿using SocializR.Models.ViewModels.Account;
+
+namespace SocializR.Services.Mappers;
 
 public class AccountMapper : Profile
 {

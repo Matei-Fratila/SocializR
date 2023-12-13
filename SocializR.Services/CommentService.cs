@@ -36,7 +36,7 @@ public class CommentService(CurrentUser _currentUser,
                 .Where(u => u.Id == _currentUser.Id)
                 .Select(u => u.ProfilePhoto)
                 .FirstOrDefault()?
-                .FilePath,
+                .FileName,
             CreatedOn = DateTime.Now.TimeAgo(),
             IsCurrentUserComment = true
         };

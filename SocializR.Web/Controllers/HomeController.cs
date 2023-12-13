@@ -18,15 +18,20 @@ public class HomeController(IMapper _mapper,
     [HttpGet]
     public async Task<IActionResult> IndexAsync()
     {
-        var model = await _postService.GetPaginatedAsync(_currentUser.Id, 0, _postsPerPage, _commentsPerFirstPage, _defaultProfilePicture);
+        var model = await _postService.GetPaginatedAsync(_currentUser.Id, 0, _postsPerPage, _commentsPerFirstPage, _defaultProfilePicture, isProfileView: false);
 
         return View(model);
     }
 
     [HttpGet]
-    public async Task<JsonResult> NextPostsAsync(int page)
+    public async Task<JsonResult> NextPostsAsync(Guid userId, int page, bool isProfileView)
     {
-        var model = await _postService.GetPaginatedAsync(_currentUser.Id, page, _postsPerPage, _commentsPerPage, _defaultProfilePicture);
+        if(userId == Guid.Empty)
+        {
+            userId = _currentUser.Id;
+        }
+
+        var model = await _postService.GetPaginatedAsync(userId, page, _postsPerPage, _commentsPerPage, _defaultProfilePicture, isProfileView: isProfileView);
 
         return Json(model);
     }

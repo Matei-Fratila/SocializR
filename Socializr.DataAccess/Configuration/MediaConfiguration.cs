@@ -12,7 +12,7 @@ internal class MediaConfiguration : IEntityTypeConfiguration<Media>
 
         //builder.Property(e => e.Caption).HasMaxLength(300);
 
-        builder.Property(e => e.FilePath).IsRequired();
+        builder.Property(e => e.FileName).IsRequired();
 
         builder.Property(e => e.PostId).HasColumnName("PostId");
 
