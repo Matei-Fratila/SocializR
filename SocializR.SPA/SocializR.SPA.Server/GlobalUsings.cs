@@ -1,0 +1,16 @@
+﻿global using SocializR.DataAccess;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.IdentityModel.Tokens;
+global using SocializR.Models.Entities;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;
+global using System.Text;
+global using Microsoft.Extensions.Options;
+global using SocializR.SPA.Server.Configuration;
+global using Microsoft.AspNetCore.Identity;
+global using SocializR.SPA.Server.Dtos;
+global using SocializR.SPA.Server.Services;
+global using Microsoft.AspNetCore.Mvc.ApiExplorer;
+global using Microsoft.OpenApi.Models;
+global using Swashbuckle.AspNetCore.SwaggerGen;

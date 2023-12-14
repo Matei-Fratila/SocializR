@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
-
 namespace SocializR.SPA.Server.Controllers;
+
 [ApiController]
+[Authorize]
 [Route("[controller]")]
 public class WeatherForecastController : ControllerBase
 {

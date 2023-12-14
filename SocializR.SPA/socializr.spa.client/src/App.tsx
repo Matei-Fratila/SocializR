@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react';
+import axios, { AxiosResponse } from 'axios';
+import "bootstrap/dist/css/bootstrap-grid.min.css";
 import './App.css';
+import './services/auth.service';
+import './services/user.service';
+import authService from './services/auth.service';
+import userService from './services/user.service';
 
 interface Forecast {
     date: string;
@@ -47,9 +53,11 @@ function App() {
     );
 
     async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
-        const data = await response.json();
-        setForecasts(data);
+        let response = await authService.login('matei.fratila@essensys.ro', 'MateiFratila8');
+        if(response?.data){
+            response = await userService.getWeather();
+        }
+        setForecasts(response?.data);
     }
 }
 

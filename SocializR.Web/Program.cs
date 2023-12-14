@@ -1,7 +1,4 @@
-﻿using SocializR.Models.ViewModels.Common;
-using SocializR.Services.Mappers.ValueResolvers;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
