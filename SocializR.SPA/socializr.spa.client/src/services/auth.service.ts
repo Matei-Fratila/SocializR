@@ -8,7 +8,7 @@ class AuthService{
             if(accessToken){
                 localStorage.setItem('user', JSON.stringify(accessToken));
             }
-            return response;
+            return response.status;
         } catch (e) {
             console.error(e);
         }

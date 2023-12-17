@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import axios, { AxiosResponse } from 'axios';
-import "bootstrap/dist/css/bootstrap-grid.min.css";
+import 'bootstrap/dist/css/bootstrap-grid.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import './services/auth.service';
 import './services/user.service';
 import authService from './services/auth.service';
 import userService from './services/user.service';
+import Login from './components/Login.tsx';
 
 interface Forecast {
     date: string;
@@ -18,36 +19,13 @@ function App() {
     const [forecasts, setForecasts] = useState<Forecast[]>();
 
     useEffect(() => {
-        populateWeatherData();
+        //populateWeatherData();
     }, []);
 
-    const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-        : <table className="table table-striped" aria-labelledby="tabelLabel">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
+    const contents = <Login></Login>;
 
     return (
         <div>
-            <h1 id="tabelLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
             {contents}
         </div>
     );
