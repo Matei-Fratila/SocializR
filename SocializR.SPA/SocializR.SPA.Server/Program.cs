@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -77,7 +75,9 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
-builder.Services.AddScoped<TokenService>();
+builder.Services.AddBusinessLogic(builder.Environment);
+builder.Services.AddCurrentUser();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

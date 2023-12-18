@@ -4,11 +4,11 @@ namespace SocializR.Services.UserServices;
 
 public class AccountService(UserManager<User> _userManager, IMapper _mapper) : IAccountService
 {
-    public CurrentUser GetCurrentUser(string email)
-        => _userManager.Users
+    public async Task<CurrentUser> GetCurrentUser(string email)
+        => await _userManager.Users
             .Where(u=>u.Email == email)
             .ProjectTo<CurrentUser>(_mapper.ConfigurationProvider)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
     //TODO: add users in PublicUser role
     public async Task<bool> Register(User user)

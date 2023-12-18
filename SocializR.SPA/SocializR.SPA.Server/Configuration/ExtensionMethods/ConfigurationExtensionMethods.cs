@@ -1,13 +1,13 @@
-﻿using SocializR.Services.Configuration;
-
-namespace SocializR.Web.Code.ExtensionMethods;
+﻿namespace SocializR.SPA.Server.Configuration.ExtensionMethods;
 
 public static class ConfigurationExtensionMethods
 {
     public static IServiceCollection AddBusinessLogic(this IServiceCollection services, IHostEnvironment env)
     {
+        services.AddScoped<ApplicationUnitOfWork>();
         services.ConfigureServices();
         services.AddScoped<IValidationService, ValidationService>();
+        services.AddScoped<TokenService>();
 
         if (env.IsProduction())
         {

@@ -1,30 +1,51 @@
 import axios, { AxiosResponse } from 'axios';
+interface LoginResponse {
+    token: string,
+    currentUser: CurrentUser
+}
 
-class AuthService{
-    async login(username: string, password: string){
-        try{
-            const response: AxiosResponse = await axios.post('api/Auth/login', {username, password});
-            const accessToken: string = response.data;
-            if(accessToken){
-                localStorage.setItem('user', JSON.stringify(accessToken));
+interface CurrentUser {
+    id: string,
+    firstName: string,
+    lastName: string,
+    profilePhoto: string,
+    roles: [Role]
+}
+
+interface Role {
+    name: string,
+    description: string
+}
+
+class AuthService {
+    async login(username: string, password: string) {
+        try {
+            const axiosResponse: AxiosResponse = await axios.post('api/Auth/login', { username, password });
+            const response: LoginResponse = axiosResponse.data;
+
+            if (response.token) {
+                localStorage.setItem('accessToken', JSON.stringify(response.token));
+                const currentUser = response.currentUser;
+                if (currentUser) {
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                }
             }
-            return response.status;
         } catch (e) {
             console.error(e);
         }
     }
 
-    logout(){
+    logout() {
         localStorage.removeItem('user');
     }
 
-    async register(username: string, email: string, password: string){
-        const response: AxiosResponse = await axios.post('api/Auth/login', {username, password, email});
+    async register(username: string, email: string, password: string) {
+        const response: AxiosResponse = await axios.post('api/Auth/login', { username, password, email });
     }
 
-    getCurrentUser(){
+    getCurrentUser() {
         const userStr = localStorage.getItem('user');
-        if(userStr) return JSON.parse(userStr);
+        if (userStr) return JSON.parse(userStr);
         return null;
     }
 }

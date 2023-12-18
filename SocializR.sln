@@ -15,7 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocializR.Web", "SocializR.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils", "Utils\Utils.csproj", "{FE06C9F1-0D7B-452F-9566-402E632868A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocializR.SPA.Server", "SocializR.SPA\SocializR.SPA.Server\SocializR.SPA.Server.csproj", "{6B24C3E4-B5FC-41EE-A3CB-0C539E7D1F4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocializR.SPA.Server", "SocializR.SPA\SocializR.SPA.Server\SocializR.SPA.Server.csproj", "{6B24C3E4-B5FC-41EE-A3CB-0C539E7D1F4A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5145C22B-0317-4EB6-8838-93079E6E3067} = {5145C22B-0317-4EB6-8838-93079E6E3067}
+	EndProjectSection
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "socializr.spa.client", "SocializR.SPA\socializr.spa.client\socializr.spa.client.esproj", "{5D6B2754-BE7C-44A5-9885-328E80FC6B0C}"
 EndProject
