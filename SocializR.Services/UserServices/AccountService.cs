@@ -6,7 +6,7 @@ public class AccountService(UserManager<User> _userManager, IMapper _mapper) : I
 {
     public async Task<CurrentUser> GetCurrentUser(string email)
         => await _userManager.Users
-            .Where(u=>u.Email == email)
+            .Where(u => u.Email == email)
             .ProjectTo<CurrentUser>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
 

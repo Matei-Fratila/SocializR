@@ -9,7 +9,6 @@ global using System.Text;
 global using Microsoft.Extensions.Options;
 global using SocializR.SPA.Server.Configuration;
 global using Microsoft.AspNetCore.Identity;
-global using SocializR.SPA.Server.Dtos;
 global using SocializR.SPA.Server.Services;
 global using Microsoft.OpenApi.Models;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;

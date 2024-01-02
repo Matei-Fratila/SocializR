@@ -1,4 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
+import { LoginRequest, RegisterRequest } from '../types/types';
+
 interface LoginResponse {
     token: string,
     currentUser: CurrentUser
@@ -18,9 +20,9 @@ interface Role {
 }
 
 class AuthService {
-    async login(username: string, password: string) {
+    async login(loginRequest: LoginRequest) {
         try {
-            const axiosResponse: AxiosResponse = await axios.post('api/Auth/login', { username, password });
+            const axiosResponse: AxiosResponse = await axios.post('api/Auth/login', loginRequest);
             const response: LoginResponse = axiosResponse.data;
 
             if (response.token) {
@@ -36,16 +38,17 @@ class AuthService {
     }
 
     logout() {
-        localStorage.removeItem('user');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('currentUser');
     }
 
-    async register(username: string, email: string, password: string) {
-        const response: AxiosResponse = await axios.post('api/Auth/login', { username, password, email });
+    async register(registerRequest: RegisterRequest) {
+        const response: AxiosResponse = await axios.post('api/Auth/register', registerRequest);
     }
 
     getCurrentUser() {
-        const userStr = localStorage.getItem('user');
-        if (userStr) return JSON.parse(userStr);
+        const userStr = localStorage.getItem('currentUser');
+        if (userStr) return JSON.parse(userStr) as CurrentUser;
         return null;
     }
 }
