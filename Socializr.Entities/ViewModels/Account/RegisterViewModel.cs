@@ -48,7 +48,7 @@ public class RegisterViewModel : IValidatableObject
 
         if (emailExists)
         {
-            result.Add(new ValidationResult("Email-ul exista deja", new List<string> { nameof(Email) }));
+            result.Add(new ValidationResult("The email already exists in the system", new List<string> { nameof(Email) }));
         }
 
         return result;

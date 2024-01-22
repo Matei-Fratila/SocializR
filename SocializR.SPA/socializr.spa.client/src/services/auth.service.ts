@@ -1,23 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { LoginRequest, RegisterRequest } from '../types/types';
-
-interface LoginResponse {
-    token: string,
-    currentUser: CurrentUser
-}
-
-interface CurrentUser {
-    id: string,
-    firstName: string,
-    lastName: string,
-    profilePhoto: string,
-    roles: [Role]
-}
-
-interface Role {
-    name: string,
-    description: string
-}
+import { CurrentUser, LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../types/types';
 
 class AuthService {
     async login(loginRequest: LoginRequest) {
@@ -43,7 +25,12 @@ class AuthService {
     }
 
     async register(registerRequest: RegisterRequest) {
-        const response: AxiosResponse = await axios.post('api/Auth/register', registerRequest);
+        try {
+            const axiosResponse: AxiosResponse = await axios.post('api/Auth/register', registerRequest);
+            const response: RegisterResponse = axiosResponse.data;
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     getCurrentUser() {

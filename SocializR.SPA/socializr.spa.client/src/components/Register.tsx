@@ -2,7 +2,11 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 import authService from '../services/auth.service';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
+import Row from "react-bootstrap/esm/Row";
+import Container from "react-bootstrap/esm/Container";
+import Button from "react-bootstrap/esm/Button";
+import { RegisterRequest } from "../types/types";
 
 const LoginSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -15,30 +19,32 @@ const LoginSchema = Yup.object().shape({
     password: Yup.string()
         .min(3, "Password must be 3 characters at minimum")
         .required("Password is required"),
-    birthDate: Yup.string()
+    birthDate: Yup.date()
         .required("Date of birth is required")
 });
 
-const Register = () =>
-(<Formik
-    initialValues={{ firstName: "", lastName: "", email: "", password: "", birthDate: "" }}
-    validationSchema={LoginSchema}
-    onSubmit={async (values, { setSubmitting }) => {
-        console.log(values);
-        await authService.register({ firstName: '', lastName: '', email: values.email, password: values.password, birthDate: new Date()});
-    }}>
-    {(props) => (
-        <div>
-            <div>
+const Register = () => {
+    const navigate = useNavigate();
+
+    return (<Formik
+        initialValues={{ firstName: "", lastName: "", email: "", password: "", birthDate: new Date() }}
+        validationSchema={LoginSchema}
+        onSubmit={async (values, { setSubmitting }) => {
+            console.log(values);
+            await authService.register(values as RegisterRequest);
+            navigate("/login");
+        }}>
+        {(props) => (
+            <Container>
                 <h2> Sign up or <Link to={`/login`}>Login</Link> if you already have an account</h2>
                 <hr></hr>
                 <Form>
-                    <div className="row">
+                    <Row className="mb-3">
                         <label htmlFor="firstName" className='col-sm-3 col-form-label'>First name</label>
                         <Field
                             type="text"
                             name="firstName"
-                            placeholder="Enter first name"
+                            placeholder="Enter your first name"
                             autoComplete="off"
                             className={`col-sm-7 ${props.touched.firstName && props.errors.firstName
                                 ? "is-invalid"
@@ -50,14 +56,14 @@ const Register = () =>
                             name="firstName"
                             className="invalid-feedback"
                         />
-                    </div>
+                    </Row>
 
-                    <div className="row">
+                    <Row className="mb-3">
                         <label htmlFor="lastName" className='col-sm-3 col-form-label'>Last name</label>
                         <Field
                             type="text"
                             name="lastName"
-                            placeholder="Enter last name"
+                            placeholder="Enter your last name"
                             autoComplete="off"
                             className={`col-sm-7 ${props.touched.lastName && props.errors.lastName
                                 ? "is-invalid"
@@ -69,12 +75,12 @@ const Register = () =>
                             name="lastName"
                             className="invalid-feedback"
                         />
-                    </div>
+                    </Row>
 
-                    <div className="row">
+                    <Row className="mb-3">
                         <label htmlFor="birthDate" className='col-sm-3 col-form-label'>Date of birth</label>
                         <Field
-                            type="text"
+                            type="date"
                             name="birthDate"
                             placeholder="Enter your date of birth"
                             autoComplete="off"
@@ -88,14 +94,14 @@ const Register = () =>
                             name="birthDate"
                             className="invalid-feedback"
                         />
-                    </div>
+                    </Row>
 
-                    <div className="row">
+                    <Row className="mb-3">
                         <label htmlFor="email" className='col-sm-3 col-form-label'>Email</label>
                         <Field
                             type="email"
                             name="email"
-                            placeholder="Enter email"
+                            placeholder="Enter your email"
                             autoComplete="off"
                             className={`col-sm-7 ${props.touched.email && props.errors.email
                                 ? "is-invalid"
@@ -107,14 +113,14 @@ const Register = () =>
                             name="email"
                             className="invalid-feedback"
                         />
-                    </div>
+                    </Row>
 
-                    <div className="row form-group">
+                    <Row className="form-group">
                         <label htmlFor="password" className="col-sm-3 col-form-label">Password</label>
                         <Field
                             type="password"
                             name="password"
-                            placeholder="Enter password"
+                            placeholder="Enter your password"
                             className={`col-sm-7 ${props.touched.password && props.errors.password
                                 ? "is-invalid"
                                 : ""
@@ -125,9 +131,9 @@ const Register = () =>
                             name="password"
                             className="invalid-feedback"
                         />
-                    </div>
+                    </Row>
 
-                    <button
+                    <Button
                         type="submit"
                         className="btn btn-primary btn-block mt-4"
                         disabled={props.isSubmitting}
@@ -135,11 +141,11 @@ const Register = () =>
                         {props.isSubmitting
                             ? "Registering..."
                             : "Register"}
-                    </button>
+                    </Button>
                 </Form>
-            </div>
-        </div>
-    )}
-</Formik>)
+            </Container>
+        )}
+    </Formik>)
+}
 
 export default Register;
