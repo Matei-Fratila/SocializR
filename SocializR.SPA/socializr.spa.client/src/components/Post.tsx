@@ -1,44 +1,40 @@
-import { Card, CardBody, CardFooter, CardHeader, Col, Container, Row } from "react-bootstrap";
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Row } from "react-bootstrap";
+import { PostProps } from "../types/types";
+import { Link } from "react-router-dom";
+import { Heart, Chat, HeartFill } from "react-bootstrap-icons";
+import "./Post.css";
 
-const Post = () => (<>
+const Post = ({ item }: PostProps) => (
     <Container className="mt-5">
         <Row>
             <Col sm={2}>
-                <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.UserId"></a>
+                <Link to={`/profile`}></Link>
             </Col>
             <Col sm={8} className="card-container">
                 <Card className="shadow">
                     <CardHeader>
-                        <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.UserId" className="text-bold">@Model.FirstName @Model.LastName</a>
-                        @if (Model.UserId == currentUser.Id)
-                        {
-                            <a className="float-right ms-2 delete-post-btn"><i className="fa fa-trash"></i></a>
-                        }
-                        <span className="float-right">@Model.CreatedOn</span>
+                        <Link to={`/profile`}>{item.firstName} {item.lastName}</Link>
+                        <span className="float-right">{ }</span>
                     </CardHeader>
                     <CardBody>
-                        <h5 className="card-title">@Model.Title</h5>
-                        <p className="card-text pre search-for-link">@Model.Body</p>
+                        <h5 className="card-title">{item.title}</h5>
+                        <p className="card-text pre search-for-link">{item.body}</p>
                     </CardBody>
                     <div className="images">
                     </div>
                     <CardFooter className="text-muted post-footer">
-                        @*Post Buttons*@
-                        <Row>
-                            <input type="hidden" className="comments-page" />
-                            <input asp-for="@Model.Id" value="@Model.Id" name="@Model.Id" type="hidden" className="post-id" />
-                            <input asp-for="@Model.IsLikedByCurrentUser" value="@Model.IsLikedByCurrentUser" name="@Model.IsLikedByCurrentUser" type="hidden" className="is-liked" />
+                        <Button variant="light" className={item.isLikedByCurrentUser ? 'liked' : 'like'} 
+                            title={item.isLikedByCurrentUser ? "click to unlike" : "click to like"} data-toggle="tooltip" data-placement="bottom">
+                            <HeartFill />
+                        </Button>
 
-                            <button className="col btn like" title="heart post" data-toggle="tooltip" data-placement="bottom">
-                                <i className="fa fa-heart"></i>
-                            </button>
-                            <button className="col btn" title="see likes" data-toggle="tooltip" data-placement="bottom">
-                                <i className="fa fa-heart"></i><span className="nr-of-likes see-likes">@Model.NumberOfLikes Hearts</span>
-                            </button>
-                            <button className="col btn see-comments" title="nr. of comments" data-toggle="tooltip" data-placement="bottom">
-                                <i className="fa fa-comments"></i><span className="nr-of-comments">@Model.NumberOfComments Comments</span>
-                            </button>
-                        </Row>
+                        <Button variant="light" className="float-end" title="see comments" data-toggle="tooltip" data-placement="bottom">
+                            <Chat /> <span className="nr-of-comments">{item.numberOfComments} Comments</span>
+                        </Button>
+
+                        <Button variant="light" className="float-end" title="see likes" data-toggle="tooltip" data-placement="bottom">
+                            <Heart /> <span className="nr-of-likes see-likes">{item.numberOfLikes} Likes</span>
+                        </Button>
 
                         <div className="comments-container">
                             <div className="fresh-comments-container mt-3"></div>
@@ -63,6 +59,6 @@ const Post = () => (<>
             </Col>
         </Row>
     </Container>
-</>);
+);
 
 export default Post;

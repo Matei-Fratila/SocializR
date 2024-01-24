@@ -7,12 +7,9 @@ class AuthService {
             const axiosResponse: AxiosResponse = await axios.post('api/Auth/login', loginRequest);
             const response: LoginResponse = axiosResponse.data;
 
-            if (response.token) {
-                localStorage.setItem('accessToken', JSON.stringify(response.token));
-                const currentUser = response.currentUser;
-                if (currentUser) {
-                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                }
+            if (response.currentUser) {
+                const user = {...response.currentUser, token: response.token};
+                localStorage.setItem('user', JSON.stringify(user));
             }
         } catch (e) {
             console.error(e);
@@ -20,14 +17,12 @@ class AuthService {
     }
 
     logout() {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('currentUser');
+        localStorage.removeItem('user');
     }
 
     async register(registerRequest: RegisterRequest) {
         try {
-            const axiosResponse: AxiosResponse = await axios.post('api/Auth/register', registerRequest);
-            const response: RegisterResponse = axiosResponse.data;
+            await axios.post('api/Auth/register', registerRequest);
         } catch (e) {
             console.error(e);
         }

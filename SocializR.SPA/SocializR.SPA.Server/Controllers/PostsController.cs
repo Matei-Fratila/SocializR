@@ -17,10 +17,12 @@ public class PostsController(IPostService _postService,
     private readonly string _defaultPostsAlbumName = _appSettings.CurrentValue.PostsAlbumName;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<PostVM>>> GetPaginatedAsync([FromQuery] int page = 0, [FromQuery] int? pageSize = null)
+    public async Task<ActionResult<IEnumerable<PostVM>>> GetPaginatedAsync(int pageNumber = 0, int? pageSize = null)
     {
-        return await _postService.GetPaginatedAsync(_currentUser.Id, 
-            page, 
+        string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        return await _postService.GetPaginatedAsync(new Guid(userId), 
+            pageNumber, 
             pageSize ?? _postsPerPage, 
             _commentsPerFirstPage, 
             _defaultProfilePicture, 

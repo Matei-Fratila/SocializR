@@ -8,12 +8,14 @@ namespace SocializR.SPA.Server.Controllers;
 [Route("[controller]")]
 public class AuthController(UserManager<User> _userManager,
     TokenService _tokenService,
+    IOptionsMonitor<AppSettings> _appSettings,
     IMapper _mapper,
     IAccountService _accountService) : ControllerBase
 {
     [HttpPost("login")]
     public async Task<IActionResult> Login(LogInViewModel model)
     {
+        var app = _appSettings.CurrentValue;
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
@@ -28,7 +30,7 @@ public class AuthController(UserManager<User> _userManager,
 
         var roles = await _userManager.GetRolesAsync(user);
         var token = _tokenService.GenerateToken(user, roles);
-        var currentUser = _accountService.GetCurrentUser(user.Email);
+        var currentUser = await _accountService.GetCurrentUser(user.Email);
 
         return Ok(new { Token = token, CurrentUser = currentUser });
     }

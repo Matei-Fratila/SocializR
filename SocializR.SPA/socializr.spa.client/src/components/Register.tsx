@@ -29,7 +29,7 @@ const Register = () => {
     return (<Formik
         initialValues={{ firstName: "", lastName: "", email: "", password: "", birthDate: new Date() }}
         validationSchema={LoginSchema}
-        onSubmit={async (values, { setSubmitting }) => {
+        onSubmit={async (values) => {
             console.log(values);
             await authService.register(values as RegisterRequest);
             navigate("/login");
