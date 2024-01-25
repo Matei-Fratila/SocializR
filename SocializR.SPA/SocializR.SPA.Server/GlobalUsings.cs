@@ -20,3 +20,4 @@ global using SocializR.Services.Configuration;
 global using SocializR.SPA.Server.Services.ImageStorage;
 global using SocializR.Services.ValidationService;
 global using SocializR.SPA.Server.Configuration.ExtensionMethods;
+global using SocializR.Common;

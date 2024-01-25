@@ -1,11 +1,12 @@
 ﻿namespace SocializR.Services;
 
-public class LikeService(ApplicationUnitOfWork unitOfWork, CurrentUser _currentUser) : BaseService<Like, LikeService>(unitOfWork), ILikeService
+public class LikeService(ApplicationUnitOfWork unitOfWork, 
+    CurrentUser _currentUser) : BaseService<Like, LikeService>(unitOfWork), ILikeService
 {
-    public async Task AddLikeAsync(Guid postId)
+    public async Task AddLikeAsync(Guid postId, Guid? userId = null)
     {
         var like = await UnitOfWork.Likes.Query
-            .Where(l => l.PostId == postId && l.UserId == _currentUser.Id)
+            .Where(l => l.PostId == postId && l.UserId == (userId ?? _currentUser.Id))
             .FirstOrDefaultAsync();
 
         if (like != null)
@@ -24,10 +25,10 @@ public class LikeService(ApplicationUnitOfWork unitOfWork, CurrentUser _currentU
         return;
     }
 
-    public async Task DeleteLikeAsync(Guid postId)
+    public async Task DeleteLikeAsync(Guid postId, Guid? userId = null)
     {
         var like = await UnitOfWork.Likes.Query
-            .Where(l => l.PostId == postId && l.UserId == _currentUser.Id)
+            .Where(l => l.PostId == postId && l.UserId == (userId ?? _currentUser.Id))
             .FirstOrDefaultAsync();
 
         if (like != null)

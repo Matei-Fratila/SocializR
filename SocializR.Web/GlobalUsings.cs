@@ -27,9 +27,9 @@ global using SocializR.Web.Code.ExtensionMethods;
 global using AutoMapper;
 
 global using SocializR.Web.Code.Base;
-global using SocializR.Web.Code.Configuration;
 
 global using Common.Interfaces;
+global using SocializR.Common;
 
 global using SocializR.Models.ViewModels.Account;
 global using SocializR.Models.ViewModels.Album;

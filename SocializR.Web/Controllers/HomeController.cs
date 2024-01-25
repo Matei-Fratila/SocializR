@@ -5,20 +5,14 @@ public class HomeController(IMapper _mapper,
     IPostService _postService,
     ICommentService _commentService,
     ILikeService _likeService,
-    IOptionsMonitor<AppSettings> _appSettings,
     CurrentUser _currentUser,
     IImageStorage _imageStorage) : BaseController(_mapper)
 {
-    private readonly int _postsPerPage = _appSettings.CurrentValue.PostsPerPage;
-    private readonly int _commentsPerFirstPage = _appSettings.CurrentValue.CommentsPerFirstPage;
-    private readonly int _commentsPerPage = _appSettings.CurrentValue.CommentsPerPage;
-    private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
-    private readonly string _defaultPostsAlbumName = _appSettings.CurrentValue.PostsAlbumName;
 
     [HttpGet]
     public async Task<IActionResult> IndexAsync()
     {
-        var model = await _postService.GetPaginatedAsync(_currentUser.Id, 0, _postsPerPage, _commentsPerFirstPage, _defaultProfilePicture, isProfileView: false);
+        var model = await _postService.GetPaginatedAsync(_currentUser.Id, 0, isProfileView: false);
 
         return View(model);
     }
@@ -31,7 +25,7 @@ public class HomeController(IMapper _mapper,
             userId = _currentUser.Id;
         }
 
-        var model = await _postService.GetPaginatedAsync(userId, page, _postsPerPage, _commentsPerPage, _defaultProfilePicture, isProfileView: isProfileView);
+        var model = await _postService.GetPaginatedAsync(userId, page, isProfileView: isProfileView);
 
         return Json(model);
     }
@@ -39,7 +33,7 @@ public class HomeController(IMapper _mapper,
     [HttpGet]
     public async Task<JsonResult> NextCommentsAsync(int page, Guid postId)
     {
-        var comments = await _commentService.GetPaginatedAsync(postId, _commentsPerPage, page, _defaultProfilePicture);
+        var comments = await _commentService.GetPaginatedAsync(postId, _currentUser.Id, page);
 
         return Json(comments);
     }
@@ -47,7 +41,7 @@ public class HomeController(IMapper _mapper,
     [HttpPost]
     public async Task<IActionResult> AddPostAsync(AddPostViewModel model)
     {
-        await _postService.AddAsync(model, _defaultPostsAlbumName);
+        await _postService.AddAsync(model);
 
         if (!await _applicationUnitOfWork.SaveChangesAsync())
         {
@@ -127,7 +121,7 @@ public class HomeController(IMapper _mapper,
     {
         var comment = _commentService.GetCurrentUserCommentViewModel(body);
 
-        comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _defaultProfilePicture);
+        //comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _defaultProfilePicture);
 
         return PartialView("_Comment", comment);
     }

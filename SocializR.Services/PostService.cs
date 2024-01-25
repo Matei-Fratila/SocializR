@@ -1,4 +1,6 @@
-﻿namespace SocializR.Services;
+﻿using Microsoft.Extensions.Options;
+
+namespace SocializR.Services;
 
 public class PostService(CurrentUser _currentUser, 
     ApplicationUnitOfWork _unitOfWork, 
@@ -6,10 +8,14 @@ public class PostService(CurrentUser _currentUser,
     IAlbumService _albumService,
     IImageStorage _imageStorage,
     IMediaService _mediaService,
+    IOptionsMonitor<AppSettings> _appSettings,
     ICommentService _commentService) : BaseService<Post, PostService>(_unitOfWork), IPostService
 {
-    public async Task<List<PostVM>> GetPaginatedAsync(Guid userId, int page, int postsPerPage, int commentsPerPage, 
-        string defaultProfilePicture, bool isProfileView = true)
+    private readonly int _postsPerPage = _appSettings.CurrentValue.PostsPerPage;
+    private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
+    private readonly string _postsAlbumName = _appSettings.CurrentValue.PostsAlbumName;
+
+    public async Task<List<PostVM>> GetPaginatedAsync(Guid userId, int page, bool isProfileView = true)
     {
         var posts = await UnitOfWork.Posts.Query
             .Include(p => p.User)
@@ -18,34 +24,34 @@ public class PostService(CurrentUser _currentUser,
                 ? p.UserId == userId
                 : p.UserId == userId || p.User.FriendsFirstUser.FirstOrDefault(f => f.SecondUserId == userId && f.FirstUser.IsDeleted == false) != null)
             .OrderByDescending(p => p.CreatedOn)
-            .Skip(page * postsPerPage)
-            .Take(postsPerPage)
+            .Skip(page * _postsPerPage)
+            .Take(_postsPerPage)
             .ProjectTo<PostVM>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
 
         foreach (var post in posts)
         {
-            post.Comments = await _commentService.GetPaginatedAsync(post.Id, commentsPerPage, 0, defaultProfilePicture);
-            post.UserPhoto = _imageStorage.UriFor(post.UserPhoto ?? defaultProfilePicture);
+            post.Comments = await _commentService.GetPaginatedAsync(post.Id, userId, 0);
+            post.UserPhoto = _imageStorage.UriFor(post.UserPhoto ?? _defaultProfilePicture);
             post.IsLikedByCurrentUser = post.Likes.Any(l => l.UserId == userId);
         }
 
         foreach (var comment in posts.SelectMany(p => p.Comments))
         {
-            comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? defaultProfilePicture);
+            comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _defaultProfilePicture);
             comment.IsCurrentUserComment = comment.UserId == userId;
         }
 
         foreach (var media in posts.SelectMany(x => x.Media))
         {
-            media.FileName = _imageStorage.UriFor(media.FileName ?? defaultProfilePicture);
+            media.FileName = _imageStorage.UriFor(media.FileName ?? _defaultProfilePicture);
         }
 
         return posts;
     }
 
-    public async Task AddAsync(AddPostViewModel model, string albumName)
+    public async Task AddAsync(AddPostViewModel model, string albumName = null)
     {
         var media = new List<Media>();
 
@@ -53,7 +59,7 @@ public class PostService(CurrentUser _currentUser,
         {
             foreach (var file in model.Media)
             {
-                var album = await _albumService.GetAsync(albumName, _currentUser.Id);
+                var album = await _albumService.GetAsync(albumName ?? _postsAlbumName, _currentUser.Id);
 
                 if (album == null)
                 {

@@ -26,6 +26,8 @@ global using SocializR.Models.Entities;
 global using SocializR.Models.Enums;
 global using SocializR.Services.Interfaces;
 
+global using SocializR.Common;
+
 global using Common.Interfaces;
 global using Utils;
 

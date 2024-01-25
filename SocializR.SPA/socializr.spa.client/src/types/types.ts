@@ -38,16 +38,31 @@ export type Post = {
     id: string;
     firstName: string;
     lastName: string;
+    userPhoto: string;
     title: string;
     body: string;
-    createdOn: Date;
+    createdOn: string;
     userId: string;
     numberOfLikes: number;
     numberOfComments: number;
     isLikedByCurrentUser: boolean;
+    comments: Comments;
 }
 
 export type Posts = Array<Post>;
+
+export type Comment = {
+    id: string;
+    userId: string;
+    firstName: string;
+    lastName: string;
+    userPhoto: string;
+    createdOn: string;
+    body: string;
+    isCurrentUserComment: boolean;
+}
+
+export type Comments = Array<Comment>;
 
 export type PostsListProps = {
     posts: Posts;
@@ -56,6 +71,16 @@ export type PostsListProps = {
 
 export type PostProps = {
     item: Post;
+}
+
+export type CommentProps = {
+    item: Comment;
+    onRemoveItem: (id: string) => void;
+}
+
+export type CommentFormProps = {
+    postId: string;
+    onSubmit: (comment: Comment) => void;
 }
 
 export type PostsState = {

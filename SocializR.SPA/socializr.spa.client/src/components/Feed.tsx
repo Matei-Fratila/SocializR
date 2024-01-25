@@ -1,5 +1,5 @@
 import Post from "./Post";
-import { ListProps, PostsAction, PostsListProps, PostsState } from "../types/types";
+import { PostsAction, PostsListProps, PostsState } from "../types/types";
 import React from "react";
 import postsService from "../services/posts.service";
 

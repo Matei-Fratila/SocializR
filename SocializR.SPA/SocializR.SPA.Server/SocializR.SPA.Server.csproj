@@ -10,6 +10,46 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="wwwroot\images\uploads\068740a9-2b68-48b2-ba94-42b8a0946d0c.jpeg" />
+    <None Remove="wwwroot\images\uploads\15c00df0-82a2-4275-8bb8-75e16acb74a0.jpeg" />
+    <None Remove="wwwroot\images\uploads\175deed7-403d-4f62-b504-7f6a8702d7b7.jpeg" />
+    <None Remove="wwwroot\images\uploads\1d39f535-0e0c-439a-bafa-0b4bef19ab69.jpeg" />
+    <None Remove="wwwroot\images\uploads\1d9b43bf-9038-4041-8650-b98af341d9d5.jpeg" />
+    <None Remove="wwwroot\images\uploads\22a100e1-a9d9-4d3d-b6ac-7206d58f306f.jpeg" />
+    <None Remove="wwwroot\images\uploads\287f5da9-1e1c-422a-a6d4-68e542df6ef0.jpeg" />
+    <None Remove="wwwroot\images\uploads\371b0dbd-496d-4834-9392-1d69146ca7fc.jpeg" />
+    <None Remove="wwwroot\images\uploads\3ed9a7ab-af53-4e96-839a-181b2551bcd1.jpeg" />
+    <None Remove="wwwroot\images\uploads\4a03231e-0775-48b2-8e19-ddfca0f64715.jpeg" />
+    <None Remove="wwwroot\images\uploads\518d4440-2fb5-476b-8c79-5d87df29e980.jpeg" />
+    <None Remove="wwwroot\images\uploads\58c1bb9d-b39a-4806-842c-d2c82350650a.jpeg" />
+    <None Remove="wwwroot\images\uploads\65ebcf05-ff53-4051-9c5f-eda68c8fb004.jpeg" />
+    <None Remove="wwwroot\images\uploads\72fff388-8cc9-4323-bee3-d2f985bf7e06.jpeg" />
+    <None Remove="wwwroot\images\uploads\7c2e57f9-ccd8-480c-8205-7a8f533cf348.mp4" />
+    <None Remove="wwwroot\images\uploads\7cc6cd68-647b-4275-97e8-581f3d9626c7.jpeg" />
+    <None Remove="wwwroot\images\uploads\80ed907c-5bc3-45c8-b853-5ec31c4ac5d7.jpeg" />
+    <None Remove="wwwroot\images\uploads\84ffe78d-4b2f-44d1-b59b-934005c6d763.jpeg" />
+    <None Remove="wwwroot\images\uploads\9205f9eb-98bf-4244-9fb7-4bbcc57b9f71.jpeg" />
+    <None Remove="wwwroot\images\uploads\a812190f-c079-4e0a-8f9b-0597965a56a7.jpeg" />
+    <None Remove="wwwroot\images\uploads\b393742b-38d2-4ccf-8e57-46358bcccc49.jpeg" />
+    <None Remove="wwwroot\images\uploads\ba7da3ca-817c-4e2b-9946-aa83e83f2aec.jpeg" />
+    <None Remove="wwwroot\images\uploads\bc4f4e11-c327-4fbd-b08c-25e771c901a9.jpeg" />
+    <None Remove="wwwroot\images\uploads\cbdaaf51-3476-41a6-be20-cb8a77e0d8e2.jpeg" />
+    <None Remove="wwwroot\images\uploads\cdd2e06c-29f5-4814-90f7-ddf4372fc377.jpeg" />
+    <None Remove="wwwroot\images\uploads\e91b33e6-24a1-4a9a-8b15-1ed86a38266d.jpeg" />
+    <None Remove="wwwroot\images\uploads\e92ccc4e-406e-443d-82a8-ce3351575e6f.jpeg" />
+    <None Remove="wwwroot\images\uploads\e9b36f90-984a-4c30-80d4-d47eb898d878.jpeg" />
+    <None Remove="wwwroot\images\uploads\fb309b5f-65a1-4980-b870-cda93f39c341.jpeg" />
+    <None Remove="wwwroot\images\uploads\fb906658-d3a5-4043-bdbd-cd0b763c8fb1.jpeg" />
+    <None Remove="wwwroot\images\uploads\h1tzcjze.w5p.jpeg" />
+    <None Remove="wwwroot\images\uploads\it1lffyn.hnz.jpeg" />
+    <None Remove="wwwroot\images\uploads\j43cp24u.jtq.jpeg" />
+    <None Remove="wwwroot\images\uploads\upqgvhec.m1h.jpeg" />
+    <None Remove="wwwroot\images\uploads\vo1zrikq.vse.jpeg" />
+    <None Remove="wwwroot\images\uploads\x02ghspo.f5s.jpeg" />
+    <None Remove="wwwroot\images\uploads\yfize45r.omd.jpeg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />

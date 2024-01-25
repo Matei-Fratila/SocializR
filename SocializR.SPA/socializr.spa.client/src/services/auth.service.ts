@@ -8,7 +8,7 @@ class AuthService {
             const response: LoginResponse = axiosResponse.data;
 
             if (response.currentUser) {
-                const user = {...response.currentUser, token: response.token};
+                const user = { ...response.currentUser, token: response.token };
                 localStorage.setItem('user', JSON.stringify(user));
             }
         } catch (e) {
@@ -29,9 +29,19 @@ class AuthService {
     }
 
     getCurrentUser() {
-        const userStr = localStorage.getItem('currentUser');
+        const userStr = localStorage.getItem('user');
         if (userStr) return JSON.parse(userStr) as CurrentUser;
         return null;
+    }
+
+    getCurrentUserPhoto() {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            const user: CurrentUser = JSON.parse(userStr);
+            return user.profilePhoto;
+        }
+
+        return "";
     }
 }
 

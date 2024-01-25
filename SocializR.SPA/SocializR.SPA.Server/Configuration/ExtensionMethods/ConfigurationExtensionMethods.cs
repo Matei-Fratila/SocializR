@@ -27,17 +27,11 @@ public static class ConfigurationExtensionMethods
         {
             var contextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
             var context = contextAccessor.HttpContext;
-            var mail = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value ?? string.Empty;
-            var _accountService= serviceProvider.GetService<IAccountService>();
-            var _appSettings = serviceProvider.GetService<IOptionsMonitor<AppSettings>>();
-            var user = _accountService.GetCurrentUser(mail).Result;
+            var id = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
-            if (user != null)
+            if (id != string.Empty)
             {
-                var _imageStorage = serviceProvider.GetService<IImageStorage>();
-                user.ProfilePhoto = _imageStorage.UriFor(user.ProfilePhoto ?? _appSettings.CurrentValue.DefaultProfilePicture);
-                user.IsAuthenticated = true;
-                return user;
+                return new CurrentUser(isAuthenticated: true) { Id = new Guid(id) };
             }
             else
             {
