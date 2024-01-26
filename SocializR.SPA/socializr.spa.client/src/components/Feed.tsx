@@ -1,7 +1,8 @@
 import Post from "./Post";
-import { PostsAction, PostsListProps, PostsState } from "../types/types";
+import { PostsAction, PostsListProps, PostsState, Post as PostModel } from "../types/types";
 import React from "react";
 import postsService from "../services/posts.service";
+import PostForm from "./PostForm";
 
 const postsReducer = (
     state: PostsState,
@@ -20,6 +21,20 @@ const postsReducer = (
                 isLoading: false,
                 isError: false,
                 data: action.payload
+            };
+        case 'POSTS_NEW_POST':
+            return {
+                ...state,
+                isLoading: false,
+                isError: false,
+                data: [action.payload, ...state.data]
+            };
+        case 'POSTS_DELETE_POST':
+            return {
+                ...state,
+                isLoading: false,
+                isError: false,
+                data: state.data.filter(p => p.id !== action.payload)
             };
         case 'POSTS_FETCH_FAILURE':
             return {
@@ -49,24 +64,45 @@ const Feed = () => {
         }
     }, [posts.page]);
 
+    const handleNewPost = (post: PostModel) => {
+        try {
+            dispatchPosts({
+                type: 'POSTS_NEW_POST',
+                payload: post
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     React.useEffect(() => {
         handleFetchPosts();
     }, [handleFetchPosts]);
 
+    const handleDeletePost = async (id: string) => {
+        try{
+            await postsService.deletePost(id);
+            dispatchPosts({
+                type: 'POSTS_DELETE_POST',
+                payload: id
+            })
+        } catch(e){
+
+        }
+    }
+
     return (<>
+        <PostForm onSubmit={handleNewPost}></PostForm>
         {posts.isError && <p>Something went wrong</p>}
-        {posts.isLoading ? (<p>Loading...</p>) : (<PostsList posts={posts.data}></PostsList>)}
+        {posts.isLoading ?
+            (<p>Loading...</p>)
+            : posts.data.map(post => (
+                <Post onRemoveItem={() => handleDeletePost(post.id)}
+                    key={post.id}
+                    item={post}
+                />
+            ))}
     </>);
 }
-
-const PostsList = ({ posts }: PostsListProps) => (
-    <>{posts.map(post => (
-        <Post
-            key={post.id}
-            item={post}
-        />
-    ))}
-    </>
-);
 
 export default Feed;

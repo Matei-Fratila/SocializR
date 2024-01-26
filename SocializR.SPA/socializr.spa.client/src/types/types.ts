@@ -51,6 +51,15 @@ export type Post = {
 
 export type Posts = Array<Post>;
 
+export type NewPost = {
+    title: string;
+    body: string;
+}
+
+export type PostFormProps = {
+    onSubmit: (post: Post) => void;
+}
+
 export type Comment = {
     id: string;
     userId: string;
@@ -66,11 +75,12 @@ export type Comments = Array<Comment>;
 
 export type PostsListProps = {
     posts: Posts;
-    // onRemoveItem: (item: Post) => void;
+    onRemoveItem: (id: string) => void;
 }
 
 export type PostProps = {
     item: Post;
+    onRemoveItem: (id: string) => void;
 }
 
 export type CommentProps = {
@@ -103,4 +113,18 @@ interface PostsFetchFailureAction {
     type: 'POSTS_FETCH_FAILURE';
 }
 
-export type PostsAction = PostsFetchAction | PostsFetchSuccessAction | PostsFetchFailureAction;
+interface PostsNewPostAction {
+    type: 'POSTS_NEW_POST';
+    payload: Post;
+}
+
+interface PostsDeletePostAction {
+    type: 'POSTS_DELETE_POST';
+    payload: string;
+}
+
+export type PostsAction = PostsFetchAction 
+| PostsFetchSuccessAction 
+| PostsFetchFailureAction 
+| PostsNewPostAction 
+| PostsDeletePostAction;

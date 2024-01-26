@@ -1,4 +1,4 @@
-import { Button, Card, CardFooter, Col, Container, Row } from "react-bootstrap";
+import { Button, Card, CardFooter, Container } from "react-bootstrap";
 import { ChevronBarRight } from "react-bootstrap-icons";
 import commentService from "../services/comment.service";
 import { Comment as Comm, CommentFormProps } from "../types/types";

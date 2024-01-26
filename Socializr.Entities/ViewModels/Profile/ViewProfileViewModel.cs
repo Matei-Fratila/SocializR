@@ -50,5 +50,5 @@ public class ViewProfileViewModel
 
     public string Description { get; set; }
 
-    public List<PostVM> Posts { get; set; }
+    public List<PostViewModel> Posts { get; set; }
 }

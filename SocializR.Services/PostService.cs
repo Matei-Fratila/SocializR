@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using SocializR.Models.Entities;
 
 namespace SocializR.Services;
 
@@ -8,6 +10,7 @@ public class PostService(CurrentUser _currentUser,
     IAlbumService _albumService,
     IImageStorage _imageStorage,
     IMediaService _mediaService,
+    UserManager<User> _userManager,
     IOptionsMonitor<AppSettings> _appSettings,
     ICommentService _commentService) : BaseService<Post, PostService>(_unitOfWork), IPostService
 {
@@ -15,7 +18,7 @@ public class PostService(CurrentUser _currentUser,
     private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
     private readonly string _postsAlbumName = _appSettings.CurrentValue.PostsAlbumName;
 
-    public async Task<List<PostVM>> GetPaginatedAsync(Guid userId, int page, bool isProfileView = true)
+    public async Task<List<PostViewModel>> GetPaginatedAsync(Guid userId, int page, bool isProfileView = true)
     {
         var posts = await UnitOfWork.Posts.Query
             .Include(p => p.User)
@@ -26,7 +29,7 @@ public class PostService(CurrentUser _currentUser,
             .OrderByDescending(p => p.CreatedOn)
             .Skip(page * _postsPerPage)
             .Take(_postsPerPage)
-            .ProjectTo<PostVM>(_mapper.ConfigurationProvider)
+            .ProjectTo<PostViewModel>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
 
@@ -90,23 +93,67 @@ public class PostService(CurrentUser _currentUser,
         });
     }
 
-    //public void Delete(Guid Id)
-    //{
-    //    //todod fix npe
-    //    var post = UnitOfWork.Posts.Query
-    //        .Include(c => c.Likes)
-    //        .Include(c => c.Comments)
-    //        .Include(c => c.Media)
-    //        .Where(p => p.Id == postId)
-    //        .FirstOrDefault();
+    public async Task<Post> CreateAsync(AddPostViewModel model, string albumName = null)
+    {
+        var media = new List<Media>();
 
-    //    if (post == null)
-    //    {
-    //        return;
-    //    }
+        if (model.Media != null)
+        {
+            foreach (var file in model.Media)
+            {
+                var album = await _albumService.GetAsync(albumName ?? _postsAlbumName, _currentUser.Id);
 
-    //    UnitOfWork.Posts.Remove(post);
+                if (album == null)
+                {
+                    _albumService.Add(new Album { Name = albumName, UserId = _currentUser.Id });
+                }
 
-    //    return UnitOfWork.SaveChanges() != 0;
-    //}
+                if (file.Length > 0)
+                {
+                    var type = file.ContentType.ToString().Split('/');
+                    if (type[0] == "image" || type[0] == "video")
+                    {
+                        var fileName = await _imageStorage.SaveImage(file.OpenReadStream(), type[1]);
+                        var mediaType = type[0] == "image" ? MediaTypes.Image : MediaTypes.Video;
+
+                        media.Add(_mediaService.Add(fileName, mediaType, album));
+                    }
+                }
+            }
+        }
+
+        var post = new Post
+        {
+            UserId = _currentUser.Id,
+            User = _userManager.Users.FirstOrDefault(x => x.Id == _currentUser.Id),
+            Title = model.Title,
+            Body = model.Body,
+            CreatedOn = DateTime.Now,
+            Media = media
+        };
+
+        Add(post);
+
+        return post;
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        //todod fix npe
+        var post = await UnitOfWork.Posts.Query
+            .Include(c => c.Likes)
+            .Include(c => c.Comments)
+            .Include(c => c.Media)
+            .Where(p => p.Id == id)
+            .FirstOrDefaultAsync();
+
+        if (post == null)
+        {
+            return;
+        }
+
+        Remove(post);
+
+        return;
+    }
 }

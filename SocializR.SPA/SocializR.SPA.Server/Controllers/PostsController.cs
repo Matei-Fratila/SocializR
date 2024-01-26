@@ -1,4 +1,5 @@
-﻿using SocializR.Models.ViewModels.Feed;
+﻿using AutoMapper;
+using SocializR.Models.ViewModels.Feed;
 using System.Net;
 
 namespace SocializR.SPA.Server.Controllers;
@@ -8,12 +9,13 @@ namespace SocializR.SPA.Server.Controllers;
 [Route("[controller]")]
 public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
     IPostService _postService,
+    IMapper _mapper,
     ILikeService _likeService) : ControllerBase
 {
     private readonly ILogger<PostsController> logger;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<PostVM>>> GetPaginatedAsync(int pageNumber = 0)
+    public async Task<ActionResult<IEnumerable<PostViewModel>>> GetPaginatedAsync(int pageNumber = 0)
     {
         string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -21,6 +23,35 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
             pageNumber, 
             isProfileView: false
             );
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<PostViewModel>> CreateAsync([FromForm]AddPostViewModel model)
+    {
+        var post = await _postService.CreateAsync(model);
+
+        if (!await _applicationUnitOfWork.SaveChangesAsync())
+        {
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+
+        var result = new PostViewModel();
+        _mapper.Map(post, result);
+
+        return result;
+    }
+
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+    {
+        await _postService.DeleteAsync(id);
+
+        if (_applicationUnitOfWork.SaveChanges() == 0)
+        {
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+
+        return Ok();
     }
 
     [HttpPost("like/{id}")]

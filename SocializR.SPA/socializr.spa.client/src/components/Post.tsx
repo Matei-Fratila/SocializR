@@ -1,15 +1,16 @@
 import { Button, Card, CardBody, CardFooter, CardHeader, CardText, CardTitle, Col, Container, Row } from "react-bootstrap";
 import { PostProps, Comment as Comm, Comments } from "../types/types";
 import { Link } from "react-router-dom";
-import { Heart, Chat, HeartFill, Plus } from "react-bootstrap-icons";
+import { Heart, Chat, HeartFill, Trash } from "react-bootstrap-icons";
 import Comment from "./Comment";
 import "./Post.css";
 import React from "react";
 import postsService from "../services/posts.service";
 import commentService from "../services/comment.service";
 import CommentForm from "./CommentForm";
+import authService from "../services/auth.service";
 
-const Post = ({ item }: PostProps) => {
+const Post = ({ item, onRemoveItem }: PostProps) => {
     const [isLiked, setIsLiked] = React.useState(item.isLikedByCurrentUser);
     const [comments, setComments] = React.useState(item.comments);
     const [numberOfComments, setNumberOfComments] = React.useState(item.numberOfComments);
@@ -78,6 +79,14 @@ const Post = ({ item }: PostProps) => {
                     <Card className="shadow">
                         <CardHeader>
                             <Link to={`/profile/${item.userId}`}>{item.firstName} {item.lastName}</Link>
+                            {
+                                item.userId === authService.getCurrentUserId()
+                                &&
+                                <Button variant="light" className="float-end py-0" title="delete post" data-toggle="tooltip" data-placement="bottom"
+                                     onClick={() => onRemoveItem(item.id)}> 
+                                    <Trash />
+                                </Button>
+                            }
                             <span className="float-end">{item.createdOn}</span>
                         </CardHeader>
                         <CardBody>
@@ -104,14 +113,18 @@ const Post = ({ item }: PostProps) => {
                                 <Comment item={comment} onRemoveItem={() => handleDeleteComment(comment.id)}></Comment>
                             ))}
 
-                            <Row>
-                                <Col sm={1}></Col>
-                                <Col sm={11}>
-                                    <Button variant="link" className="center" title="load more comments" data-toggle="tooltip" data-placement="bottom" onClick={handleLoadMoreComments}>
-                                        <span> Load more comments</span>
-                                    </Button>
-                                </Col>
-                            </Row>
+                            {(comments.length < item.numberOfComments) &&
+                                <Container>
+                                    <Row>
+                                        <Col sm={1}></Col>
+                                        <Col sm={11}>
+                                            <span className="float-end">{comments.length} out of {item.numberOfComments}</span>
+                                            <Button variant="link" className="center" title="load more comments" data-toggle="tooltip" data-placement="bottom" onClick={handleLoadMoreComments}>
+                                                <span> Load more comments</span>
+                                            </Button>
+                                        </Col>
+                                    </Row>
+                                </Container>}
 
                             <CommentForm onSubmit={handleNewComment} postId={item.id}></CommentForm>
 

@@ -20,7 +20,7 @@ public class PostMapper : Profile
         CreateMap<AddCommentViewModel, Comment>()
             .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => DateTime.Now));
 
-        CreateMap<Post, PostVM>().ConstructUsingServiceLocator()
+        CreateMap<Post, PostViewModel>().ConstructUsingServiceLocator()
             .ForMember(dest => dest.NumberOfLikes, opt => opt.MapFrom(src => src.Likes.Count))
             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.User.FirstName))
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.User.LastName))

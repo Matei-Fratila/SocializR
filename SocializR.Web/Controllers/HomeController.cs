@@ -127,7 +127,7 @@ public class HomeController(IMapper _mapper,
     }
 
     [HttpGet]
-    public IActionResult GetPostWidget(PostVM model)
+    public IActionResult GetPostWidget(PostViewModel model)
     {
         return PartialView("_Post", model);
     }

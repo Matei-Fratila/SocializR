@@ -2,5 +2,5 @@
 
 public class FeedViewModel
 {
-    public List<PostVM> Posts { get; set; }
+    public List<PostViewModel> Posts { get; set; }
 }

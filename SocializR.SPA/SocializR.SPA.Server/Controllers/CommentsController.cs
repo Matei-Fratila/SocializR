@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Common.Interfaces;
 using SocializR.Models.ViewModels.Feed;
 using System.Net;
 
@@ -27,7 +26,7 @@ public class CommentsController(ApplicationUnitOfWork _applicationUnitOfWork,
     }
 
     [HttpPost]
-    public async Task<CommentViewModel> AddCommentAsync(AddCommentViewModel comment)
+    public async Task<CommentViewModel> CreateAsync(AddCommentViewModel comment)
     {
         var newComment = new Comment();
         _mapper.Map(comment, newComment);
