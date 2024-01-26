@@ -26,7 +26,7 @@ const CommentForm = ({ postId, onSubmit }: CommentFormProps) => {
             <form method="post" onSubmit={handleSubmit}>
                 <input type="hidden" name="postId" value={postId}></input>
                 <Card>
-                    <textarea name="body" value={body} onChange={e => setBody(e.target.value)} />
+                    <textarea name="body" value={body} placeholder="Write a comment" onChange={e => setBody(e.target.value)} />
                     <CardFooter>
                         <Button type="submit" variant="primary" disabled={!body}>
                             Comment <ChevronBarRight />

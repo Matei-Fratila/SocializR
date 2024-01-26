@@ -95,7 +95,7 @@ export type CommentFormProps = {
 
 export type PostsState = {
     data: Posts;
-    page: number;
+    pageNumber: number;
     isLoading: boolean;
     isError: boolean;
 }
@@ -113,18 +113,23 @@ interface PostsFetchFailureAction {
     type: 'POSTS_FETCH_FAILURE';
 }
 
-interface PostsNewPostAction {
-    type: 'POSTS_NEW_POST';
+interface NewPostAction {
+    type: 'NEW_POST';
     payload: Post;
 }
 
-interface PostsDeletePostAction {
-    type: 'POSTS_DELETE_POST';
+interface DeletePostAction {
+    type: 'DELETE_POST';
     payload: string;
+}
+
+interface IncreasePageNumberAction {
+    type: 'INCREASE_PAGE_NUMBER';
 }
 
 export type PostsAction = PostsFetchAction 
 | PostsFetchSuccessAction 
 | PostsFetchFailureAction 
-| PostsNewPostAction 
-| PostsDeletePostAction;
+| NewPostAction 
+| DeletePostAction
+| IncreasePageNumberAction;

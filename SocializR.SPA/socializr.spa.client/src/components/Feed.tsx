@@ -1,8 +1,9 @@
 import Post from "./Post";
-import { PostsAction, PostsListProps, PostsState, Post as PostModel } from "../types/types";
+import { PostsAction, PostsState, Post as PostModel } from "../types/types";
 import React from "react";
 import postsService from "../services/posts.service";
 import PostForm from "./PostForm";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const postsReducer = (
     state: PostsState,
@@ -14,27 +15,14 @@ const postsReducer = (
                 ...state,
                 isLoading: true,
                 isError: false,
+                data: state.data
             };
         case 'POSTS_FETCH_SUCCESS':
             return {
                 ...state,
                 isLoading: false,
                 isError: false,
-                data: action.payload
-            };
-        case 'POSTS_NEW_POST':
-            return {
-                ...state,
-                isLoading: false,
-                isError: false,
-                data: [action.payload, ...state.data]
-            };
-        case 'POSTS_DELETE_POST':
-            return {
-                ...state,
-                isLoading: false,
-                isError: false,
-                data: state.data.filter(p => p.id !== action.payload)
+                data: [...state.data, ...action.payload]
             };
         case 'POSTS_FETCH_FAILURE':
             return {
@@ -42,32 +30,56 @@ const postsReducer = (
                 isLoading: false,
                 isError: true
             }
+        case 'NEW_POST':
+            return {
+                ...state,
+                isLoading: false,
+                isError: false,
+                data: [action.payload, ...state.data]
+            };
+        case 'DELETE_POST':
+            return {
+                ...state,
+                isLoading: false,
+                isError: false,
+                data: state.data.filter(p => p.id !== action.payload)
+            };
+        case 'INCREASE_PAGE_NUMBER':
+            return {
+                ...state,
+                pageNumber: state.pageNumber + 1
+            }
         default:
             throw new Error();
     }
 }
 
 const Feed = () => {
-    const [posts, dispatchPosts] = React.useReducer(postsReducer, { data: [], page: 0, isLoading: false, isError: false });
+    const [posts, dispatchPosts] = React.useReducer(postsReducer, { data: [], pageNumber: 0, isLoading: false, isError: false });
+    const [hasMore, setHasMore] = React.useState(true);
 
     const handleFetchPosts = React.useCallback(async () => {
         dispatchPosts({ type: 'POSTS_FETCH' });
         try {
-            const result = await postsService.getPaginatedAsync(posts.page);
+            const result = await postsService.getPaginatedAsync(posts.pageNumber);
             dispatchPosts({
                 type: 'POSTS_FETCH_SUCCESS',
                 payload: result.data
+            });
+            result.data.length > 0 ? setHasMore(true) : setHasMore(false);
+            hasMore && dispatchPosts({
+                type: 'INCREASE_PAGE_NUMBER'
             });
         }
         catch {
             dispatchPosts({ type: 'POSTS_FETCH_FAILURE' });
         }
-    }, [posts.page]);
+    }, [posts.pageNumber]);
 
     const handleNewPost = (post: PostModel) => {
         try {
             dispatchPosts({
-                type: 'POSTS_NEW_POST',
+                type: 'NEW_POST',
                 payload: post
             });
         } catch (e) {
@@ -77,31 +89,36 @@ const Feed = () => {
 
     React.useEffect(() => {
         handleFetchPosts();
-    }, [handleFetchPosts]);
+    }, []);
 
     const handleDeletePost = async (id: string) => {
-        try{
+        try {
             await postsService.deletePost(id);
             dispatchPosts({
-                type: 'POSTS_DELETE_POST',
+                type: 'DELETE_POST',
                 payload: id
             })
-        } catch(e){
+        } catch (e) {
 
         }
     }
 
     return (<>
-        <PostForm onSubmit={handleNewPost}></PostForm>
-        {posts.isError && <p>Something went wrong</p>}
-        {posts.isLoading ?
-            (<p>Loading...</p>)
-            : posts.data.map(post => (
+        <InfiniteScroll
+            dataLength={posts.data.length}
+            next={handleFetchPosts}
+            hasMore={hasMore}
+            loader={<p>Loading...</p>}>
+
+            <PostForm onSubmit={handleNewPost}></PostForm>
+            {posts.data.map(post => (
                 <Post onRemoveItem={() => handleDeletePost(post.id)}
                     key={post.id}
                     item={post}
                 />
             ))}
+
+        </InfiniteScroll>
     </>);
 }
 

@@ -70,12 +70,12 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
     return (
         <Container className="mt-5">
             <Row>
-                <Col sm={1}>
+                <Col sm={2}>
                     <Link to={`/profile/${item.userId}`}>
                         <img src={'api/' + item.userPhoto} alt="Profile picture" className="rounded-circle shadow img-thumbnail user-photo avatar-float" />
                     </Link>
                 </Col>
-                <Col sm={11}>
+                <Col sm={10}>
                     <Card className="shadow">
                         <CardHeader>
                             <Link to={`/profile/${item.userId}`}>{item.firstName} {item.lastName}</Link>
@@ -83,7 +83,7 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
                                 item.userId === authService.getCurrentUserId()
                                 &&
                                 <Button variant="light" className="float-end py-0" title="delete post" data-toggle="tooltip" data-placement="bottom"
-                                     onClick={() => onRemoveItem(item.id)}> 
+                                    onClick={() => onRemoveItem(item.id)}>
                                     <Trash />
                                 </Button>
                             }
@@ -115,15 +115,10 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
 
                             {(comments.length < item.numberOfComments) &&
                                 <Container>
-                                    <Row>
-                                        <Col sm={1}></Col>
-                                        <Col sm={11}>
-                                            <span className="float-end">{comments.length} out of {item.numberOfComments}</span>
-                                            <Button variant="link" className="center" title="load more comments" data-toggle="tooltip" data-placement="bottom" onClick={handleLoadMoreComments}>
-                                                <span> Load more comments</span>
-                                            </Button>
-                                        </Col>
-                                    </Row>
+                                    <span className="float-end">{comments.length} out of {item.numberOfComments}</span>
+                                    <Button variant="link" className="center" title="load more comments" data-toggle="tooltip" data-placement="bottom" onClick={handleLoadMoreComments}>
+                                        <span> Load more comments</span>
+                                    </Button>
                                 </Container>}
 
                             <CommentForm onSubmit={handleNewComment} postId={item.id}></CommentForm>

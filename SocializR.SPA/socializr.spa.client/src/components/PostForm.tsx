@@ -1,5 +1,5 @@
 import { Button, Card, CardFooter, Col, Container, Row } from "react-bootstrap";
-import { ChevronBarRight } from "react-bootstrap-icons";
+import { ChevronBarRight, Pencil } from "react-bootstrap-icons";
 import postService from "../services/posts.service";
 import { NewPost, Post, PostFormProps } from "../types/types";
 import React from "react";
@@ -33,12 +33,13 @@ const PostForm = ({ onSubmit }: PostFormProps) => {
     return (
         <Container className="mt-5">
             <Row>
-                <Col sm={1}>
+                <Col sm={2}>
                 </Col>
-                <Col sm={11}>
+                <Col sm={10}>
                     <form method="post" onSubmit={handleSubmit}>
+                        <h5><Pencil/> Write a post</h5>
                         <Card className="shadow">
-                            <input type="text" name="title" placeholder="title" value={post.title} onChange={e => setTitle(e.target.value)}></input>
+                            <input type="text" name="title" placeholder="Title" value={post.title} onChange={e => setTitle(e.target.value)}></input>
                             <textarea name="body" placeholder="Share your thoughts..." value={post.body} onChange={e => setBody(e.target.value)}></textarea>
                             <div className="images">
                             </div>
