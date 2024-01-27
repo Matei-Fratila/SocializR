@@ -12,7 +12,7 @@ public class CommentService(CurrentUser _currentUser,
     private readonly int _commentsPerPage = _appSettings.CurrentValue.CommentsPerPage;
     private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
 
-    public async Task<List<CommentViewModel>> GetPaginatedAsync(Guid postId, Guid userId, int page)
+    public async Task<List<CommentViewModel>> GetPaginatedAsync(Guid postId, Guid? userId, int page)
     {
         var comments = await UnitOfWork.Comments.Query
             .Where(c => c.PostId == postId)
@@ -25,7 +25,7 @@ public class CommentService(CurrentUser _currentUser,
         foreach (var comment in comments)
         {
             comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _defaultProfilePicture);
-            comment.IsCurrentUserComment = comment.UserId == userId;
+            if(userId.HasValue) comment.IsCurrentUserComment = comment.UserId == userId.Value;
         }
 
         return comments;

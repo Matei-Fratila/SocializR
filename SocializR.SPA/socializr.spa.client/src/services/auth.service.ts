@@ -44,14 +44,14 @@ class AuthService {
         return "";
     }
 
-    getCurrentUserId() {
+    getCurrentUserId(): string | undefined {
         const userStr = localStorage.getItem('user');
         if (userStr) {
             const user: CurrentUser = JSON.parse(userStr);
             return user.id;
         }
 
-        return "";
+        return;
     }
 }
 

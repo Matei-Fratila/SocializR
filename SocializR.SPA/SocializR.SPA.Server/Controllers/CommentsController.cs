@@ -47,10 +47,18 @@ public class CommentsController(ApplicationUnitOfWork _applicationUnitOfWork,
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<List<CommentViewModel>> NextCommentsAsync(Guid postId, int pageNumber)
     {
+        Guid? authorizedUserId = null;
+
+        if (User.Identity.IsAuthenticated)
+        {
+            authorizedUserId = new Guid(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        }
+
         var comments = await _commentService.GetPaginatedAsync(postId,
-            userId: new Guid(User.FindFirst(ClaimTypes.NameIdentifier)?.Value),
+            userId: authorizedUserId,
             pageNumber);
 
         return comments;

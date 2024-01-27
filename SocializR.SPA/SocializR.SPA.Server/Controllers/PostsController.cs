@@ -15,14 +15,20 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
     private readonly ILogger<PostsController> logger;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<PostViewModel>>> GetPaginatedAsync(int pageNumber = 0)
+    [AllowAnonymous]
+    public async Task<ActionResult<IEnumerable<PostViewModel>>> GetPaginatedAsync(Guid userId, int pageNumber = 0, bool isProfileView = false)
     {
-        string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        Guid? authorizedUserId = null;
 
-        return await _postService.GetPaginatedAsync(new Guid(userId), 
+        if (User.Identity.IsAuthenticated)
+        {
+            authorizedUserId = new Guid(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        }
+
+        return await _postService.GetPaginatedAsync(userId, 
+            authorizedUserId,
             pageNumber, 
-            isProfileView: false
-            );
+            isProfileView: isProfileView);
     }
 
     [HttpPost]

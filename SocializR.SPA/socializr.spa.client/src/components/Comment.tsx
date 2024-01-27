@@ -3,18 +3,21 @@ import { CommentProps } from "../types/types";
 import { Link } from "react-router-dom";
 import { Trash } from "react-bootstrap-icons";
 import "./Comment.css";
+import authService from "../services/auth.service";
 
 const Comment = ({ item, onRemoveItem }: CommentProps) => {
+    const authenticatedUserId = authService.getCurrentUserId();
+    
     return (
         <Container className="mt-3">
             <Card className="panel-default">
                 <CardHeader>
                     <Link to={`/profile/${item.userId}`}>
-                        <img src={'api/' + item.userPhoto} alt="Profile picture" className="rounded-circle img-thumbnail small-user-photo avatar-float" />
+                        <img src={`/api/${item.userPhoto}`} alt="Profile picture" className="rounded-circle img-thumbnail small-user-photo avatar-float" />
                         {item.firstName} {item.lastName}
                     </Link>
                     {
-                        item.isCurrentUserComment
+                        item.isCurrentUserComment && authenticatedUserId !== undefined
                         &&
                         <Button variant="light" className="float-end py-0" title="delete comment" data-toggle="tooltip" data-placement="bottom"
                             onClick={() => onRemoveItem(item.id)}>

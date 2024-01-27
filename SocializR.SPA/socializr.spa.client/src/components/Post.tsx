@@ -11,6 +11,7 @@ import CommentForm from "./CommentForm";
 import authService from "../services/auth.service";
 
 const Post = ({ item, onRemoveItem }: PostProps) => {
+    const authenticatedUserId = authService.getCurrentUserId();
     const [isLiked, setIsLiked] = React.useState(item.isLikedByCurrentUser);
     const [comments, setComments] = React.useState(item.comments);
     const [numberOfComments, setNumberOfComments] = React.useState(item.numberOfComments);
@@ -72,7 +73,7 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
             <Row>
                 <Col sm={2}>
                     <Link to={`/profile/${item.userId}`}>
-                        <img src={'api/' + item.userPhoto} alt="Profile picture" className="rounded-circle shadow img-thumbnail user-photo avatar-float" />
+                        <img src={`/api/${item.userPhoto}`} alt="Profile picture" className="rounded-circle shadow img-thumbnail user-photo avatar-float" />
                     </Link>
                 </Col>
                 <Col sm={10}>
@@ -80,7 +81,7 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
                         <CardHeader>
                             <Link to={`/profile/${item.userId}`}>{item.firstName} {item.lastName}</Link>
                             {
-                                item.userId === authService.getCurrentUserId()
+                                item.userId === authenticatedUserId
                                 &&
                                 <Button variant="light" className="float-end py-0" title="delete post" data-toggle="tooltip" data-placement="bottom"
                                     onClick={() => onRemoveItem(item.id)}>
@@ -96,7 +97,7 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
                         <div className="images">
                         </div>
                         <CardFooter className="text-muted">
-                            <Button variant="light" className={isLiked ? 'liked' : 'like'} onClick={handleLike}
+                            <Button variant="light" className={isLiked ? 'liked' : 'like'} onClick={handleLike} disabled={authenticatedUserId === undefined}
                                 title={isLiked ? "click to unlike" : "click to like"} data-toggle="tooltip" data-placement="bottom">
                                 <HeartFill />
                             </Button>
@@ -110,7 +111,7 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
                             </Button>
 
                             {comments.map(comment => (
-                                <Comment item={comment} onRemoveItem={() => handleDeleteComment(comment.id)}></Comment>
+                                <Comment key={comment.id} item={comment} onRemoveItem={() => handleDeleteComment(comment.id)}></Comment>
                             ))}
 
                             {(comments.length < item.numberOfComments) &&
@@ -121,7 +122,7 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
                                     </Button>
                                 </Container>}
 
-                            <CommentForm onSubmit={handleNewComment} postId={item.id}></CommentForm>
+                            {authenticatedUserId && <CommentForm onSubmit={handleNewComment} postId={item.id}></CommentForm>}
 
                         </CardFooter>
                     </Card>

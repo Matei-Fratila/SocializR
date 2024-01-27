@@ -16,7 +16,7 @@ public class InterestService(ApplicationUnitOfWork unitOfWork,
             .Select(i => new SelectListItem(i.Name, i.Id.ToString()))
             .ToListAsync();
 
-    public async Task<List<SelectListItem>> GetSelectedSelectListAsync(List<Guid> userInterests)
+    public async Task<List<SelectListItem>> GetSelectedSelectListAsync(List<InterestViewModel> userInterests)
     {
         List<SelectListItem> selectedInterests = await GetSelectListAsync();
 

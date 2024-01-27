@@ -3,7 +3,7 @@ public interface IInterestService : IBaseService<Interest>
 {
     Task<List<InterestViewModel>> GetAllAsync();
     Task<List<SelectListItem>> GetSelectListAsync();
-    Task<List<SelectListItem>> GetSelectedSelectListAsync(List<Guid> userInterests);
+    Task<List<SelectListItem>> GetSelectedSelectListAsync(List<InterestViewModel> userInterests);
     Task<EditInterestViewModel> GetViewModelAsync(Guid id);
     Task<List<Guid>> GetByUserAsync(Guid id);
     //List<string> GetByUserId(string id);

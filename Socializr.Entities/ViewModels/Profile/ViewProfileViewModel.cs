@@ -1,4 +1,5 @@
 ﻿using SocializR.Models.ViewModels.Feed;
+using SocializR.Models.ViewModels.Interest;
 
 namespace SocializR.Models.ViewModels.Profile;
 
@@ -24,7 +25,7 @@ public class ViewProfileViewModel
 
     public int MutualFriends { get; set; }
 
-    public string FilePath { get; set; }
+    public string UserPhoto { get; set; }
 
     [Display(Name = "Date of birth")]
     [DisplayFormat(DataFormatString = "{0:d}")]
@@ -40,7 +41,7 @@ public class ViewProfileViewModel
 
     public List<AlbumViewModel> Albums { get; set; }
 
-    public List<Guid> Interests { get; set; }
+    public List<InterestViewModel> Interests { get; set; }
 
     public int NrOfFriends { get; set; }
 

@@ -36,13 +36,13 @@ public class ProfileController(CurrentUser _currentUser,
 
         var model = await _profileService.GetViewProfileVM(id);
 
-        model.FilePath = _imageStorage.UriFor(model.FilePath ?? _defaultProfilePicture);
+        model.UserPhoto = _imageStorage.UriFor(model.UserPhoto ?? _defaultProfilePicture);
         foreach (var album in model.Albums)
         {
             album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath ?? _defaultAlbumCover);
         }
 
-        model.Posts = await _postService.GetPaginatedAsync(id, 0, _postsPerPage, _commentsPerFirstPage, _defaultProfilePicture, isProfileView: true);
+        model.Posts = await _postService.GetPaginatedAsync(id, 0, isProfileView: true);
 
         foreach (var post in model.Posts)
         {

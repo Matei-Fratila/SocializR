@@ -18,7 +18,7 @@ public class PostService(CurrentUser _currentUser,
     private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
     private readonly string _postsAlbumName = _appSettings.CurrentValue.PostsAlbumName;
 
-    public async Task<List<PostViewModel>> GetPaginatedAsync(Guid userId, int page, bool isProfileView = true)
+    public async Task<List<PostViewModel>> GetPaginatedAsync(Guid userId, Guid? authorizedUserId, int page, bool isProfileView = true)
     {
         var posts = await UnitOfWork.Posts.Query
             .Include(p => p.User)
@@ -32,18 +32,17 @@ public class PostService(CurrentUser _currentUser,
             .ProjectTo<PostViewModel>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
-
         foreach (var post in posts)
         {
             post.Comments = await _commentService.GetPaginatedAsync(post.Id, userId, 0);
             post.UserPhoto = _imageStorage.UriFor(post.UserPhoto ?? _defaultProfilePicture);
-            post.IsLikedByCurrentUser = post.Likes.Any(l => l.UserId == userId);
+            if(authorizedUserId.HasValue) post.IsLikedByCurrentUser = post.Likes.Any(l => l.UserId == authorizedUserId);
         }
 
         foreach (var comment in posts.SelectMany(p => p.Comments))
         {
             comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _defaultProfilePicture);
-            comment.IsCurrentUserComment = comment.UserId == userId;
+            if(authorizedUserId.HasValue) comment.IsCurrentUserComment = comment.UserId == authorizedUserId;
         }
 
         foreach (var media in posts.SelectMany(x => x.Media))

@@ -1,10 +1,8 @@
 import Post from "./Post";
-import { PostsAction, PostsState, Post as PostModel } from "../types/types";
+import { PostsAction, PostsState, Post as PostModel, PostsListProps } from "../types/types";
 import React from "react";
 import postsService from "../services/posts.service";
-import PostForm from "./PostForm";
 import InfiniteScroll from "react-infinite-scroll-component";
-import authService from "../services/auth.service";
 
 const postsReducer = (
     state: PostsState,
@@ -55,14 +53,14 @@ const postsReducer = (
     }
 }
 
-const Feed = () => {
+const PostList = ({userId}: PostsListProps) => {
     const [posts, dispatchPosts] = React.useReducer(postsReducer, { data: [], pageNumber: 0, isLoading: false, isError: false });
     const [hasMore, setHasMore] = React.useState(true);
 
     const handleFetchPosts = React.useCallback(async () => {
         dispatchPosts({ type: 'POSTS_FETCH' });
         try {
-            const result = await postsService.getPaginatedAsync(authService.getCurrentUserId(), posts.pageNumber, false);
+            const result = await postsService.getPaginatedAsync(userId, posts.pageNumber, true);
             dispatchPosts({
                 type: 'POSTS_FETCH_SUCCESS',
                 payload: result.data
@@ -76,17 +74,6 @@ const Feed = () => {
             dispatchPosts({ type: 'POSTS_FETCH_FAILURE' });
         }
     }, [posts.pageNumber]);
-
-    const handleNewPost = (post: PostModel) => {
-        try {
-            dispatchPosts({
-                type: 'NEW_POST',
-                payload: post
-            });
-        } catch (e) {
-            console.error(e);
-        }
-    }
 
     React.useEffect(() => {
         handleFetchPosts();
@@ -111,7 +98,6 @@ const Feed = () => {
             hasMore={hasMore}
             loader={<p>Loading...</p>}>
 
-            <PostForm onSubmit={handleNewPost}></PostForm>
             {posts.data.map(post => 
                 <Post key={post.id}
                     onRemoveItem={() => handleDeletePost(post.id)}
@@ -123,4 +109,4 @@ const Feed = () => {
     );
 }
 
-export default Feed;
+export default PostList;

@@ -73,9 +73,49 @@ export type Comment = {
 
 export type Comments = Array<Comment>;
 
+export type Profile = {
+    id: string;
+    userPhoto: string;
+    relationToCurrentUser: RelationType;
+    firstName: string;
+    lastName: string;
+    birthDate: Date;
+    city: string;
+    county: string;
+    gender: string;
+    isPrivate: boolean;
+    nrOfFriends: number;
+    nrOfPosts: number;
+    nrOfPhotos: number;
+    mutualFriends: number;
+    description: string;
+    filePath: string;
+    interests: Interest[];
+    albums: Album[];
+}
+
+export type Interest = {
+    label: string;
+    value: string;
+}
+
+export type Album = {
+    id: string;
+    userId: string;
+    name: string; 
+    description: string;
+    coverId: string;
+    coverFilePath: string;
+    nrOfImages: number;
+    createdDate: string;
+}
+
+export type AlbumProps = {
+    item: Album;
+}
+
 export type PostsListProps = {
-    posts: Posts;
-    onRemoveItem: (id: string) => void;
+    userId: string;
 }
 
 export type PostProps = {
@@ -127,9 +167,18 @@ interface IncreasePageNumberAction {
     type: 'INCREASE_PAGE_NUMBER';
 }
 
-export type PostsAction = PostsFetchAction 
-| PostsFetchSuccessAction 
-| PostsFetchFailureAction 
-| NewPostAction 
-| DeletePostAction
-| IncreasePageNumberAction;
+export type PostsAction = PostsFetchAction
+    | PostsFetchSuccessAction
+    | PostsFetchFailureAction
+    | NewPostAction
+    | DeletePostAction
+    | IncreasePageNumberAction;
+
+export enum RelationType {
+    Unknown,
+    Strangers,
+    Friends,
+    RequestedFriendship,
+    PendingAccept,
+    Blocked
+}

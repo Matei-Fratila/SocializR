@@ -18,10 +18,10 @@ public class ViewProfileMapper : Profile
             .ForMember(dest => dest.Interests, opt =>
             {
                 opt.PreCondition(src => src.UserInterests.Any());
-                opt.MapFrom(src => src.UserInterests.Select(u => u.Interest.Id));
+                opt.MapFrom(src => src.UserInterests.Select(u => new InterestViewModel { Value = u.Interest.Id, Label = u.Interest.Name }));
             })
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => ((GenderTypes)src.Gender).ToString()))
-            .ForMember(dest => dest.FilePath, opt =>
+            .ForMember(dest => dest.UserPhoto, opt =>
             {
                 opt.PreCondition(src => src.ProfilePhoto != null);
                 opt.MapFrom(u => u.ProfilePhoto.FileName);
