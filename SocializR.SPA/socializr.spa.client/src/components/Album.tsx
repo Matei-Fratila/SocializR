@@ -10,7 +10,7 @@ const Album = ({item}: AlbumProps) => {
     const [album, setAlbum] = React.useState(item);
 
     return (
-        <Col>
+        <Col sm={6}>
             <Card className="shadow">
                 {
                     authenticatedUserId !== undefined &&

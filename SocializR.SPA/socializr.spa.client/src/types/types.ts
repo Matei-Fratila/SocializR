@@ -47,6 +47,11 @@ export type Post = {
     numberOfComments: number;
     isLikedByCurrentUser: boolean;
     comments: Comments;
+    media: Media[];
+}
+
+export type Media = {
+    fileName: string;
 }
 
 export type Posts = Array<Post>;
@@ -92,6 +97,10 @@ export type Profile = {
     filePath: string;
     interests: Interest[];
     albums: Album[];
+}
+
+export type ProfileProps = {
+    profile: Profile;
 }
 
 export type Interest = {

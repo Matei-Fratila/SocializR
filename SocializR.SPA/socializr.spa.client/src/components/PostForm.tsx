@@ -1,38 +1,12 @@
-import { Button, Card, CardBody, CardFooter, Col, Container, Row } from "react-bootstrap";
+import { Button, Card, CardFooter, Col, Container, Row } from "react-bootstrap";
 import { Camera, ChevronBarRight, Pencil } from "react-bootstrap-icons";
 import postService from "../services/posts.service";
 import { NewPost, Post, PostFormProps } from "../types/types";
 import React from "react";
-import { useFilePicker } from "use-file-picker";
-import { FileAmountLimitValidator, FileSizeValidator, FileTypeValidator, ImageDimensionsValidator } from "use-file-picker/validators";
 
 const PostForm = ({ onSubmit }: PostFormProps) => {
     const [post, setPost] = React.useState<NewPost>({ title: "", body: "" });
-
-    const { openFilePicker, filesContent, loading, errors } = useFilePicker({
-        readAs: 'DataURL',
-        accept: 'image/*',
-        multiple: true,
-        validators: [
-            new FileAmountLimitValidator({ max: 1 }),
-            new FileTypeValidator(['jpg', 'png', 'jpeg']),
-            //new FileSizeValidator({ maxFileSize: 50 * 1024 * 1024 /* 50 MB */ }),
-            new ImageDimensionsValidator({
-                maxHeight: 900, // in pixels
-                maxWidth: 1600,
-                minHeight: 600,
-                minWidth: 768,
-            }),
-        ],
-    });
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (errors.length) {
-        return <div>Error...</div>;
-    }
+    const [selectedImages, setSelectedImages] = React.useState([]);
 
     function setTitle(title: string) {
         setPost({ ...post, title: title });
@@ -66,25 +40,15 @@ const PostForm = ({ onSubmit }: PostFormProps) => {
                     <form method="post" onSubmit={handleSubmit}>
                         <h5><Pencil /> Write a post</h5>
                         <Card className="shadow">
-                            <input type="text" name="title" placeholder="Title" value={post.title} onChange={e => setTitle(e.target.value)}></input>
-                            <textarea name="body" placeholder="Share your thoughts..." value={post.body} onChange={e => setBody(e.target.value)}></textarea>
-                            <div className="images">
-                            </div>
-                            <CardBody>
-                                {filesContent.map((file, index) => (
-                                    <div key={index}>
-                                        <h2>{file.name}</h2>
-                                        <img alt={file.name} src={file.content}></img>
-                                        <br />
-                                    </div>
-                                ))}
-                            </CardBody>
+                            <input className="card-header" type="text" name="title" placeholder="Title" value={post.title} onChange={e => setTitle(e.target.value)}></input>
+                            <textarea className="card-body" name="body" placeholder="Share your thoughts..." value={post.body} onChange={e => setBody(e.target.value)}></textarea>
+                            {selectedImages.length > 0 && Array.from(selectedImages).map((file) => (
+                                <img alt="not found" className="card-img-bottom" src={URL.createObjectURL(file)} />
+                            ))}
+                                                            <input className="form-control" type="file" accept="image/*, video/*" multiple name="media" onChange={(e) => setSelectedImages(e.target.files)} />
                             <CardFooter className="text-muted">
                                 <Button type="submit" variant="primary" disabled={!post.body}>
                                     Share <ChevronBarRight />
-                                </Button>
-                                <Button className="float-end" onClick={() => openFilePicker()}>
-                                    Select files <Camera />
                                 </Button>
                             </CardFooter>
                         </Card>

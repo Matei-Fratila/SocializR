@@ -109,7 +109,8 @@ const Feed = () => {
             dataLength={posts.data.length}
             next={handleFetchPosts}
             hasMore={hasMore}
-            loader={<p>Loading...</p>}>
+            loader={<p>Loading...</p>}
+            className="w-50">
 
             <PostForm onSubmit={handleNewPost}></PostForm>
             {posts.data.map(post => 

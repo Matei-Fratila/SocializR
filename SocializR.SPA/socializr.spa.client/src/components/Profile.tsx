@@ -11,6 +11,8 @@ import Select from 'react-select';
 import Album from "./Album";
 
 const Profile = () => {
+    const { id } = useParams();
+
     const [profile, setProfile] = React.useState({
         id: "",
         userPhoto: "",
@@ -29,8 +31,7 @@ const Profile = () => {
         mutualFriends: 0,
         interests: [] as Interest[],
         albums: [] as AlbumModel[]
-    })
-    const { id } = useParams();
+    });
 
     const handleFetchProfile = React.useCallback(async () => {
         try {
@@ -41,7 +42,11 @@ const Profile = () => {
         }
         catch {
         }
-    }, []);
+    }, [id]);
+
+    React.useEffect(() => {
+        handleFetchProfile();
+    }, [id]);
 
     function renderButton(relation: RelationType) {
         switch (relation) {
@@ -59,10 +64,6 @@ const Profile = () => {
                 return "";
         }
     }
-
-    React.useEffect(() => {
-        handleFetchProfile();
-    }, []);
 
     return (
         <Row>
@@ -83,7 +84,7 @@ const Profile = () => {
                 <Row><span>{profile.description}God loves you but not enough to save you, so good luck taking care of yourself.</span></Row>
                 <div className="mt-4">
                     {(id === authService.getCurrentUserId())
-                        ? <Link to={``}>
+                        ? <Link to={`/profile/edit/${id}`}>
                             <Pencil /> Edit profile
                         </Link> : renderButton(profile.relationToCurrentUser)}
                 </div>

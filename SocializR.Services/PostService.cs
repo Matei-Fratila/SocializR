@@ -98,15 +98,16 @@ public class PostService(CurrentUser _currentUser,
 
         if (model.Media != null)
         {
+            var album = await _albumService.GetAsync(albumName ?? _postsAlbumName, _currentUser.Id);
+
+            if (album == null)
+            {
+                album = new Album { Name = albumName ?? _postsAlbumName, UserId = _currentUser.Id };
+                _albumService.Add(album);
+            }
+
             foreach (var file in model.Media)
             {
-                var album = await _albumService.GetAsync(albumName ?? _postsAlbumName, _currentUser.Id);
-
-                if (album == null)
-                {
-                    _albumService.Add(new Album { Name = albumName, UserId = _currentUser.Id });
-                }
-
                 if (file.Length > 0)
                 {
                     var type = file.ContentType.ToString().Split('/');

@@ -36,9 +36,15 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
     {
         var post = await _postService.CreateAsync(model);
 
-        if (!await _applicationUnitOfWork.SaveChangesAsync())
+        try
         {
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            if (!await _applicationUnitOfWork.SaveChangesAsync())
+            {
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        } catch (Exception e)
+        {
+
         }
 
         var result = new PostViewModel();
