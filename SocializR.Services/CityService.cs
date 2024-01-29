@@ -1,4 +1,6 @@
-﻿namespace SocializR.Services;
+﻿using SocializR.Models.ViewModels;
+
+namespace SocializR.Services;
 
 public class CityService(ApplicationUnitOfWork unitOfWork, IMapper _mapper) 
     : BaseService<City, CityService>(unitOfWork), ICityService
@@ -14,6 +16,13 @@ public class CityService(ApplicationUnitOfWork unitOfWork, IMapper _mapper)
             .Where(u => u.CountyId == countyId)
             .OrderBy(u => u.Name)
             .ProjectTo<CityViewModel>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+
+    public async Task<List<SelectItem>> GetSelectItemsByCountyAsync(Guid countyId)
+        => await UnitOfWork.Cities.Query
+            .Where(c => c.CountyId == countyId)
+            .OrderBy(u => u.Name)
+            .ProjectTo<SelectItem>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
     public async Task<List<SelectListItem>> GetSelectListByCountyAsync(Guid countyId)

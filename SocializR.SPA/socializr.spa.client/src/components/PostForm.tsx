@@ -45,7 +45,7 @@ const PostForm = ({ onSubmit }: PostFormProps) => {
                             {selectedImages.length > 0 && Array.from(selectedImages).map((file) => (
                                 <img alt="not found" className="card-img-bottom" src={URL.createObjectURL(file)} />
                             ))}
-                                                            <input className="form-control" type="file" accept="image/*, video/*" multiple name="media" onChange={(e) => setSelectedImages(e.target.files)} />
+                            <input className="form-control" type="file" accept="image/*, video/*" multiple name="media" onChange={(e) => setSelectedImages(e.target.files)} />
                             <CardFooter className="text-muted">
                                 <Button type="submit" variant="primary" disabled={!post.body}>
                                     Share <ChevronBarRight />

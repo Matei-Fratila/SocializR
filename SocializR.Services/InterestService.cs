@@ -1,4 +1,6 @@
-﻿namespace SocializR.Services;
+﻿using SocializR.Models.ViewModels;
+
+namespace SocializR.Services;
 
 public class InterestService(ApplicationUnitOfWork unitOfWork, 
     IMapper _mapper) 
@@ -106,4 +108,10 @@ public class InterestService(ApplicationUnitOfWork unitOfWork,
 
         Remove(interest);
     }
+
+    public async Task<List<SelectItem>> GetSelectItemsAsync()
+        => await UnitOfWork.Interests.Query
+            .OrderBy(i => i.Name)
+            .ProjectTo<SelectItem>(_mapper.ConfigurationProvider)
+            .ToListAsync();
 }

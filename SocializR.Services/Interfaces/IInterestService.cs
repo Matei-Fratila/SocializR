@@ -1,7 +1,10 @@
-﻿namespace SocializR.Services.Interfaces;
+﻿using SocializR.Models.ViewModels;
+
+namespace SocializR.Services.Interfaces;
 public interface IInterestService : IBaseService<Interest>
 {
     Task<List<InterestViewModel>> GetAllAsync();
+    Task<List<SelectItem>> GetSelectItemsAsync();
     Task<List<SelectListItem>> GetSelectListAsync();
     Task<List<SelectListItem>> GetSelectedSelectListAsync(List<InterestViewModel> userInterests);
     Task<EditInterestViewModel> GetViewModelAsync(Guid id);

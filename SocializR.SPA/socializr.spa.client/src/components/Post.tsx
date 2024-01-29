@@ -69,6 +69,7 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
     }
 
     return (
+        <Container className="mt-5">
             <Row>
                 <Col sm={2}>
                     <Link to={`/profile/${item.userId}`}>
@@ -95,7 +96,6 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
                             {
                                 item.media.map((file) => (<img alt="not found" className="card-img-bottom" src={`/api/${file.fileName}`} />))
                             }
-                            
                         </CardBody>
                         <div className="images">
                         </div>
@@ -131,6 +131,7 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
                     </Card>
                 </Col>
             </Row>
+        </Container>
     );
 }
 

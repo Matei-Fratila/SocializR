@@ -1,4 +1,4 @@
-import { Album as AlbumModel, Interest, RelationType } from "../types/types";
+import { Album as AlbumModel, SelectItem, RelationType } from "../types/types";
 import React from "react";
 import profileService from "../services/profile.service";
 import { Button, Col, Row } from "react-bootstrap";
@@ -20,16 +20,16 @@ const Profile = () => {
         firstName: "",
         lastName: "",
         birthDate: new Date(),
-        city: "",
-        county: "",
-        gender: "",
+        city: { label: "", value: "" },
+        county: { label: "", value: "" },
+        gender: { label: "", value: "" },
         isPrivate: false,
         nrOfFriends: 0,
         nrOfPosts: 0,
         nrOfPhotos: 0,
         description: "",
         mutualFriends: 0,
-        interests: [] as Interest[],
+        interests: [] as SelectItem[],
         albums: [] as AlbumModel[]
     });
 
@@ -114,19 +114,19 @@ const Profile = () => {
                         <dt>County</dt>
                     </Col>
                     <Col sm={8}>
-                        <dd>{profile.county}</dd>
+                        <dd>{profile.county.label}</dd>
                     </Col>
                     <Col sm={4}>
                         <dt>City</dt>
                     </Col>
                     <Col sm={8}>
-                        <dd>{profile.city}</dd>
+                        <dd>{profile.city.label}</dd>
                     </Col>
                     <Col sm={4}>
                         <dt>Gender</dt>
                     </Col>
                     <Col sm={8}>
-                        <dd>{profile.gender}</dd>
+                        <dd>{profile.gender.label}</dd>
                     </Col>
 
                     <Row>
@@ -151,7 +151,7 @@ const Profile = () => {
                 </Row>
             </Col>
             <Col>
-                {id !== undefined && <PostList userId={id}></PostList>}
+                {id !== undefined && <PostList></PostList>}
             </Col>
         </Row>
     );

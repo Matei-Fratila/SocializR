@@ -2,11 +2,7 @@
 
 public class ProfileViewModel
 {
-    public bool IsDataInvalid { get; set; }
-
     public Guid Id { get; set; }
-
-    public string FileName { get; set; }
 
     [Required]
     [MaxLength(100)]
@@ -23,16 +19,16 @@ public class ProfileViewModel
     public DateTime? BirthDate { get; set; }
 
     [Display(Name = "City")]
-    public Guid? CityId { get; set; }
+    public SelectItem City { get; set; }
 
     [Display(Name = "County")]
-    public Guid? CountyId { get; set; }
+    public SelectItem County { get; set; }
 
-    public GenderTypes Gender { get; set; }
+    public SelectItem Gender { get; set; }
 
     public bool IsPrivate { get; set; }
 
-    public List<Guid> Interests { get; set; }
+    public List<SelectItem> Interests { get; set; }
 
-    public IFormFile ProfilePhoto { get; set; }
+    public IFormFile File { get; set; }
 }

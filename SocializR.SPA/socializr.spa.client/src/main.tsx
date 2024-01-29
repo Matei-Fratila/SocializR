@@ -8,6 +8,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Feed from './components/Feed.tsx';
 import Profile from './components/Profile.tsx';
 import EditProfile from './components/EditProfile.tsx';
+import axios from 'axios';
 
 const router = createBrowserRouter([
   {

@@ -85,8 +85,8 @@ export type Profile = {
     firstName: string;
     lastName: string;
     birthDate: Date;
-    city: string;
-    county: string;
+    city: SelectItem;
+    county: SelectItem;
     gender: string;
     isPrivate: boolean;
     nrOfFriends: number;
@@ -95,7 +95,7 @@ export type Profile = {
     mutualFriends: number;
     description: string;
     filePath: string;
-    interests: Interest[];
+    interests: SelectItem[];
     albums: Album[];
 }
 
@@ -103,7 +103,7 @@ export type ProfileProps = {
     profile: Profile;
 }
 
-export type Interest = {
+export type SelectItem = {
     label: string;
     value: string;
 }
@@ -176,12 +176,17 @@ interface IncreasePageNumberAction {
     type: 'INCREASE_PAGE_NUMBER';
 }
 
+interface ResetStateAction {
+    type: 'RESET_STATE';
+}
+
 export type PostsAction = PostsFetchAction
     | PostsFetchSuccessAction
     | PostsFetchFailureAction
     | NewPostAction
     | DeletePostAction
-    | IncreasePageNumberAction;
+    | IncreasePageNumberAction
+    | ResetStateAction;
 
 export enum RelationType {
     Unknown,

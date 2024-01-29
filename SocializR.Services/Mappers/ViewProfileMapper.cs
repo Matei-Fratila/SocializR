@@ -1,4 +1,6 @@
-﻿namespace SocializR.Services.Mappers;
+﻿using SocializR.Models.ViewModels;
+
+namespace SocializR.Services.Mappers;
 
 public class ViewProfileMapper : Profile
 {
@@ -8,19 +10,20 @@ public class ViewProfileMapper : Profile
             .ForMember(dest => dest.City, opt =>
             {
                 opt.PreCondition(src => src.City != null);
-                opt.MapFrom(src => src.City.Name);
+                opt.MapFrom(src => new SelectItem { Label = src.City.Name, Value = src.City.Id.ToString() });
             })
             .ForMember(dest => dest.County, opt =>
             {
                 opt.PreCondition(src => src.City.County != null);
-                opt.MapFrom(src => src.City.County.Name);
+                opt.MapFrom(src => new SelectItem { Label = src.City.County.Name, Value = src.City.County.Id.ToString() });
             })
             .ForMember(dest => dest.Interests, opt =>
             {
                 opt.PreCondition(src => src.UserInterests.Any());
-                opt.MapFrom(src => src.UserInterests.Select(u => new InterestViewModel { Value = u.Interest.Id, Label = u.Interest.Name }));
+                opt.MapFrom(src => src.UserInterests.Select(u => new SelectItem { Value = u.Interest.Id.ToString(), Label = u.Interest.Name }));
             })
-            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => ((GenderTypes)src.Gender).ToString()))
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => 
+                new SelectItem { Value = ((int)src.Gender).ToString(), Label = ((GenderTypes)src.Gender).ToString() }))
             .ForMember(dest => dest.UserPhoto, opt =>
             {
                 opt.PreCondition(src => src.ProfilePhoto != null);
