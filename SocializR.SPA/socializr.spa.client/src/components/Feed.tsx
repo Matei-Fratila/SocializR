@@ -5,6 +5,7 @@ import postsService from "../services/posts.service";
 import PostForm from "./PostForm";
 import InfiniteScroll from "react-infinite-scroll-component";
 import authService from "../services/auth.service";
+import { Col, Row } from "react-bootstrap";
 
 const postsReducer = (
     state: PostsState,
@@ -105,22 +106,25 @@ const Feed = () => {
     }
 
     return (
-        <InfiniteScroll
-            dataLength={posts.data.length}
-            next={handleFetchPosts}
-            hasMore={hasMore}
-            loader={<p>Loading...</p>}
-            className="w-50">
+        <Row>
+            <Col sm={6} xs={12}>
+                <InfiniteScroll
+                    dataLength={posts.data.length}
+                    next={handleFetchPosts}
+                    hasMore={hasMore}
+                    loader={<p>Loading...</p>}>
 
-            <PostForm onSubmit={handleNewPost}></PostForm>
-            {posts.data.map(post => 
-                <Post key={post.id}
-                    onRemoveItem={() => handleDeletePost(post.id)}
-                    item={post}
-                />
-            )}
+                    <PostForm onSubmit={handleNewPost}></PostForm>
+                    {posts.data.map(post =>
+                        <Post key={post.id}
+                            onRemoveItem={() => handleDeletePost(post.id)}
+                            item={post}
+                        />
+                    )}
 
-        </InfiniteScroll>
+                </InfiniteScroll>
+            </Col>
+        </Row>
     );
 }
 

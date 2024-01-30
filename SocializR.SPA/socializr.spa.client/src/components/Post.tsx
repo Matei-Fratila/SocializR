@@ -1,5 +1,5 @@
 import { Button, Card, CardBody, CardFooter, CardHeader, CardText, CardTitle, Col, Container, Row } from "react-bootstrap";
-import { PostProps, Comment as Comm, Comments } from "../types/types";
+import { PostProps, Comment as Comm, Comments, MediaType } from "../types/types";
 import { Link } from "react-router-dom";
 import { Heart, Chat, HeartFill, Trash } from "react-bootstrap-icons";
 import Comment from "./Comment";
@@ -69,21 +69,21 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
     }
 
     return (
-        <Container className="mt-5">
+        <Container className="mb-5">
             <Row>
-                <Col sm={2}>
+                <Col sm={2} xs={0}>
                     <Link to={`/profile/${item.userId}`}>
                         <img src={`/api/${item.userPhoto}`} alt="Profile picture" className="rounded-circle shadow img-thumbnail user-photo avatar-float" />
                     </Link>
                 </Col>
-                <Col sm={10}>
+                <Col sm={10} xs={12}>
                     <Card className="shadow">
                         <CardHeader>
                             <Link to={`/profile/${item.userId}`}>{item.firstName} {item.lastName}</Link>
                             {
                                 item.userId === authenticatedUserId
                                 &&
-                                <Button variant="light" className="float-end py-0" title="delete post" data-toggle="tooltip" data-placement="bottom"
+                                <Button variant="link" className="float-end py-0" title="delete post" data-toggle="tooltip" data-placement="bottom"
                                     onClick={() => onRemoveItem(item.id)}>
                                     <Trash />
                                 </Button>
@@ -94,7 +94,11 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
                             <CardTitle>{item.title}</CardTitle>
                             <CardText>{item.body}</CardText>
                             {
-                                item.media.map((file) => (<img alt="not found" className="card-img-bottom" src={`/api/${file.fileName}`} />))
+                                item.media.map((file) => (
+                                <>
+                                    {file.type === MediaType.Image && <img alt="not found" className="card-img-bottom" src={`/api/${file.fileName}`} />}
+                                    {file.type === MediaType.Video && <video controls className="card-img-bottom" src={`/api/${file.fileName}`} />}
+                                </>))
                             }
                         </CardBody>
                         <div className="images">
@@ -105,12 +109,12 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
                                 <HeartFill />
                             </Button>
 
-                            <Button variant="light" className="float-end" title="see comments" data-toggle="tooltip" data-placement="bottom">
-                                <Chat /> <span>{numberOfComments} Comments</span>
+                            <Button variant="light" title="see likes" data-toggle="tooltip" data-placement="bottom">
+                                <Heart /> <span>{numberOfLikes} Likes</span>
                             </Button>
 
-                            <Button variant="light" className="float-end" title="see likes" data-toggle="tooltip" data-placement="bottom">
-                                <Heart /> <span>{numberOfLikes} Likes</span>
+                            <Button variant="light" title="see comments" data-toggle="tooltip" data-placement="bottom">
+                                <Chat /> <span>{numberOfComments} Comments</span>
                             </Button>
 
                             {comments.map(comment => (

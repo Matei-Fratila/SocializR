@@ -74,4 +74,16 @@ public class MediaService(CurrentUser _currentUser,
 
         return media;
     }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        var media = await UnitOfWork.Media.Query.FirstOrDefaultAsync(m => m.Id == id);
+
+        if(media == null) 
+        { 
+            return; 
+        }
+
+        Remove(media);
+    }
 }

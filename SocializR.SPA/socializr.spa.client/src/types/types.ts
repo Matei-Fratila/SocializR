@@ -50,10 +50,6 @@ export type Post = {
     media: Media[];
 }
 
-export type Media = {
-    fileName: string;
-}
-
 export type Posts = Array<Post>;
 
 export type NewPost = {
@@ -117,6 +113,15 @@ export type Album = {
     coverFilePath: string;
     nrOfImages: number;
     createdDate: string;
+    media: Media[];
+}
+
+export type Media = {
+    id: string;
+    type: MediaType;
+    caption: string;
+    createdDate: string;
+    fileName: string;
 }
 
 export type AlbumProps = {
@@ -176,17 +181,12 @@ interface IncreasePageNumberAction {
     type: 'INCREASE_PAGE_NUMBER';
 }
 
-interface ResetStateAction {
-    type: 'RESET_STATE';
-}
-
 export type PostsAction = PostsFetchAction
     | PostsFetchSuccessAction
     | PostsFetchFailureAction
     | NewPostAction
     | DeletePostAction
-    | IncreasePageNumberAction
-    | ResetStateAction;
+    | IncreasePageNumberAction;
 
 export enum RelationType {
     Unknown,
@@ -195,4 +195,10 @@ export enum RelationType {
     RequestedFriendship,
     PendingAccept,
     Blocked
+}
+
+export enum MediaType {
+    Unspecified,
+    Image,
+    Video
 }

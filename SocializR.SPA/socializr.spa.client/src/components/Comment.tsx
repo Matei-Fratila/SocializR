@@ -19,7 +19,7 @@ const Comment = ({ item, onRemoveItem }: CommentProps) => {
                     {
                         item.isCurrentUserComment && authenticatedUserId !== undefined
                         &&
-                        <Button variant="light" className="float-end py-0" title="delete comment" data-toggle="tooltip" data-placement="bottom"
+                        <Button variant="link" className="float-end py-0" title="delete comment" data-toggle="tooltip" data-placement="bottom"
                             onClick={() => onRemoveItem(item.id)}>
                             <Trash />
                         </Button>

@@ -69,10 +69,10 @@ const Profile = () => {
         <Row>
             <Col>
                 <Row>
-                    <Col sm={3}>
+                    <Col sm={3} xs={4}>
                         <img className="rounded-circle profile-user-photo shadow img-thumbnail" alt="Avatar" src={`/api/${profile.userPhoto}`} />
                     </Col>
-                    <Col sm={9}>
+                    <Col sm={9} xs={8}>
                         <h4>{profile.firstName} {profile.lastName}</h4>
                         <Row><span><PeopleFill /> {profile.nrOfFriends} friends</span></Row>
                         {(id !== authService.getCurrentUserId() && profile.mutualFriends !== 0)
@@ -92,50 +92,50 @@ const Profile = () => {
                 <Row className="mt-4">
                     <h5><InfoSquareFill /> Personal information</h5>
                     <hr />
-                    <Col sm={4}>
+                    <Col sm={4} xs={4}>
                         <dt>First Name</dt>
                     </Col>
-                    <Col sm={8}>
+                    <Col sm={8} xs={8}>
                         <dd>{profile.firstName}</dd>
                     </Col>
-                    <Col sm={4}>
+                    <Col sm={4} xs={4}>
                         <dt>Last Name</dt>
                     </Col>
-                    <Col sm={8}>
+                    <Col sm={8} xs={8}>
                         <dd>{profile.lastName}</dd>
                     </Col>
-                    <Col sm={4}>
+                    <Col sm={4} xs={4}>
                         <dt>Birth Date</dt>
                     </Col>
-                    <Col sm={8}>
+                    <Col sm={8} xs={8}>
                         <dd>{new Date(profile.birthDate).toLocaleDateString()}</dd>
                     </Col>
-                    <Col sm={4}>
+                    <Col sm={4} xs={4}>
                         <dt>County</dt>
                     </Col>
-                    <Col sm={8}>
+                    <Col sm={8} xs={8}>
                         <dd>{profile.county.label}</dd>
                     </Col>
-                    <Col sm={4}>
+                    <Col sm={4} xs={4}>
                         <dt>City</dt>
                     </Col>
-                    <Col sm={8}>
+                    <Col sm={8} xs={8}>
                         <dd>{profile.city.label}</dd>
                     </Col>
-                    <Col sm={4}>
+                    <Col sm={4} xs={4}>
                         <dt>Gender</dt>
                     </Col>
-                    <Col sm={8}>
+                    <Col sm={8} xs={8}>
                         <dd>{profile.gender.label}</dd>
                     </Col>
 
                     <Row>
-                        <Col sm={2}>
+                        <Col sm={4} xs={4}>
                             <dt>
                                 Interests
                             </dt>
                         </Col>
-                        <Col sm={10}>
+                        <Col sm={8} xs={4}>
                             <dd>
                                 <Select isMulti={true} value={profile.interests} isDisabled={true} />
                             </dd>
@@ -151,7 +151,9 @@ const Profile = () => {
                 </Row>
             </Col>
             <Col>
-                {id !== undefined && <PostList></PostList>}
+                <h5><PostageFill /> Posts</h5>
+                <hr />
+                {id !== undefined && <PostList key={profile.id}></PostList>}
             </Col>
         </Row>
     );

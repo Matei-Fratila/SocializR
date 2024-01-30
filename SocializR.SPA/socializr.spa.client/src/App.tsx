@@ -28,10 +28,6 @@ const App = () => {
             <main>
                 <Outlet />
             </main>
-
-            <footer className="footer fixed-bottom mt-auto py-1 bg-dark-subtle opacity-50">
-                <span className="text-muted">&copy; {new Date().getFullYear()} - SocializR</span>
-            </footer>
         </>
     );
 }

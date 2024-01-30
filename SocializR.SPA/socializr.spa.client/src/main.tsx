@@ -8,7 +8,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Feed from './components/Feed.tsx';
 import Profile from './components/Profile.tsx';
 import EditProfile from './components/EditProfile.tsx';
-import axios from 'axios';
+import Gallery from './components/Gallery.tsx';
+import EditMedia from './components/EditMedia.tsx';
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,14 @@ const router = createBrowserRouter([
       {
         path: "profile/edit/:id",
         element: <EditProfile />
+      },
+      {
+        path: "album/gallery/:id",
+        element: <Gallery />
+      },
+      {
+        path: "album/gallery/media/:id",
+        element: <EditMedia />
       }
     ],
   },

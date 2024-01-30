@@ -5,26 +5,28 @@ import { Link } from "react-router-dom";
 import { AlbumProps } from "../types/types";
 import React from "react";
 
-const Album = ({item}: AlbumProps) => {
+const Album = ({ item }: AlbumProps) => {
     const authenticatedUserId = authService.getCurrentUserId();
     const [album, setAlbum] = React.useState(item);
 
     return (
-        <Col sm={6}>
+        <Col xs={6} className="mb-5">
             <Card className="shadow">
                 {
                     authenticatedUserId !== undefined &&
                     <CardHeader>
-                        <Link to={``}>
-                            <Pencil/>
-                        </Link>
+                        <Button variant="link">
+                            <Link to={``}>
+                                <Pencil />
+                            </Link>
+                        </Button>
                         <Button variant="link" className="float-end">
-                            <Trash/>
+                            <Trash />
                         </Button>
                     </CardHeader>
                 }
-                <Link to={`Album/Details/${1}`}>
-                    <img src={`/api/${album.coverFilePath}`} className="card-img-bottom"/>
+                <Link to={`/album/gallery/${album.id}`}>
+                    <img src={`/api/${album.coverFilePath}`} className="card-img-bottom" />
                 </Link>
                 <CardBody>
                     <CardTitle>{album.name}</CardTitle>
