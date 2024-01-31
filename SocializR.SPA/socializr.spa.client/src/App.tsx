@@ -1,29 +1,110 @@
-import * as React from 'react';
 import { Outlet } from "react-router-dom";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import authService from "./services/auth.service";
 import './App.css';
+import { BoxArrowRight, HouseFill, PersonFill } from 'react-bootstrap-icons';
+import { Link } from 'react-router-dom';
+import { Button, Form, NavDropdown } from "react-bootstrap";
 
 const App = () => {
-    const [isLoggedIn, setIsLoggedInState] = React.useState(authService.getCurrentUser() !== null);
+    const user = authService.getCurrentUser();
+    const isLoggedIn = user !== null;
 
     return (
         <>
-            <header>
-                <Navbar expand="lg" className="bg-body-tertiary fixed-top">
+            {isLoggedIn && <header>
+                {/* <Navbar expand="lg" className="fixed-top">
                     <Container>
-                        <Navbar.Brand href="#home">SocializR</Navbar.Brand>
+                        <Navbar.Brand>SocializR</Navbar.Brand>
                         <Navbar.Toggle aria-controls="basic-navbar-nav" />
                         <Navbar.Collapse id="basic-navbar-nav">
                             <Nav className="me-auto">
-                                <Nav.Link href="/login" onClick={authService.logout}>Logout</Nav.Link>
+                                <Nav.Item>
+                                    <Nav.Link as={Link} to={`/profile/${user?.id}`}>
+                                        {user?.firstName} {user?.lastName}
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link as={Link} to={`/profile/${user?.id}`}>
+                                        <img src={`/api/${user?.profilePhoto}`} alt="Profile picture"
+                                            className="rounded-circle shadow user-photo-extra-small avatar-float" />
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link as={Link} to={`/profile/${user?.id}`}>
+                                        Profile <PersonFill />
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link as={Link} to={`/feed`}>
+                                        Feed <HouseFill />
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link as={Link} to={`/login`} onClick={authService.logout}>
+                                        Logout <BoxArrowRight />
+                                    </Nav.Link>
+                                </Nav.Item>
                             </Nav>
+                            <Form className="d-flex">
+                                <Form.Control
+                                    type="search"
+                                    placeholder="Search"
+                                    className="me-2"
+                                    aria-label="Search"
+                                />
+                                <Button variant="outline-success">Search</Button>
+                            </Form> 
+                        </Navbar.Collapse>
+                    </Container>
+                </Navbar> */}
+                <Navbar expand="lg" className="bg-body-tertiary">
+                    <Container fluid>
+                        <Navbar.Brand href="#">SocializR</Navbar.Brand>
+                        <Navbar.Toggle aria-controls="navbarScroll" />
+                        <Navbar.Collapse id="navbarScroll">
+                            <Nav
+                                className="me-auto my-2 my-lg-0"
+                                style={{ maxHeight: '100px' }}
+                                navbarScroll
+                            >
+                                <NavDropdown title="Admin" id="navbarScrollingDropdown">
+                                    <NavDropdown.Item href="#action3">
+                                        Action
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item href="#action4">
+                                        Another action
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Divider />
+                                    <NavDropdown.Item href="#action5">
+                                        Something else here
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                                <Nav.Link as={Link} to={`/profile/${user?.id}`}>
+                                    <PersonFill /> Profile
+                                </Nav.Link>
+                                <Nav.Link as={Link} to={`/feed`}>
+                                    <HouseFill /> Feed
+                                </Nav.Link>
+                                <Nav.Link as={Link} to={`/login`} onClick={authService.logout}>
+                                    <BoxArrowRight /> Logout
+                                </Nav.Link>
+                            </Nav>
+                            <Form className="d-flex">
+                                <Form.Control
+                                    type="search"
+                                    placeholder="Search"
+                                    className="me-2"
+                                    aria-label="Search"
+                                />
+                                <Button variant="outline-success">Search</Button>
+                            </Form>
                         </Navbar.Collapse>
                     </Container>
                 </Navbar>
-            </header>
+            </header>}
 
             <main>
                 <Outlet />

@@ -18,6 +18,12 @@ class AlbumService {
         const media: Media = axiosResponse.data;
         return media;
     }
+
+    async updateMedia(data: FormData): Promise<Media> {
+        const axiosResponse: AxiosResponse = await axios.put(`/api/Albums/Media`, data, { headers: authHeader() });
+        const media: Media = axiosResponse.data;
+        return media;
+    }
 }
 
 export default new AlbumService();

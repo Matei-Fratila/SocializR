@@ -25,3 +25,8 @@ main {
     margin-top: 2rem;
 }
 
+.user-photo-extra-small {
+    width: 20px;
+    height: 20px;
+}
+

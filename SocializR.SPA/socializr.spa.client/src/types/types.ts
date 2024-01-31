@@ -118,6 +118,7 @@ export type Album = {
 
 export type Media = {
     id: string;
+    albumId: string;
     type: MediaType;
     caption: string;
     createdDate: string;

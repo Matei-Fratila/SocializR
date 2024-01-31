@@ -1,15 +1,15 @@
-import { Button, Card, CardBody, CardFooter, CardGroup, CardHeader, CardText, CardTitle, Col } from "react-bootstrap";
-import authService from "../services/auth.service";
-import { Link, useParams } from "react-router-dom";
+import { Button, Card, CardFooter, CardGroup } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
 import albumService from "../services/album.service";
 import { Media, MediaType } from "../types/types";
 
 const EditMedia = () => {
+    const navigate = useNavigate();
     const { id } = useParams();
-    const [media, setMedia] = React.useState({ id : "", caption : "", type : MediaType.Unspecified, createdDate : "", fileName : ""});
+    const [media, setMedia] = React.useState({ id: "", albumId: "", caption: "", type: MediaType.Unspecified, createdDate: "", fileName: "" });
 
-    const handleFetchGallery = React.useCallback(async () => {
+    const handleFetchMedia = React.useCallback(async () => {
         try {
             if (id !== undefined) {
                 const mediaResponse = await albumService.getMedia(id);
@@ -21,23 +21,40 @@ const EditMedia = () => {
     }, [id]);
 
     React.useEffect(() => {
-        handleFetchGallery();
+        handleFetchMedia();
     }, [id]);
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        const form = event.currentTarget;
+        const formData = new FormData(form);
+        try {
+            var mediaResponse: Media = albumService.updateMedia(formData);
+        } catch (e) {
+
+        }
+        navigate(`/album/gallery/${media.albumId}`);
+        location.reload();
+    }
+
     return (
-        <CardGroup>
+        <form onSubmit={handleSubmit}>
+            <CardGroup>
                 <Card>
                     {media.type === MediaType.Image && <img src={`/api/${media.fileName}`} className="card-img-top" alt="..."></img>}
                     {media.type === MediaType.Video && <video controls src={`/api/${media.fileName}`} className="card-img-top"></video>}
-                    <CardBody>
-                        <CardText>{media.caption}</CardText>
-                        <CardText><small className="text-muted">{media.createdDate}</small></CardText>
-                    </CardBody>
+                    <input name="id" hidden value={media.id}></input>
+                    <input name="albumId" hidden value={media.albumId}></input>
+                    <textarea className="card-body" name="caption" placeholder="Caption..." value={media.caption} 
+                        onChange={e => setMedia({...media, caption: e.target.value})}/>
                     <CardFooter>
-                        <Button>Save changes</Button>
+                        <Button type="submit" value="Submit">Save changes</Button>
+                        <small className="text-muted float-end">{media.createdDate}</small>
                     </CardFooter>
                 </Card>
-        </CardGroup>
+            </CardGroup>
+        </form>
     );
 };
 

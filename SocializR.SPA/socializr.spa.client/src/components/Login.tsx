@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/esm/Row';
 import Button from 'react-bootstrap/esm/Button';
+import { Col } from 'react-bootstrap';
 
 const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -28,44 +29,52 @@ const Login = () => {
         }}>
         {(props) => (
             <Container>
-                <h2> Login or <Link to={`/register`}>Register</Link> if you don't have an account</h2>
-                <hr></hr>
+                <h5> Login or <Link to={`/register`}>Register</Link> if you don't have an account</h5>
+                <hr/>
                 <Form>
-                    <Row className='mb-3'>
-                        <label htmlFor="email" className='col-sm-3 col-form-label'>Email</label>
-                        <Field
-                            type="email"
-                            name="email"
-                            placeholder="Enter email"
-                            autoComplete="off"
-                            className={`col-sm-7 ${props.touched.email && props.errors.email
-                                ? "is-invalid"
-                                : ""
-                                }`}
-                        />
-                        <ErrorMessage
-                            component="div"
-                            name="email"
-                            className="invalid-feedback"
-                        />
+                    <Row className='mb-3 form-group'>
+                        <Col xs={3} sm={2} className='col-form-label'>
+                            <label htmlFor="email">Email</label>
+                        </Col>
+                        <Col xs={9}>
+                            <Field
+                                type="email"
+                                name="email"
+                                placeholder="Enter email"
+                                autoComplete="off"
+                                className={`form-control ${props.touched.email && props.errors.email
+                                    ? "is-invalid"
+                                    : ""
+                                    }`}
+                            />
+                            <ErrorMessage
+                                component="div"
+                                name="email"
+                                className="invalid-feedback"
+                            />
+                        </Col>
                     </Row>
 
-                    <Row>
-                        <label htmlFor="password" className="col-sm-3 col-form-label">Password</label>
-                        <Field
-                            type="password"
-                            name="password"
-                            placeholder="Enter password"
-                            className={`col-sm-7 ${props.touched.password && props.errors.password
-                                ? "is-invalid"
-                                : ""
-                                }`}
-                        />
-                        <ErrorMessage
-                            component="div"
-                            name="password"
-                            className="invalid-feedback"
-                        />
+                    <Row className="form-group">
+                        <Col xs={3} sm={2} className='col-form-label'>
+                            <label htmlFor="password">Password</label>
+                        </Col>
+                        <Col xs={9}>
+                            <Field
+                                type="password"
+                                name="password"
+                                placeholder="Enter password"
+                                className={`form-control ${props.touched.password && props.errors.password
+                                    ? "is-invalid"
+                                    : ""
+                                    }`}
+                            />
+                            <ErrorMessage
+                                component="div"
+                                name="password"
+                                className="invalid-feedback"
+                            />
+                        </Col>
                     </Row>
 
                     <Button

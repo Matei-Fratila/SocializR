@@ -51,6 +51,22 @@ public class AlbumsController(ApplicationUnitOfWork _applicationUnitOfWork,
         return Ok();
     }
 
+    [HttpPut("media")]
+    public async Task<IActionResult> DeleteMediaAsync([FromForm]Media model)
+    {
+        var media = await _mediaService.GetAsync(model.Id);
+
+        media.Caption = model.Caption;
+        _mediaService.Update(media);
+
+        if (_applicationUnitOfWork.SaveChanges() == 0)
+        {
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+
+        return Ok();
+    }
+
     //[HttpPost]
     //public async Task<ActionResult<PostViewModel>> CreateAsync([FromForm]AddPostViewModel model)
     //{

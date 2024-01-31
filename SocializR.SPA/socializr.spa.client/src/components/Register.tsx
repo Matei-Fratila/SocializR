@@ -7,6 +7,7 @@ import Row from "react-bootstrap/esm/Row";
 import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/esm/Button";
 import { RegisterRequest } from "../types/types";
+import { Col } from "react-bootstrap";
 
 const LoginSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -36,101 +37,121 @@ const Register = () => {
         }}>
         {(props) => (
             <Container>
-                <h2> Sign up or <Link to={`/login`}>Login</Link> if you already have an account</h2>
+                <h5> Sign up or <Link to={`/login`}>Login</Link> if you already have an account</h5>
                 <hr></hr>
                 <Form>
                     <Row className="mb-3">
-                        <label htmlFor="firstName" className='col-sm-3 col-form-label'>First name</label>
-                        <Field
-                            type="text"
-                            name="firstName"
-                            placeholder="Enter your first name"
-                            autoComplete="off"
-                            className={`col-sm-7 ${props.touched.firstName && props.errors.firstName
-                                ? "is-invalid"
-                                : ""
-                                }`}
-                        />
-                        <ErrorMessage
-                            component="div"
-                            name="firstName"
-                            className="invalid-feedback"
-                        />
+                        <Col xs={3} sm={2} className='col-form-label'>
+                            <label htmlFor="firstName">First name</label>
+                        </Col>
+                        <Col xs={9}>
+                            <Field
+                                type="text"
+                                name="firstName"
+                                placeholder="Enter your first name"
+                                autoComplete="off"
+                                className={`form-control ${props.touched.firstName && props.errors.firstName
+                                    ? "is-invalid"
+                                    : ""
+                                    }`}
+                            />
+                            <ErrorMessage
+                                component="div"
+                                name="firstName"
+                                className="invalid-feedback"
+                            />
+                        </Col>
                     </Row>
 
                     <Row className="mb-3">
-                        <label htmlFor="lastName" className='col-sm-3 col-form-label'>Last name</label>
-                        <Field
-                            type="text"
-                            name="lastName"
-                            placeholder="Enter your last name"
-                            autoComplete="off"
-                            className={`col-sm-7 ${props.touched.lastName && props.errors.lastName
-                                ? "is-invalid"
-                                : ""
-                                }`}
-                        />
-                        <ErrorMessage
-                            component="div"
-                            name="lastName"
-                            className="invalid-feedback"
-                        />
+                        <Col xs={3} sm={2} className='col-form-label'>
+                            <label htmlFor="lastName">Last name</label>
+                        </Col>
+                        <Col xs={9}>
+                            <Field
+                                type="text"
+                                name="lastName"
+                                placeholder="Enter your last name"
+                                autoComplete="off"
+                                className={`form-control ${props.touched.lastName && props.errors.lastName
+                                    ? "is-invalid"
+                                    : ""
+                                    }`}
+                            />
+                            <ErrorMessage
+                                component="div"
+                                name="lastName"
+                                className="invalid-feedback"
+                            />
+                        </Col>
                     </Row>
 
                     <Row className="mb-3">
-                        <label htmlFor="birthDate" className='col-sm-3 col-form-label'>Date of birth</label>
-                        <Field
-                            type="date"
-                            name="birthDate"
-                            placeholder="Enter your date of birth"
-                            autoComplete="off"
-                            className={`col-sm-7 ${props.touched.birthDate && props.errors.birthDate
-                                ? "is-invalid"
-                                : ""
-                                }`}
-                        />
-                        <ErrorMessage
-                            component="div"
-                            name="birthDate"
-                            className="invalid-feedback"
-                        />
+                        <Col xs={3} sm={2} className='col-form-label'>
+                            <label htmlFor="birthDate">Date of birth</label>
+                        </Col>
+                        <Col xs={9}>
+                            <Field
+                                type="date"
+                                name="birthDate"
+                                placeholder="Enter your date of birth"
+                                autoComplete="off"
+                                className={`form-control ${props.touched.birthDate && props.errors.birthDate
+                                    ? "is-invalid"
+                                    : ""
+                                    }`}
+                            />
+                            <ErrorMessage
+                                component="div"
+                                name="birthDate"
+                                className="invalid-feedback"
+                            />
+                        </Col>
                     </Row>
 
                     <Row className="mb-3">
-                        <label htmlFor="email" className='col-sm-3 col-form-label'>Email</label>
-                        <Field
-                            type="email"
-                            name="email"
-                            placeholder="Enter your email"
-                            autoComplete="off"
-                            className={`col-sm-7 ${props.touched.email && props.errors.email
-                                ? "is-invalid"
-                                : ""
-                                }`}
-                        />
-                        <ErrorMessage
-                            component="div"
-                            name="email"
-                            className="invalid-feedback"
-                        />
+                        <Col xs={3} sm={2} className='col-form-label'>
+                            <label htmlFor="email">Email</label>
+                        </Col>
+                        <Col xs={9}>
+                            <Field
+                                type="email"
+                                name="email"
+                                placeholder="Enter your email"
+                                autoComplete="off"
+                                className={`form-control ${props.touched.email && props.errors.email
+                                    ? "is-invalid"
+                                    : ""
+                                    }`}
+                            />
+                            <ErrorMessage
+                                component="div"
+                                name="email"
+                                className="invalid-feedback"
+                            />
+                        </Col>
                     </Row>
 
                     <Row className="form-group">
-                        <label htmlFor="password" className="col-sm-3 col-form-label">Password</label>
-                        <Field
-                            type="password"
-                            name="password"
-                            placeholder="Enter your password"
-                            className={`col-sm-7 ${props.touched.password && props.errors.password
-                                ? "is-invalid"
-                                : ""
-                                }`}
-                        />
-                        <ErrorMessage
-                            component="div"
-                            name="password"
-                            className="invalid-feedback"
-                        />
+                        <Col xs={3} sm={2} className='col-form-label'>
+                            <label htmlFor="password">Password</label>
+                        </Col>
+                        <Col xs={9}>
+                            <Field
+                                type="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                className={`form-control ${props.touched.password && props.errors.password
+                                    ? "is-invalid"
+                                    : ""
+                                    }`}
+                            />
+                            <ErrorMessage
+                                component="div"
+                                name="password"
+                                className="invalid-feedback"
+                            />
+                        </Col>
                     </Row>
 
                     <Button
