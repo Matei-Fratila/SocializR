@@ -12,7 +12,7 @@ public class CommentsController(ApplicationUnitOfWork _applicationUnitOfWork,
     UserManager<User> _userManager,
     ICommentService _commentService) : ControllerBase
 {
-    [HttpDelete("delete/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     {
         _commentService.Remove(id);

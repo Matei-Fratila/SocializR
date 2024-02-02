@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Common.Interfaces;
+using Microsoft.Extensions.Hosting;
+using SocializR.Models.Entities;
 using SocializR.Models.ViewModels.Feed;
 using System.Net;
 
@@ -8,6 +11,7 @@ namespace SocializR.SPA.Server.Controllers;
 [Authorize]
 [Route("[controller]")]
 public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
+    IImageStorage _imageStorage,
     IPostService _postService,
     IMapper _mapper,
     ILikeService _likeService) : ControllerBase
@@ -50,10 +54,15 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
         var result = new PostViewModel();
         _mapper.Map(post, result);
 
+        foreach (var media in result.Media)
+        {
+            media.FileName = _imageStorage.UriFor(media.FileName);
+        }
+
         return result;
     }
 
-    [HttpDelete("delete/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     {
         await _postService.DeleteAsync(id);
@@ -81,7 +90,7 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
         return Ok();
     }
 
-    [HttpDelete("like/delete/{id}")]
+    [HttpDelete("like/{id}")]
     public async Task<IActionResult> DeleteLikeAsync([FromRoute]Guid id)
     {
         string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

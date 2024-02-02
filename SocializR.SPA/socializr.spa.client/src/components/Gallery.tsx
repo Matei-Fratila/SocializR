@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, CardGroup, CardHeader, CardText, CardTitle, Col } from "react-bootstrap";
+import { Button, Card, CardBody, CardFooter, CardGroup, CardHeader, CardText, CardTitle, Col, Row } from "react-bootstrap";
 import authService from "../services/auth.service";
 import { Pencil, Trash } from "react-bootstrap-icons";
 import { Link, useParams } from "react-router-dom";
@@ -46,26 +46,30 @@ const Gallery = () => {
 
     return (
         <CardGroup>
-            {album.media.map((media: Media) => (
-                <Card>
-                    {media.type === MediaType.Image && <img src={`/api/${media.fileName}`} className="card-img-top" alt="..."></img>}
-                    {media.type === MediaType.Video && <video controls src={`/api/${media.fileName}`} className="card-img-top"></video>}
-                    <CardBody>
-                        <CardText>{media.caption}</CardText>
-                        <CardText><small className="text-muted">{media.createdDate}</small></CardText>
-                    </CardBody>
-                    <CardFooter>
-                        <Button variant="link">
-                            <Link to={`/album/gallery/media/${media.id}`}>
-                                <Pencil />
-                            </Link>
-                        </Button>
-                        <Button variant="link" className="float-end" onClick={() => handleDelete(media.id)}>
-                            <Trash />
-                        </Button>
-                    </CardFooter>
-                </Card>
-            ))}
+            <Row>
+                {album.media.map((media: Media) => (
+                    <Col sm={6} lg={4} className="mb-3" key={media.id}>
+                        <Card>
+                            {media.type === MediaType.Image && <img src={`/api/${media.fileName}`} className="card-img-top" alt="..."></img>}
+                            {media.type === MediaType.Video && <video controls src={`/api/${media.fileName}`} className="card-img-top"></video>}
+                            <CardBody>
+                                <CardText>{media.caption}</CardText>
+                                <CardText><small className="text-muted">{media.createdDate}</small></CardText>
+                            </CardBody>
+                            <CardFooter>
+                                <Button variant="link">
+                                    <Link to={`/album/gallery/media/${media.id}`} state={{isCoverPhoto: media.id === album.coverId}}>
+                                        <Pencil />
+                                    </Link>
+                                </Button>
+                                <Button variant="link" className="float-end" onClick={() => handleDelete(media.id)}>
+                                    <Trash />
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                    </Col>
+                ))}
+            </Row>
         </CardGroup>
     );
 };

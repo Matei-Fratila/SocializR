@@ -9,7 +9,7 @@ public class SelectItemsController(ICityService _cityService,
     ICountyService _countyService,
     IInterestService _interestService) : ControllerBase
 {
-    [HttpGet("/counties")]
+    [HttpGet("/Counties")]
     public async Task<List<SelectItem>> GetCounties()
     {
         var counties = await _countyService.GetSelectItemsAsync();
@@ -17,7 +17,7 @@ public class SelectItemsController(ICityService _cityService,
         return counties;
     }
 
-    [HttpGet("/cities")]
+    [HttpGet("/Cities")]
     public async Task<List<SelectItem>> GetCities(Guid id)
     {
         var cities = await _cityService.GetSelectItemsByCountyAsync(id);
@@ -25,7 +25,7 @@ public class SelectItemsController(ICityService _cityService,
         return cities;
     }
 
-    [HttpGet("/interests")]
+    [HttpGet("/Interests")]
     public async Task<List<SelectItem>> GetInterests()
     {
         var interests = await _interestService.GetSelectItemsAsync();
@@ -33,7 +33,7 @@ public class SelectItemsController(ICityService _cityService,
         return interests;
     }
 
-    [HttpGet("/genders")]
+    [HttpGet("/Genders")]
     public async Task<List<SelectItem>> GetGenders()
     {
         return Enum.GetValues(typeof(GenderTypes))

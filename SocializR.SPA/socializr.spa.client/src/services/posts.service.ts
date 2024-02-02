@@ -13,7 +13,7 @@ class PostsService {
     }
 
     async dislikePost(id: string) {
-        return await axios.delete(`/api/Posts/like/delete/${id}`, { headers: authHeader() });
+        return await axios.delete(`/api/Posts/like/${id}`, { headers: authHeader() });
     }
 
     async createPost(data: FormData): Promise<Post> {
@@ -24,7 +24,7 @@ class PostsService {
     }
 
     async deletePost(id: string) {
-        return await axios.delete(`/api/Posts/delete/${id}`, { headers: authHeader() });
+        return await axios.delete(`/api/Posts/${id}`, { headers: authHeader() });
     }
 }
 

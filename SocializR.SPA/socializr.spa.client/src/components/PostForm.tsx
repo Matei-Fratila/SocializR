@@ -23,8 +23,8 @@ const PostForm = ({ onSubmit }: PostFormProps) => {
 
         try {
             const post: Post = await postService.createPost(formData);
-            setBody("");
-            setTitle("");
+            setPost({ title: "", body: "" });
+            setSelectedImages([]);
             onSubmit(post);
         } catch (e) {
             console.error(e);

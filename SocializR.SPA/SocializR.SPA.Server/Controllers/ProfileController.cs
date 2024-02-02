@@ -48,10 +48,6 @@ public class ProfileController(CurrentUser _currentUser,
             album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath ?? _defaultAlbumCover);
         }
 
-        foreach (var media in model.Posts.SelectMany(p => p.Media))
-        {
-            media.FileName = _imageStorage.UriFor(media.FileName);
-        }
         if (model == null)
         {
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);

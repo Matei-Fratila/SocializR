@@ -93,16 +93,15 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
                         <CardBody>
                             <CardTitle>{item.title}</CardTitle>
                             <CardText>{item.body}</CardText>
-                            {
-                                item.media.map((file) => (
+                        </CardBody>
+                        {
+                            item.media.map((file) => (
                                 <>
                                     {file.type === MediaType.Image && <img alt="not found" className="card-img-bottom" src={`/api/${file.fileName}`} />}
                                     {file.type === MediaType.Video && <video controls className="card-img-bottom" src={`/api/${file.fileName}`} />}
                                 </>))
-                            }
-                        </CardBody>
-                        <div className="images">
-                        </div>
+                        }
+
                         <CardFooter className="text-muted">
                             <Button variant="light" className={isLiked ? 'liked' : 'like'} onClick={handleLike} disabled={authenticatedUserId === undefined}
                                 title={isLiked ? "click to unlike" : "click to like"} data-toggle="tooltip" data-placement="bottom">

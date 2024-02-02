@@ -9,6 +9,7 @@ import "./Profile.css";
 import PostList from "./PostList";
 import Select from 'react-select';
 import Album from "./Album";
+import friendshipService from "../services/friendship.service";
 
 const Profile = () => {
     const { id } = useParams();
@@ -44,6 +45,42 @@ const Profile = () => {
         }
     }, [id]);
 
+    const unfriend = async () => {
+        try {
+            await friendshipService.deleteFriend(profile.id);
+            location.reload();
+        } catch (e) {
+
+        }
+    }
+
+    const addFriend = async () => {
+        try {
+            await friendshipService.addFriend(profile.id);
+            location.reload();
+        } catch (e) {
+
+        }
+    }
+
+    const sendFriendRequest = async () => {
+        try {
+            await friendshipService.createFriendRequest(profile.id);
+            location.reload();
+        } catch (e) {
+
+        }
+    }
+
+    const deleteFriendRequest = async () => {
+        try {
+            await friendshipService.deleteFriendRequest(profile.id);
+            location.reload();
+        } catch (e) {
+
+        }
+    }
+
     React.useEffect(() => {
         handleFetchProfile();
     }, [id]);
@@ -53,13 +90,13 @@ const Profile = () => {
             case RelationType.Blocked:
                 return "";
             case RelationType.Friends:
-                return (<Button variant="outline-danger" size="sm">Unfriend</Button>);
+                return (<Button variant="outline-danger" size="sm" onClick={unfriend}>Unfriend</Button>);
             case RelationType.Strangers:
-                return (<Button variant="outline-primary" size="sm">Send Friend Request</Button>);
+                return (<Button variant="outline-primary" size="sm" onClick={sendFriendRequest}>Send Friend Request</Button>);
             case RelationType.PendingAccept:
-                return (<><Button variant="outline-success" size="sm">Accept friend request</Button><Button variant="outline-danger" size="sm">Reject friend request</Button></>);
+                return (<><Button variant="outline-success" size="sm" onClick={addFriend}>Accept friend request</Button><Button variant="outline-danger" size="sm">Reject friend request</Button></>);
             case RelationType.RequestedFriendship:
-                return (<Button variant="outline-primary" size="sm">Delete Friend Request</Button>);
+                return (<Button variant="outline-primary" size="sm" onClick={deleteFriendRequest}>Delete Friend Request</Button>);
             default:
                 return "";
         }

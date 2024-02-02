@@ -5,7 +5,7 @@ import authService from './auth.service';
 
 class CommentService {
     async deleteComment(id: string) {
-        return await axios.delete(`/api/Comments/delete/${id}`, { headers: authHeader() });
+        return await axios.delete(`/api/Comments/${id}`, { headers: authHeader() });
     }
 
     async createComment(data: FormData): Promise<Comm> {
