@@ -4,10 +4,20 @@ import { Pencil, Trash } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import { AlbumProps } from "../types/types";
 import React from "react";
+import albumService from "../services/album.service";
 
-const Album = ({ item }: AlbumProps) => {
+const Album = ({ item, onDelete }: AlbumProps) => {
     const authenticatedUserId = authService.getCurrentUserId();
     const [album, setAlbum] = React.useState(item);
+
+    const handleDeleteAlbum = async () => {
+        try {
+            await albumService.deleteAlbum(album.id);
+            onDelete(album);
+        } catch (e) {
+
+        }
+    }
 
     return (
         <Col sm={6} className="mb-5">
@@ -20,7 +30,7 @@ const Album = ({ item }: AlbumProps) => {
                                 <Pencil />
                             </Link>
                         </Button>
-                        <Button variant="link" className="float-end">
+                        <Button variant="link" className="float-end" onClick={handleDeleteAlbum}>
                             <Trash />
                         </Button>
                     </CardHeader>

@@ -9,8 +9,14 @@ class AlbumService {
         return album;
     }
 
+    async createAlbum(data: FormData): Promise<Album> {
+        const axiosResponse: AxiosResponse = await axios.post(`/api/Albums`, data, { headers: authHeader() });
+        const album: Album = axiosResponse.data;
+        return album;
+    }
+
     async deleteAlbum(id: string) {
-        return await axios.delete(`/api/Albums/media/${id}`, { headers: authHeader() });
+        return await axios.delete(`/api/Albums/${id}`, { headers: authHeader() });
     }
 
     async getMedia(id: string): Promise<Media> {

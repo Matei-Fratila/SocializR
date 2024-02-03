@@ -139,8 +139,10 @@ const EditProfile = () => {
                     {(props) => (
                         <Form>
                             <Row className="form-group mb-3">
-                                <label htmlFor="description" className='col-4 col-form-label'>Description</label>
-                                <Col xs={8}>
+                                <Col md={4} xs={12}>
+                                    <label htmlFor="description" className='col-form-label'>Description</label>
+                                </Col>
+                                <Col md={8} xs={12}>
                                     <Field
                                         type="text"
                                         name="description"
@@ -155,8 +157,10 @@ const EditProfile = () => {
                             </Row>
 
                             <Row className="form-group mb-3">
-                                <label htmlFor="firstName" className='col-4 col-form-label'>First Name</label>
-                                <Col xs={8}>
+                                <Col md={4} xs={12}>
+                                    <label htmlFor="firstName" className='col-form-label'>First Name</label>
+                                </Col>
+                                <Col md={8} xs={12}>
                                     <Field
                                         type="text"
                                         name="firstName"
@@ -176,8 +180,10 @@ const EditProfile = () => {
                             </Row>
 
                             <Row className="form-group mb-3">
-                                <label htmlFor="lastname" className="col-4 col-form-label">Last Name</label>
-                                <Col xs={8}>
+                                <Col md={4} xs={12}>
+                                    <label htmlFor="lastname" className="col-form-label">Last Name</label>
+                                </Col>
+                                <Col md={8} xs={12}>
                                     <Field
                                         type="text"
                                         name="lastName"
@@ -196,8 +202,10 @@ const EditProfile = () => {
                             </Row>
 
                             <Row className="form-group mb-3">
-                                <label htmlFor="birthDate" className='col-4 col-form-label'>Date of birth</label>
-                                <Col xs={8}>
+                                <Col md={4} xs={12}>
+                                    <label htmlFor="birthDate" className='col-form-label'>Date of birth</label>
+                                </Col>
+                                <Col md={8} xs={12}>
                                     <Field
                                         type="date"
                                         name="birthDate"
@@ -217,8 +225,10 @@ const EditProfile = () => {
                             </Row>
 
                             <Row className="form-group mb-3">
-                                <label htmlFor="gender" className='col-4 col-form-label'>Gender</label>
-                                <Col xs={8}>
+                                <Col md={4} xs={12}>
+                                    <label htmlFor="gender" className='col-form-label'>Gender</label>
+                                </Col>
+                                <Col md={8} xs={12}>
                                     <Select
                                         value={profile.gender}
                                         options={genders}
@@ -237,8 +247,10 @@ const EditProfile = () => {
                             </Row>
 
                             <Row className="form-group mb-3">
-                                <label htmlFor="county" className='col-4 col-form-label'>County</label>
-                                <Col xs={8}>
+                                <Col md={4} xs={12}>
+                                    <label htmlFor="county" className='col-form-label'>County</label>
+                                </Col>
+                                <Col md={8} xs={12}>
                                     <Select
                                         value={profile.county}
                                         options={counties}
@@ -257,8 +269,10 @@ const EditProfile = () => {
                             </Row>
 
                             <Row className="form-group mb-3">
-                                <label htmlFor="city" className='col-4 col-form-label'>City</label>
-                                <Col xs={8}>
+                                <Col md={4} xs={12}>
+                                    <label htmlFor="city" className='col-form-label'>City</label>
+                                </Col>
+                                <Col md={8} xs={12}>
                                     <Select
                                         value={profile.city}
                                         options={cities}
@@ -277,15 +291,19 @@ const EditProfile = () => {
                             </Row>
 
                             <Row className="form-group mb-3">
-                                <label htmlFor="interests" className='col-4 col-form-label'>Interests</label>
-                                <Col xs={8}>
+                                <Col md={4} xs={12}>
+                                    <label htmlFor="interests" className='col-form-label'>Interests</label>
+                                </Col>
+                                <Col md={8} xs={12}>
                                     <Select value={profile.interests} isMulti={true} options={interests} onChange={(option) => setProfile({ ...profile, interests: option })} />
                                 </Col>
                             </Row>
 
                             <Row className="form-group mb-3 ">
-                                <label htmlFor="isPrivate" className='col-4'>Privacy</label>
-                                <Col xs={8}>
+                                <Col md={4} xs={12}>
+                                    <label htmlFor="isPrivate">Privacy</label>
+                                </Col>
+                                <Col md={8} xs={12}>
                                     <div className="form-check">
                                         <Field type="radio" name="isPrivate" value="false" className="form-check-input" />
                                         <label className="form-check-label">

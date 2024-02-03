@@ -127,6 +127,7 @@ export type Media = {
 
 export type AlbumProps = {
     item: Album;
+    onDelete: (album: Album) => void;
 }
 
 export type PostsListProps = {

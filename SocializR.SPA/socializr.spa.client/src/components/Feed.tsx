@@ -61,9 +61,15 @@ const Feed = () => {
     const [hasMore, setHasMore] = React.useState(true);
 
     const handleFetchPosts = React.useCallback(async () => {
+        const userId = authService.getCurrentUserId();
+        
+        if(userId === undefined){
+            return;
+        }
+
         dispatchPosts({ type: 'POSTS_FETCH' });
         try {
-            const result = await postsService.getPaginatedAsync(authService.getCurrentUserId(), posts.pageNumber, false);
+            const result = await postsService.getPaginatedAsync(userId, posts.pageNumber, false);
             dispatchPosts({
                 type: 'POSTS_FETCH_SUCCESS',
                 payload: result.data
@@ -107,7 +113,7 @@ const Feed = () => {
 
     return (
         <Row>
-            <Col sm={6} xs={12}>
+            <Col lg={6} md={8} sm={10} xs={12}>
                 <InfiniteScroll
                     dataLength={posts.data.length}
                     next={handleFetchPosts}

@@ -42,7 +42,7 @@ const EditMedia = () => {
           });
     }, [isCoverPhoto]);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = (event: any) => {
         event.preventDefault();
 
         const form = event.currentTarget;

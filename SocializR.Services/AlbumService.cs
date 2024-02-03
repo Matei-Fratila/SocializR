@@ -42,4 +42,18 @@ public class AlbumService(ApplicationUnitOfWork unitOfWork,
             _mediaService.Update(entity);
         }
     }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        var album = await UnitOfWork.Albums.Query
+            .Where(a => a.Id == id)
+            .FirstOrDefaultAsync();
+
+        if(album == null)
+        {
+            return;
+        }
+
+        Remove(album);
+    }
 }

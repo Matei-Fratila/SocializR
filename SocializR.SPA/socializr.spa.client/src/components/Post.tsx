@@ -71,9 +71,9 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
     return (
         <Container className="mb-5">
             <Row>
-                <Col sm={2} xs={0}>
+                <Col sm={2} xs={12}>
                     <Link to={`/profile/${item.userId}`}>
-                        <img src={`/api/${item.userPhoto}`} alt="Profile picture" className="rounded-circle shadow img-thumbnail user-photo avatar-float" />
+                        <img src={`/api/${item.userPhoto}`} alt="Profile picture" className="d-block m-auto rounded-circle shadow img-thumbnail user-photo avatar-float" />
                     </Link>
                 </Col>
                 <Col sm={10} xs={12}>

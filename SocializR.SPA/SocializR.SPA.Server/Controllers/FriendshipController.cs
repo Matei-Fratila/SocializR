@@ -13,6 +13,20 @@ public class FriendshipController(ApplicationUnitOfWork _unitOfWork,
     IFriendRequestService _friendRequestService, 
     IMapper _mapper) : ControllerBase
 {
+    [HttpGet("{userId}")]
+    [AllowAnonymous]
+    public async Task<ActionResult<List<UserViewModel>>> GetAllAsync(Guid userId)
+    {
+        var friends = await _friendshipService.GetAllAsync(userId);
+
+        if (!await _unitOfWork.SaveChangesAsync())
+        {
+            _friendRequestService.Delete(userId, _currentUser.Id);
+        }
+
+        return friends;
+    }
+
 
     [HttpPost("{userId}")]
     public async Task<IActionResult> AddFriendAsync([FromRoute]Guid userId)

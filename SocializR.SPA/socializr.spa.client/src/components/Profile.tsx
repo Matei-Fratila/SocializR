@@ -2,7 +2,7 @@ import { Album as AlbumModel, SelectItem, RelationType } from "../types/types";
 import React from "react";
 import profileService from "../services/profile.service";
 import { Button, Col, Row } from "react-bootstrap";
-import { CameraFill, Image, InfoSquareFill, Pencil, PeopleFill, PersonFill, PostageFill } from "react-bootstrap-icons";
+import { CameraFill, Image, InfoSquareFill, Pencil, PeopleFill, PersonFill, Plus, PostageFill } from "react-bootstrap-icons";
 import { Link, useParams } from "react-router-dom";
 import authService from "../services/auth.service";
 import "./Profile.css";
@@ -81,6 +81,14 @@ const Profile = () => {
         }
     }
 
+    const handleCreateNewAlbum = (album: AlbumModel) => {
+        setProfile({ ...profile, albums: [...profile.albums, album] });
+    }
+
+    const handleDeleteAlbum = (album: AlbumModel) => {
+        setProfile({ ...profile, albums: profile.albums.filter(a => a.id !== album.id) });
+    }
+
     React.useEffect(() => {
         handleFetchProfile();
     }, [id]);
@@ -104,12 +112,12 @@ const Profile = () => {
 
     return (
         <Row>
-            <Col>
+            <Col lg={6} md={6} sm={12} xs={12}>
                 <Row>
-                    <Col sm={3} xs={4}>
+                    <Col lg={3} md={4} sm={3} xs={6}>
                         <img className="rounded-circle profile-user-photo shadow img-thumbnail" alt="Avatar" src={`/api/${profile.userPhoto}`} />
                     </Col>
-                    <Col sm={9} xs={8}>
+                    <Col lg={9} md={8} sm={9} xs={6}>
                         <h4>{profile.firstName} {profile.lastName}</h4>
                         <Row><span><PeopleFill /> {profile.nrOfFriends} friends</span></Row>
                         {(id !== authService.getCurrentUserId() && profile.mutualFriends !== 0)
@@ -129,50 +137,50 @@ const Profile = () => {
                 <Row className="mt-4">
                     <h5><InfoSquareFill /> Personal information</h5>
                     <hr />
-                    <Col sm={4} xs={4}>
+                    <Col sm={4} xs={6}>
                         <dt>First Name</dt>
                     </Col>
-                    <Col sm={8} xs={8}>
+                    <Col sm={8} xs={6}>
                         <dd>{profile.firstName}</dd>
                     </Col>
-                    <Col sm={4} xs={4}>
+                    <Col sm={4} xs={6}>
                         <dt>Last Name</dt>
                     </Col>
-                    <Col sm={8} xs={8}>
+                    <Col sm={8} xs={6}>
                         <dd>{profile.lastName}</dd>
                     </Col>
-                    <Col sm={4} xs={4}>
+                    <Col sm={4} xs={6}>
                         <dt>Birth Date</dt>
                     </Col>
-                    <Col sm={8} xs={8}>
+                    <Col sm={8} xs={6}>
                         <dd>{new Date(profile.birthDate).toLocaleDateString()}</dd>
                     </Col>
-                    <Col sm={4} xs={4}>
+                    <Col sm={4} xs={6}>
                         <dt>County</dt>
                     </Col>
-                    <Col sm={8} xs={8}>
+                    <Col sm={8} xs={6}>
                         <dd>{profile.county.label}</dd>
                     </Col>
-                    <Col sm={4} xs={4}>
+                    <Col sm={4} xs={6}>
                         <dt>City</dt>
                     </Col>
-                    <Col sm={8} xs={8}>
+                    <Col sm={8} xs={6}>
                         <dd>{profile.city.label}</dd>
                     </Col>
-                    <Col sm={4} xs={4}>
+                    <Col sm={4} xs={6}>
                         <dt>Gender</dt>
                     </Col>
-                    <Col sm={8} xs={8}>
+                    <Col sm={8} xs={6}>
                         <dd>{profile.gender.label}</dd>
                     </Col>
 
                     <Row>
-                        <Col sm={4} xs={4}>
+                        <Col sm={4} xs={6}>
                             <dt>
                                 Interests
                             </dt>
                         </Col>
-                        <Col sm={8} xs={4}>
+                        <Col sm={8} xs={12}>
                             <dd>
                                 <Select isMulti={true} value={profile.interests} isDisabled={true} />
                             </dd>
@@ -182,12 +190,20 @@ const Profile = () => {
                 <Row className="mt-4">
                     <h5><Image /> Albums</h5>
                     <hr />
+                    <div className="mb-4">
+                        {(id === authService.getCurrentUserId())
+                            &&
+                            <Link to={`/album/create`}>
+                                <Plus /> Create a new Album
+                            </Link>
+                        }
+                    </div>
                     {
-                        profile.albums.map((album) => <Album key={album.id} item={album} />)
+                        profile.albums.map((album) => <Album onDelete={handleDeleteAlbum} key={album.id} item={album} />)
                     }
                 </Row>
             </Col>
-            <Col>
+            <Col lg={6} md={6} sm={12} xs={12}>
                 <h5><PostageFill /> Posts</h5>
                 <hr />
                 {id !== undefined && <PostList key={profile.id}></PostList>}

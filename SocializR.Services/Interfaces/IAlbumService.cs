@@ -5,4 +5,6 @@ public interface IAlbumService : IBaseService<Album>
     Task<Album> GetAsync(string name, Guid userId);
     Task<AlbumViewModel> GetViewModelAsync(Guid id);
     Task Update(AlbumViewModel model);
+
+    Task DeleteAsync(Guid id);
 }
