@@ -1,8 +1,9 @@
-﻿namespace SocializR.Models.Entities;
+﻿using Socializr.Models.Entities.Base;
 
-public partial class Comment : IEntity
+namespace SocializR.Models.Entities;
+
+public partial class Comment : BaseEntity, IEntity
 {
-    public Guid Id { get; set; }
     public Guid PostId { get; set; }
     public Guid UserId { get; set; }
     public string Body { get; set; }

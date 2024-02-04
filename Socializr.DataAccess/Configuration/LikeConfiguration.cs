@@ -6,8 +6,6 @@ internal class LikeConfiguration : IEntityTypeConfiguration<Like>
     {
         builder.ToTable("Likes");
 
-        builder.HasKey(e => new { e.PostId, e.UserId });
-
         builder.Property(e => e.PostId).HasColumnName("PostId");
 
         builder.Property(e => e.UserId).HasColumnName("UserId");

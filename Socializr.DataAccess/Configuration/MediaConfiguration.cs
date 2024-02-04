@@ -6,8 +6,6 @@ internal class MediaConfiguration : IEntityTypeConfiguration<Media>
     {
         builder.ToTable("Media");
 
-        builder.Property(e => e.Id).HasColumnName("Id");
-
         builder.Property(e => e.AlbumId).HasColumnName("AlbumId");
 
         //builder.Property(e => e.Caption).HasMaxLength(300);

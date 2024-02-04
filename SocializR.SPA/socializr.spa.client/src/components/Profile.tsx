@@ -1,4 +1,4 @@
-import { Album as AlbumModel, SelectItem, RelationType } from "../types/types";
+import { Album as AlbumModel, SelectItem, RelationType, Profile as ProfileModel } from "../types/types";
 import React from "react";
 import profileService from "../services/profile.service";
 import { Button, Col, Row } from "react-bootstrap";
@@ -14,7 +14,7 @@ import friendshipService from "../services/friendship.service";
 const Profile = () => {
     const { id } = useParams();
 
-    const [profile, setProfile] = React.useState({
+    const [profile, setProfile] = React.useState<ProfileModel>({
         id: "",
         userPhoto: "",
         relationToCurrentUser: RelationType.Unknown,
@@ -31,7 +31,8 @@ const Profile = () => {
         description: "",
         mutualFriends: 0,
         interests: [] as SelectItem[],
-        albums: [] as AlbumModel[]
+        albums: [] as AlbumModel[],
+        filePath: ""
     });
 
     const handleFetchProfile = React.useCallback(async () => {
@@ -86,7 +87,7 @@ const Profile = () => {
     }
 
     const handleDeleteAlbum = (album: AlbumModel) => {
-        setProfile({ ...profile, albums: profile.albums.filter(a => a.id !== album.id) });
+        setProfile({ ...profile, albums: profile.albums.filter((a: AlbumModel) => a.id !== album.id) });
     }
 
     React.useEffect(() => {
@@ -119,14 +120,14 @@ const Profile = () => {
                     </Col>
                     <Col lg={9} md={8} sm={9} xs={6}>
                         <h4>{profile.firstName} {profile.lastName}</h4>
-                        <Row><span><PeopleFill /> {profile.nrOfFriends} friends</span></Row>
+                        <Link to={`/profile/friends/${id}`}><PeopleFill /> <b>{profile.nrOfFriends}</b> friends</Link>
                         {(id !== authService.getCurrentUserId() && profile.mutualFriends !== 0)
-                            && <Row><span><PersonFill /> {profile.mutualFriends} mutual friends</span></Row>}
-                        <Row><span><PostageFill /> {profile.nrOfPosts} posts</span></Row>
-                        <Row><span><CameraFill /> {profile.nrOfPhotos} photos</span></Row>
+                            && <Row><span><PersonFill /> <b>{profile.mutualFriends}</b> mutual friends</span></Row>}
+                        <a href="#albums"><Row><span><CameraFill /> <b>{profile.nrOfPhotos}</b> photos</span></Row></a>
+                        <a href="#posts"><Row><span><PostageFill /> <b>{profile.nrOfPosts}</b> posts</span></Row></a>
                     </Col>
                 </Row>
-                <Row><span>{profile.description}God loves you but not enough to save you, so good luck taking care of yourself.</span></Row>
+                <Row className="mt-4"><span>{profile.description}God loves you but not enough to save you, so good luck taking care of yourself.</span></Row>
                 <div className="mt-4">
                     {(id === authService.getCurrentUserId())
                         ? <Link to={`/profile/edit/${id}`}>
@@ -187,7 +188,7 @@ const Profile = () => {
                         </Col>
                     </Row>
                 </Row>
-                <Row className="mt-4">
+                <Row className="mt-4" id="albums">
                     <h5><Image /> Albums</h5>
                     <hr />
                     <div className="mb-4">
@@ -199,11 +200,11 @@ const Profile = () => {
                         }
                     </div>
                     {
-                        profile.albums.map((album) => <Album onDelete={handleDeleteAlbum} key={album.id} item={album} />)
+                        profile.albums.map((album: AlbumModel) => <Album onDelete={handleDeleteAlbum} key={album.id} item={album} />)
                     }
                 </Row>
             </Col>
-            <Col lg={6} md={6} sm={12} xs={12}>
+            <Col lg={6} md={6} sm={12} xs={12} id="#posts">
                 <h5><PostageFill /> Posts</h5>
                 <hr />
                 {id !== undefined && <PostList key={profile.id}></PostList>}

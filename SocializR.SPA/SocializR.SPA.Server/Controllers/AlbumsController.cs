@@ -111,7 +111,7 @@ public class AlbumsController(ApplicationUnitOfWork _applicationUnitOfWork,
     }
 
     [HttpPut("media")]
-    public async Task<IActionResult> DeleteMediaAsync([FromForm] Media model)
+    public async Task<IActionResult> UpdateMediaAsync([FromForm] Media model)
     {
         var media = await _mediaService.GetAsync(model.Id);
 

@@ -6,13 +6,9 @@ internal class FriendshipConfiguration : IEntityTypeConfiguration<Friendship>
     {
         builder.ToTable("Friendships");
 
-        builder.HasKey(e => new { e.FirstUserId, e.SecondUserId });
-
         builder.Property(e => e.FirstUserId).HasColumnName("FirstUserId");
 
         builder.Property(e => e.SecondUserId).HasColumnName("SecondUserId");
-
-        builder.Property(e => e.CreatedDate).HasColumnType("datetime");
 
         builder.HasOne(d => d.FirstUser)
             .WithMany(p => p.FriendsFirstUser)

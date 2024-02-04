@@ -6,8 +6,6 @@ internal class UserInterestConfiguration : IEntityTypeConfiguration<UserInterest
     {
         builder.ToTable("UserInterests");
 
-        builder.HasKey(e => new { e.UserId, e.InterestId });
-
         builder.Property(e => e.UserId).HasColumnName("UserId");
 
         builder.Property(e => e.InterestId).HasColumnName("InterestId");

@@ -1,6 +1,8 @@
-﻿namespace SocializR.Models.Entities;
+﻿using Socializr.Models.Entities.Base;
 
-public partial class Like : IEntity
+namespace SocializR.Models.Entities;
+
+public partial class Like : BaseEntity, IEntity
 {
     public Guid PostId { get; set; }
     public Guid UserId { get; set; }

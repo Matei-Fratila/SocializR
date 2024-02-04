@@ -83,7 +83,7 @@ export type Profile = {
     birthDate: Date;
     city: SelectItem;
     county: SelectItem;
-    gender: string;
+    gender: SelectItem;
     isPrivate: boolean;
     nrOfFriends: number;
     nrOfPosts: number;
@@ -154,6 +154,13 @@ export type PostsState = {
     pageNumber: number;
     isLoading: boolean;
     isError: boolean;
+}
+
+export type User = {
+    id: string;
+    profilePhoto: string;
+    firstName: string;
+    lastName: string;
 }
 
 interface PostsFetchAction {

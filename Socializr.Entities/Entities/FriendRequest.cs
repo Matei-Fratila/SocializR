@@ -1,11 +1,11 @@
-﻿namespace SocializR.Models.Entities;
+﻿using Socializr.Models.Entities.Base;
 
-public partial class FriendRequest : IEntity
+namespace SocializR.Models.Entities;
+
+public partial class FriendRequest : BaseEntity, IEntity
 {
     public Guid RequesterUserId { get; set; }
     public Guid RequestedUserId { get; set; }
-    public string RequestMessage { get; set; }
-    public DateTime CreatedOn { get; set; }
 
     public virtual User RequestedUser { get; set; }
     public virtual User RequesterUser { get; set; }

@@ -1,13 +1,14 @@
-﻿namespace SocializR.Models.Entities;
+﻿using Socializr.Models.Entities.Base;
 
-public partial class Permission : IEntity
+namespace SocializR.Models.Entities;
+
+public partial class Permission : BaseEntity, IEntity
 {
     public Permission()
     {
         RolePermissions = new HashSet<RolePermission>();
     }
 
-    public Guid Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
 

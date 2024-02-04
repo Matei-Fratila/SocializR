@@ -1,5 +1,7 @@
-﻿namespace SocializR.Models.Entities;
-public partial class Post : IEntity
+﻿using Socializr.Models.Entities.Base;
+
+namespace SocializR.Models.Entities;
+public partial class Post : BaseEntity, IEntity
 {
     public Post()
     {
@@ -8,7 +10,6 @@ public partial class Post : IEntity
         Media = new HashSet<Media>();
     }
 
-    public Guid Id { get; set; }
     public string Title { get; set; }
     public string Body { get; set; }
     public DateTime CreatedOn { get; set; }

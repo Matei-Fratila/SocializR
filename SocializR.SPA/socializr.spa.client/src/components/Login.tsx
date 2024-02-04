@@ -33,10 +33,10 @@ const Login = () => {
                 <hr/>
                 <Form>
                     <Row className='mb-3 form-group'>
-                        <Col xs={3} sm={2} className='col-form-label'>
+                        <Col xs={12} sm={2} className='col-form-label'>
                             <label htmlFor="email">Email</label>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={12} sm={8} md={6} lg={4}>
                             <Field
                                 type="email"
                                 name="email"
@@ -56,10 +56,10 @@ const Login = () => {
                     </Row>
 
                     <Row className="form-group">
-                        <Col xs={3} sm={2} className='col-form-label'>
+                        <Col xs={12} sm={2} className='col-form-label'>
                             <label htmlFor="password">Password</label>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={12} sm={8} md={6} lg={4}>
                             <Field
                                 type="password"
                                 name="password"

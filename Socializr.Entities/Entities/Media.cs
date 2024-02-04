@@ -1,13 +1,14 @@
-﻿namespace SocializR.Models.Entities;
+﻿using Socializr.Models.Entities.Base;
 
-public partial class Media : IEntity
+namespace SocializR.Models.Entities;
+
+public partial class Media : BaseEntity, IEntity
 {
     public Media()
     {
         Users = new HashSet<User>();
     }
 
-    public Guid Id { get; set; }
     public Guid UserId { get; set; }
     public Guid AlbumId { get; set; }
     public Guid? PostId { get; set; }

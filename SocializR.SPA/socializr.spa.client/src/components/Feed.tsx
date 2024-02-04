@@ -6,6 +6,7 @@ import PostForm from "./PostForm";
 import InfiniteScroll from "react-infinite-scroll-component";
 import authService from "../services/auth.service";
 import { Col, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const postsReducer = (
     state: PostsState,
@@ -57,13 +58,15 @@ const postsReducer = (
 }
 
 const Feed = () => {
+    const navigate = useNavigate();
+    const userId = authService.getCurrentUserId();
     const [posts, dispatchPosts] = React.useReducer(postsReducer, { data: [], pageNumber: 0, isLoading: false, isError: false });
     const [hasMore, setHasMore] = React.useState(true);
 
     const handleFetchPosts = React.useCallback(async () => {
-        const userId = authService.getCurrentUserId();
-        
-        if(userId === undefined){
+
+        if (userId === undefined) {
+            navigate(`/login`);
             return;
         }
 
@@ -113,23 +116,20 @@ const Feed = () => {
 
     return (
         <Row>
-            <Col lg={6} md={8} sm={10} xs={12}>
-                <InfiniteScroll
-                    dataLength={posts.data.length}
-                    next={handleFetchPosts}
-                    hasMore={hasMore}
-                    loader={<p>Loading...</p>}>
+            <InfiniteScroll
+                dataLength={posts.data.length}
+                next={handleFetchPosts}
+                hasMore={hasMore}
+                loader={<p>Loading...</p>}>
 
-                    <PostForm onSubmit={handleNewPost}></PostForm>
-                    {posts.data.map(post =>
-                        <Post key={post.id}
-                            onRemoveItem={() => handleDeletePost(post.id)}
-                            item={post}
-                        />
-                    )}
-
-                </InfiniteScroll>
-            </Col>
+                <PostForm onSubmit={handleNewPost}></PostForm>
+                {posts.data.map(post =>
+                    <Post key={post.id}
+                        onRemoveItem={() => handleDeletePost(post.id)}
+                        item={post}
+                    />
+                )}
+            </InfiniteScroll>
         </Row>
     );
 }

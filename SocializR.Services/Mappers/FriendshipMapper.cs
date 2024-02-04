@@ -9,10 +9,9 @@ public class FriendshipMapper : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.SecondUser.Id))
             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.SecondUser.FirstName))
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.SecondUser.LastName))
-            .ForMember(dest => dest.ProfilePhotoId, opt => opt.MapFrom(src => src.SecondUser.ProfilePhotoId));
+            .ForMember(dest => dest.ProfilePhoto, opt => opt.MapFrom(src => src.SecondUser.ProfilePhoto.FileName));
 
         CreateMap<FriendRequest, FriendrequestViewModel>()
-            .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => src.CreatedOn))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.RequesterUser.Id))
             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.RequesterUser.FirstName))
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.RequesterUser.LastName))

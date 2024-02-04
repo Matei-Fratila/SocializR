@@ -41,10 +41,10 @@ const Register = () => {
                 <hr></hr>
                 <Form>
                     <Row className="mb-3">
-                        <Col xs={3} sm={2} className='col-form-label'>
+                        <Col xs={12} sm={3} md={2} className='col-form-label'>
                             <label htmlFor="firstName">First name</label>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={12} sm={8} md={6} lg={4}>
                             <Field
                                 type="text"
                                 name="firstName"
@@ -64,10 +64,10 @@ const Register = () => {
                     </Row>
 
                     <Row className="mb-3">
-                        <Col xs={3} sm={2} className='col-form-label'>
+                        <Col xs={12} sm={3} md={2} className='col-form-label'>
                             <label htmlFor="lastName">Last name</label>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={12} sm={8} md={6} lg={4}>
                             <Field
                                 type="text"
                                 name="lastName"
@@ -87,10 +87,10 @@ const Register = () => {
                     </Row>
 
                     <Row className="mb-3">
-                        <Col xs={3} sm={2} className='col-form-label'>
+                        <Col xs={12} sm={3} md={2} className='col-form-label'>
                             <label htmlFor="birthDate">Date of birth</label>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={12} sm={8} md={6} lg={4}>
                             <Field
                                 type="date"
                                 name="birthDate"
@@ -110,10 +110,10 @@ const Register = () => {
                     </Row>
 
                     <Row className="mb-3">
-                        <Col xs={3} sm={2} className='col-form-label'>
+                        <Col xs={12} sm={3} md={2} className='col-form-label'>
                             <label htmlFor="email">Email</label>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={12} sm={8} md={6} lg={4}>
                             <Field
                                 type="email"
                                 name="email"
@@ -133,10 +133,10 @@ const Register = () => {
                     </Row>
 
                     <Row className="form-group">
-                        <Col xs={3} sm={2} className='col-form-label'>
+                        <Col xs={12} sm={3} md={2} className='col-form-label'>
                             <label htmlFor="password">Password</label>
                         </Col>
-                        <Col xs={9}>
+                        <Col xs={12} sm={8} md={6} lg={4}>
                             <Field
                                 type="password"
                                 name="password"

@@ -6,10 +6,6 @@ internal class PostConfiguration : IEntityTypeConfiguration<Post>
     {
         builder.ToTable("Posts");
 
-        builder.HasKey(e => e.Id);
-
-        builder.Property(e => e.Id).HasColumnName("Id");
-
         builder.Property(e => e.Body).IsRequired();
 
         builder.Property(e => e.CreatedOn).HasColumnType("datetime");

@@ -6,10 +6,6 @@ internal class AlbumConfiguration : IEntityTypeConfiguration<Album>
     {
         builder.ToTable("Albums");
 
-        builder.HasKey(e => e.Id);
-
-        builder.Property(e => e.Id).HasColumnName("Id");
-
         builder.Property(e => e.Name)
             .IsRequired()
             .HasMaxLength(100);

@@ -7,6 +7,7 @@ import './App.css';
 import { BoxArrowRight, HouseFill, PersonFill } from 'react-bootstrap-icons';
 import { Link } from 'react-router-dom';
 import { Button, Form, NavDropdown } from "react-bootstrap";
+import Breadcrumbs from "./components/Breadcrumbs";
 
 const App = () => {
     const user = authService.getCurrentUser();
@@ -14,52 +15,8 @@ const App = () => {
 
     return (
         <>
-            {isLoggedIn && <header>
-                {/* <Navbar expand="lg" className="fixed-top">
-                    <Container>
-                        <Navbar.Brand>SocializR</Navbar.Brand>
-                        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                        <Navbar.Collapse id="basic-navbar-nav">
-                            <Nav className="me-auto">
-                                <Nav.Item>
-                                    <Nav.Link as={Link} to={`/profile/${user?.id}`}>
-                                        {user?.firstName} {user?.lastName}
-                                    </Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link as={Link} to={`/profile/${user?.id}`}>
-                                        <img src={`/api/${user?.profilePhoto}`} alt="Profile picture"
-                                            className="rounded-circle shadow user-photo-extra-small avatar-float" />
-                                    </Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link as={Link} to={`/profile/${user?.id}`}>
-                                        Profile <PersonFill />
-                                    </Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link as={Link} to={`/feed`}>
-                                        Feed <HouseFill />
-                                    </Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link as={Link} to={`/login`} onClick={authService.logout}>
-                                        Logout <BoxArrowRight />
-                                    </Nav.Link>
-                                </Nav.Item>
-                            </Nav>
-                            <Form className="d-flex">
-                                <Form.Control
-                                    type="search"
-                                    placeholder="Search"
-                                    className="me-2"
-                                    aria-label="Search"
-                                />
-                                <Button variant="outline-success">Search</Button>
-                            </Form> 
-                        </Navbar.Collapse>
-                    </Container>
-                </Navbar> */}
+            {isLoggedIn && 
+            <header>
                 <Navbar expand="lg" className="bg-body-tertiary">
                     <Container fluid>
                         <Navbar.Brand href="#">SocializR</Navbar.Brand>
@@ -70,6 +27,12 @@ const App = () => {
                                 style={{ maxHeight: '100px' }}
                                 navbarScroll
                             >
+                                <Nav.Link as={Link} to={`/profile/${user?.id}`}>
+                                    <PersonFill /> Profile
+                                </Nav.Link>
+                                <Nav.Link as={Link} to={`/feed`}>
+                                    <HouseFill /> Feed
+                                </Nav.Link>
                                 <NavDropdown title="Admin" id="navbarScrollingDropdown">
                                     <NavDropdown.Item href="#action3">
                                         Action
@@ -82,12 +45,6 @@ const App = () => {
                                         Something else here
                                     </NavDropdown.Item>
                                 </NavDropdown>
-                                <Nav.Link as={Link} to={`/profile/${user?.id}`}>
-                                    <PersonFill /> Profile
-                                </Nav.Link>
-                                <Nav.Link as={Link} to={`/feed`}>
-                                    <HouseFill /> Feed
-                                </Nav.Link>
                                 <Nav.Link as={Link} to={`/login`} onClick={authService.logout}>
                                     <BoxArrowRight /> Logout
                                 </Nav.Link>
@@ -107,6 +64,7 @@ const App = () => {
             </header>}
 
             <main>
+                <Breadcrumbs/>
                 <Outlet />
             </main>
         </>

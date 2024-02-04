@@ -6,8 +6,6 @@ internal class RoleConfiguration : IEntityTypeConfiguration<Role>
     {
         builder.ToTable("Roles");
 
-        builder.Property(e => e.Id).HasColumnName("Id");
-
         builder.Property(e => e.Description).IsRequired();
 
         builder.Property(e => e.Name)

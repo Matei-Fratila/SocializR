@@ -1,6 +1,8 @@
-﻿namespace SocializR.Models.Entities;
+﻿using Socializr.Models.Entities.Base;
 
-public partial class UserRole : IEntity
+namespace SocializR.Models.Entities;
+
+public partial class UserRole : BaseEntity, IEntity
 {
     public Guid UserId { get; set; }
     public Guid RoleId { get; set; }

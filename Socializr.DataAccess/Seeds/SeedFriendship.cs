@@ -31,10 +31,10 @@ public static class SeedFriendship
 
             while (friendships.Any(f => f.FirstUserId == ids[index1] && f.SecondUserId == ids[index2]));
 
-            var date1 = context.Users.Where(u => u.Id == ids[index1]).Select(u => u.CreatedOn).FirstOrDefault();
-            var date2= context.Users.Where(u => u.Id == ids[index2]).Select(u => u.CreatedOn).FirstOrDefault();
+            var date1 = context.Users.Where(u => u.Id == ids[index1]).Select(u => u.CreatedDate).FirstOrDefault();
+            var date2= context.Users.Where(u => u.Id == ids[index2]).Select(u => u.CreatedDate).FirstOrDefault();
 
-            var date = dateGenerator.GetRandomFriendshipDay(date1, date2);
+            var date = dateGenerator.GetRandomFriendshipDay(date1.Value, date2.Value);
 
             friendships.Add(new Friendship
             {

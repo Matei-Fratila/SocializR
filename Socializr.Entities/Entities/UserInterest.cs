@@ -1,6 +1,8 @@
-﻿namespace SocializR.Models.Entities;
+﻿using Socializr.Models.Entities.Base;
 
-public partial class UserInterest : IEntity
+namespace SocializR.Models.Entities;
+
+public partial class UserInterest : BaseEntity, IEntity
 {
     public Guid UserId { get; set; }
     public Guid InterestId { get; set; }

@@ -25,7 +25,7 @@ public static class SeedUsers
             IsDeleted = false,
             IsActive = true,
             BirthDate = Convert.ToDateTime("1997-01-08"),
-            CreatedOn = generator.GetRandomDay()
+            CreatedDate = generator.GetRandomDay()
         };
 
         var result = await userManager.CreateAsync(admin, admin.FirstName + admin.LastName + "8");
@@ -57,7 +57,7 @@ public static class SeedUsers
                 IsDeleted = false,
                 IsActive = true,
                 BirthDate = Convert.ToDateTime("1997-06-23"),
-                CreatedOn = generator.GetRandomDay()
+                CreatedDate = generator.GetRandomDay()
             };
 
             result = await userManager.CreateAsync(user, firstname + lastname.ToUpper() + i);

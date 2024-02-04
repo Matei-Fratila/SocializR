@@ -30,6 +30,10 @@ class AlbumService {
         const media: Media = axiosResponse.data;
         return media;
     }
+
+    async deleteMedia(id: string) {
+        return await axios.delete(`/api/Albums/Media/${id}`, { headers: authHeader() });
+    }
 }
 
 export default new AlbumService();

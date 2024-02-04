@@ -6,10 +6,6 @@ internal class CityConfiguration : IEntityTypeConfiguration<City>
     {
         builder.ToTable("Cities");
 
-        builder.HasKey(e => e.Id);
-
-        builder.Property(e => e.Id).HasColumnName("Id");
-
         builder.Property(e => e.CountyId).HasColumnName("CountyId");
 
         builder.Property(e => e.Name)

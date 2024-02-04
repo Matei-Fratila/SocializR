@@ -1,8 +1,9 @@
-﻿namespace SocializR.Models.Entities;
+﻿using Socializr.Models.Entities.Base;
 
-public partial class RolePermission : IEntity
+namespace SocializR.Models.Entities;
+
+public partial class RolePermission : BaseEntity, IEntity
 {
-    public Guid Id { get; set; }
     public Guid PermissionId { get; set; }
 
     public virtual Permission Permission { get; set; }

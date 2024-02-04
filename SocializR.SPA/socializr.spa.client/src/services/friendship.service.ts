@@ -1,9 +1,11 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import authHeader from './auth-header';
+import { User } from '../types/types';
 
 class FriendshipService {
-    async getAllFriends(id: string) {
-        await axios.get(`/api/friendship/${id}`, { headers: authHeader() });
+    async getAllFriends(id: string): Promise<User[]> {
+        const axiosResponse: AxiosResponse = await axios.get(`/api/friendship/${id}`, { headers: authHeader() });
+        return axiosResponse.data as User[];
     }
 
     async addFriend(id: string) {

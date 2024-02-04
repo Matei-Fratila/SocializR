@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, CardGroup, CardHeader, CardText, CardTitle, Col, Row } from "react-bootstrap";
+import { Button, Card, CardBody, CardFooter, CardGroup, CardText, Col, Row } from "react-bootstrap";
 import authService from "../services/auth.service";
 import { Images, Pencil, Trash } from "react-bootstrap-icons";
 import { Link, useParams } from "react-router-dom";
@@ -37,7 +37,7 @@ const Gallery = () => {
 
     const handleDelete = async (id: string) => {
         try {
-            await albumService.deleteAlbum(id);
+            await albumService.deleteMedia(id);
             setAlbum({ ...album, media: album.media.filter(m => m.id !== id) });
         } catch {
 
@@ -65,9 +65,10 @@ const Gallery = () => {
                                             <Pencil />
                                         </Link>
                                     </Button>
+                                    {authService.getCurrentUserPhoto() !== media.fileName &&
                                     <Button variant="link" className="float-end" onClick={() => handleDelete(media.id)}>
                                         <Trash />
-                                    </Button>
+                                    </Button>}
                                 </CardFooter>
                             </Card>
                         </Col>

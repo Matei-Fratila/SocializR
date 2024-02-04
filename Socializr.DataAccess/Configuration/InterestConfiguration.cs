@@ -6,10 +6,6 @@ internal class InterestConfiguration : IEntityTypeConfiguration<Interest>
     {
         builder.ToTable("Interests");
 
-        builder.HasKey(e => e.Id);
-
-        builder.Property(e => e.Id).HasColumnName("Id");
-
         builder.Property(e => e.Name)
             .IsRequired()
             .HasMaxLength(100);

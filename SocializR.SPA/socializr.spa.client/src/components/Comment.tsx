@@ -13,7 +13,7 @@ const Comment = ({ item, onRemoveItem }: CommentProps) => {
             <Card className="panel-default">
                 <CardHeader>
                     <Link to={`/profile/${item.userId}`}>
-                        <img src={`/api/${item.userPhoto}`} alt="Profile picture" className="rounded-circle img-thumbnail small-user-photo avatar-float" />
+                        <img src={`/api/${item.userPhoto}`} alt="Profile picture" className="rounded-circle img-thumbnail small-user-photo avatar-float me-1" />
                         {item.firstName} {item.lastName}
                     </Link>
                     {

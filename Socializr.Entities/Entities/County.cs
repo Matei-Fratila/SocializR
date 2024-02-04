@@ -1,13 +1,14 @@
-﻿namespace SocializR.Models.Entities;
+﻿using Socializr.Models.Entities.Base;
 
-public partial class County : IEntity
+namespace SocializR.Models.Entities;
+
+public partial class County : BaseEntity, IEntity
 {
     public County()
     {
         Cities = new HashSet<City>();
     }
 
-    public Guid Id { get; set; }
     public string Name { get; set; }
     public string ShortName { get; set; }
 

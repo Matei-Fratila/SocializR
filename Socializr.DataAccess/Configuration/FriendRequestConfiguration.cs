@@ -12,12 +12,6 @@ internal class FriendRequestConfiguration : IEntityTypeConfiguration<FriendReque
 
         builder.Property(e => e.RequestedUserId).HasColumnName("RequestedUserId");
 
-        builder.Property(e => e.CreatedOn).HasColumnType("datetime");
-
-        builder.Property(e => e.RequestMessage)
-            .HasMaxLength(500)
-            .IsUnicode();
-
         builder.HasOne(d => d.RequestedUser)
             .WithMany(p => p.FriendRequestsRequestedUser)
             .HasForeignKey(d => d.RequestedUserId)

@@ -1,4 +1,5 @@
 using Common.Interfaces;
+using SocializR.DataAccess.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,6 +84,27 @@ builder.Services.AddCurrentUser();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    //Initialize the database
+    if (app.Configuration.GetValue<bool>("RebuildDatabase"))
+    {
+        using var scope = app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+        dbContext.Database.EnsureCreated();
+        DBInitializer.ApplySeeds(dbContext, userManager, roleManager);
+    }
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
 
 app.UseDefaultFiles();
 app.UseStaticFiles();

@@ -8,9 +8,6 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
             .ToTable("Users");
 
         builder
-            .HasKey(e => e.Id);
-
-        builder
             .HasAlternateKey(e => e.Email );
 
         builder.Property(e => e.Id)
@@ -21,10 +18,6 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(e => e.CityId)
             .HasColumnName("CityId");
-
-        builder.Property(e => e.CreatedOn)
-            .HasColumnType("datetime")
-            .HasDefaultValueSql("getdate()");
 
         builder.Property(e => e.Email)
             .IsRequired()

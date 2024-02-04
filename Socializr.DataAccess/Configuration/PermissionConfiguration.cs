@@ -6,12 +6,6 @@ internal class PermissionConfiguration : IEntityTypeConfiguration<Permission>
     {
         builder.ToTable("Permissions");
 
-        builder.HasKey(e => e.Id);
-
-        builder.Property(e => e.Id)
-                .HasColumnName("Id")
-                .ValueGeneratedOnAdd();
-
         builder.Property(e => e.Description)
             .IsRequired()
             .IsUnicode();

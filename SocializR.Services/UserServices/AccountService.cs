@@ -15,7 +15,7 @@ public class AccountService(UserManager<User> _userManager, IMapper _mapper) : I
     {
         user.IsActive = true;
         user.IsDeleted = false;
-        user.CreatedOn = DateTime.Now;
+        user.CreatedDate = DateTime.Now;
 
         var result = await _userManager.CreateAsync(user);
 

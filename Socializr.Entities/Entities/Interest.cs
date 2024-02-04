@@ -1,6 +1,8 @@
-﻿namespace SocializR.Models.Entities;
+﻿using Socializr.Models.Entities.Base;
 
-public partial class Interest : IEntity
+namespace SocializR.Models.Entities;
+
+public partial class Interest : BaseEntity, IEntity
 {
     public Interest()
     {
@@ -8,7 +10,6 @@ public partial class Interest : IEntity
         UserInterests = new HashSet<UserInterest>();
     }
 
-    public Guid Id { get; set; }
     public Guid? ParentId { get; set; }
     public string Name { get; set; }
 

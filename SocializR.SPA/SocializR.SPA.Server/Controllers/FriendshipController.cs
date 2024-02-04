@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Common.Interfaces;
+using SocializR.Models.Entities;
 using System.Net;
 
 namespace SocializR.Web.Controllers;
@@ -9,6 +11,7 @@ namespace SocializR.Web.Controllers;
 public class FriendshipController(ApplicationUnitOfWork _unitOfWork,
     IOptionsMonitor<AppSettings> _configuration,
     CurrentUser _currentUser,
+    IImageStorage _imageStorage,
     IFriendshipService _friendshipService, 
     IFriendRequestService _friendRequestService, 
     IMapper _mapper) : ControllerBase
@@ -19,9 +22,9 @@ public class FriendshipController(ApplicationUnitOfWork _unitOfWork,
     {
         var friends = await _friendshipService.GetAllAsync(userId);
 
-        if (!await _unitOfWork.SaveChangesAsync())
+        foreach (var friend in friends)
         {
-            _friendRequestService.Delete(userId, _currentUser.Id);
+            friend.ProfilePhoto = _imageStorage.UriFor(friend.ProfilePhoto ?? _configuration.CurrentValue.DefaultProfilePicture);
         }
 
         return friends;
@@ -60,8 +63,7 @@ public class FriendshipController(ApplicationUnitOfWork _unitOfWork,
         _friendRequestService.Add(new FriendRequest
         {
             RequestedUserId = userId,
-            RequesterUserId = _currentUser.Id,
-            CreatedOn = DateTime.UtcNow,
+            RequesterUserId = _currentUser.Id
         });
 
         if (!await _unitOfWork.SaveChangesAsync())
