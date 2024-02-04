@@ -1,7 +1,6 @@
-import { Button, Col, ListGroup, Pagination, Row } from "react-bootstrap";
-import authService from "../services/auth.service";
+import { ListGroup, Pagination } from "react-bootstrap";
 import { People } from "react-bootstrap-icons";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
 import friendshipService from "../services/friendship.service";
 import { User } from "../types/types";
@@ -38,7 +37,7 @@ const Friends = () => {
                 <ListGroup>
                     {friends.map((friend: User) => (
                         <>
-                            <ListGroup.Item key={friend.id} action onClick={e => handleClickFriend(friend.id)}>
+                            <ListGroup.Item key={friend.id} action onClick={() => handleClickFriend(friend.id)}>
                                 <img className="rounded-circle user-photo shadow img-thumbnail" src={`/api/${friend.profilePhoto}`} />
                                 {friend.firstName} {friend.lastName}
                             </ListGroup.Item>

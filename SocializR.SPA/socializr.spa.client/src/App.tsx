@@ -7,7 +7,6 @@ import './App.css';
 import { BoxArrowRight, HouseFill, PersonFill } from 'react-bootstrap-icons';
 import { Link } from 'react-router-dom';
 import { Button, Form, NavDropdown } from "react-bootstrap";
-import Breadcrumbs from "./components/Breadcrumbs";
 
 const App = () => {
     const user = authService.getCurrentUser();
@@ -64,7 +63,6 @@ const App = () => {
             </header>}
 
             <main>
-                <Breadcrumbs/>
                 <Outlet />
             </main>
         </>

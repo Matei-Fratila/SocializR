@@ -5,7 +5,7 @@ import postsService from "../services/posts.service";
 import PostForm from "./PostForm";
 import InfiniteScroll from "react-infinite-scroll-component";
 import authService from "../services/auth.service";
-import { Col, Row } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const postsReducer = (

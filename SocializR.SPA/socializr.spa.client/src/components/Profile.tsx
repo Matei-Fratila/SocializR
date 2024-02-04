@@ -82,9 +82,9 @@ const Profile = () => {
         }
     }
 
-    const handleCreateNewAlbum = (album: AlbumModel) => {
-        setProfile({ ...profile, albums: [...profile.albums, album] });
-    }
+    // const handleCreateNewAlbum = (album: AlbumModel) => {
+    //     setProfile({ ...profile, albums: [...profile.albums, album] });
+    // }
 
     const handleDeleteAlbum = (album: AlbumModel) => {
         setProfile({ ...profile, albums: profile.albums.filter((a: AlbumModel) => a.id !== album.id) });

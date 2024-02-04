@@ -1,4 +1,4 @@
-import { SelectItem } from "../types/types";
+import { Profile, SelectItem } from "../types/types";
 import React from "react";
 import profileService from "../services/profile.service";
 import { Button, Col, Row } from "react-bootstrap";
@@ -14,25 +14,25 @@ import { PencilFill } from "react-bootstrap-icons";
 const EditProfile = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-    const [profile, setProfile] = React.useState({
+    const [profile, setProfile] = React.useState<Profile>({
         id: "",
         userPhoto: "",
         firstName: "",
         lastName: "",
         birthDate: new Date(),
-        city: null,
-        county: null,
-        gender: "",
+        city: { label: "", value: ""},
+        county: { label: "", value: ""},
+        gender: { label: "", value: ""},
         isPrivate: false,
         description: "",
         interests: [] as SelectItem[]
-    });
+    } as Profile);
 
     const [genders, setGenders] = React.useState([] as SelectItem[]);
     const [counties, setCounties] = React.useState([] as SelectItem[]);
     const [cities, setCities] = React.useState([] as SelectItem[]);
     const [interests, setInterests] = React.useState([] as SelectItem[]);
-    const [file, setFile] = React.useState(null);
+    const [file, setFile] = React.useState<File[]>([]);
 
     const ProfileSchema = Yup.object().shape({
         firstName: Yup.string()
@@ -119,7 +119,7 @@ const EditProfile = () => {
                 <Row className="form-group mb-3 mt-3">
                     <label className='col-4 col-form-label'>Avatar</label>
                     <Col xs={8}>
-                        <input className="form-control" type="file" accept="image/*" name="media" onChange={(e) => setFile(e.target.files)} />
+                        <input className="form-control" type="file" accept="image/*" name="media" onChange={(e) => setFile(Array.from(e.target.files ?? []))} />
                     </Col>
                 </Row>
                 <Formik
@@ -232,7 +232,7 @@ const EditProfile = () => {
                                     <Select
                                         value={profile.gender}
                                         options={genders}
-                                        onChange={(option) => setProfile({ ...profile, gender: option })}
+                                        onChange={(option) => setProfile({ ...profile, gender: {label: option?.label, value: option?.value} as SelectItem })}
                                         className={` ${props.touched.gender && props.errors.gender
                                             ? "is-invalid"
                                             : ""
@@ -254,7 +254,11 @@ const EditProfile = () => {
                                     <Select
                                         value={profile.county}
                                         options={counties}
-                                        onChange={(option) => setProfile({ ...profile, county: option, city: null })}
+                                        onChange={(option) => setProfile({ 
+                                            ...profile, 
+                                            county: {label: option?.label, value: option?.value} as SelectItem, 
+                                            city: {label: "", value: ""} as SelectItem
+                                        })}
                                         className={` ${props.touched.county && props.errors.county
                                             ? "is-invalid"
                                             : ""
@@ -276,7 +280,7 @@ const EditProfile = () => {
                                     <Select
                                         value={profile.city}
                                         options={cities}
-                                        onChange={(option) => setProfile({ ...profile, city: option })}
+                                        onChange={(option) => setProfile({ ...profile, city: {label: option?.label, value: option?.value} as SelectItem })}
                                         className={`${props.touched.city && props.errors.city
                                             ? "is-invalid"
                                             : ""
@@ -295,7 +299,8 @@ const EditProfile = () => {
                                     <label htmlFor="interests" className='col-form-label'>Interests</label>
                                 </Col>
                                 <Col md={8} xs={12}>
-                                    <Select value={profile.interests} isMulti={true} options={interests} onChange={(option) => setProfile({ ...profile, interests: option })} />
+                                    <Select value={profile.interests} isMulti={true} options={interests} 
+                                    onChange={(options) => setProfile({ ...profile, interests: options.map(o => o) })} />
                                 </Col>
                             </Row>
 

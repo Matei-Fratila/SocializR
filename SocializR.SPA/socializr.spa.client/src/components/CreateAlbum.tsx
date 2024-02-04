@@ -28,7 +28,7 @@ const CreateAlbum = () => {
 
     return (
         <>
-            <h5><Image/> Create album</h5>
+            <h5><Image /> Create album</h5>
             <Card className="shadow">
                 <form method="post" onSubmit={handleSubmit}>
                     <CardHeader>
@@ -55,7 +55,7 @@ const CreateAlbum = () => {
                     <input className="form-control" type="file" accept="image/*, video/*" multiple name="files"
                         onChange={(e) => {
                             setFiles(Array.from(e.target.files ?? []));
-                            setCaptions(Array.from(e.target.files ?? []).map((file, index) => ""));
+                            setCaptions(Array.from(e.target.files ?? []).map(() => ""));
                         }
                         }
                     />

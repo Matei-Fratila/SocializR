@@ -6,7 +6,7 @@ import React from "react";
 
 const PostForm = ({ onSubmit }: PostFormProps) => {
     const [post, setPost] = React.useState<NewPost>({ title: "", body: "" });
-    const [selectedImages, setSelectedImages] = React.useState([]);
+    const [selectedImages, setSelectedImages] = React.useState<File[]>([]);
 
     function setTitle(title: string) {
         setPost({ ...post, title: title });
@@ -48,7 +48,7 @@ const PostForm = ({ onSubmit }: PostFormProps) => {
                                 {file.type.match('video.*') && <video controls className="card-img-bottom" src={URL.createObjectURL(file)} />}
                             </>
                             ))}
-                            <input className="form-control" type="file" accept="image/*, video/*" multiple name="media" onChange={(e) => setSelectedImages(e.target.files)} />
+                            <input className="form-control" type="file" accept="image/*, video/*" multiple name="media" onChange={(e) => setSelectedImages(Array.from(e.target.files ?? []))} />
                             <CardFooter className="text-muted">
                                 <Button type="submit" variant="primary" disabled={!post.body}>
                                     Share <ChevronBarRight />

@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { CurrentUser, LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../types/types';
+import { CurrentUser, LoginRequest, LoginResponse, RegisterRequest } from '../types/types';
 
 class AuthService {
     async login(loginRequest: LoginRequest) {

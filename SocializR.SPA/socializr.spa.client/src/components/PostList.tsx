@@ -1,5 +1,5 @@
 import Post from "./Post";
-import { PostsAction, PostsState, Post as PostModel, PostsListProps } from "../types/types";
+import { PostsAction, PostsState } from "../types/types";
 import React from "react";
 import postsService from "../services/posts.service";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -62,6 +62,11 @@ const PostList = () => {
     const handleFetchPosts = async () => {
         dispatchPosts({ type: 'POSTS_FETCH' });
         try {
+
+            if(id === undefined){
+                return;
+            }
+
             const result = await postsService.getPaginatedAsync(id, posts.pageNumber, true);
 
             if (posts.pageNumber === 0 && result.data.length === 0) {

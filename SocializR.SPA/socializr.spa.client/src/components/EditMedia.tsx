@@ -8,9 +8,8 @@ import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
 
 const EditMedia = () => {
     const navigate = useNavigate();
-    const location = useLocation();
     const { id } = useParams();
-    const { isCoverPhoto } = location.state;
+    const { isCoverPhoto } = useLocation().state;
     const [media, setMedia] = React.useState({ id: "", albumId: "", caption: "", type: MediaType.Unspecified, createdDate: "", fileName: "", isCoverPhoto: false });
 
     const handleFetchMedia = React.useCallback(async () => {

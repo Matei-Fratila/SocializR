@@ -3,12 +3,11 @@ import authService from "../services/auth.service";
 import { Pencil, Trash } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import { AlbumProps } from "../types/types";
-import React from "react";
 import albumService from "../services/album.service";
 
 const Album = ({ item, onDelete }: AlbumProps) => {
     const authenticatedUserId = authService.getCurrentUserId();
-    const [album, setAlbum] = React.useState(item);
+    const album = item;
 
     const handleDeleteAlbum = async () => {
         try {
