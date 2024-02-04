@@ -62,21 +62,17 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-// Configure the HTTP request pipeline.
+using var scope = app.Services.CreateScope();
+var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+dbContext.Database.Migrate();
+
+var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+DBInitializer.ApplySeeds(dbContext, userManager, roleManager);
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    //Initialize the database
-    if (app.Configuration.GetValue<bool>("RebuildDatabase"))
-    {
-        using var scope = app.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
-        dbContext.Database.EnsureCreated();
-        DBInitializer.ApplySeeds(dbContext, userManager, roleManager);
-    }
 }
 else
 {

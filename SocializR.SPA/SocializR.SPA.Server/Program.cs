@@ -1,4 +1,4 @@
-using Common.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using SocializR.DataAccess.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -85,19 +85,17 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
+using var scope = app.Services.CreateScope();
+var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+dbContext.Database.Migrate();
+
+var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+DBInitializer.ApplySeeds(dbContext, userManager, roleManager);
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    //Initialize the database
-    if (app.Configuration.GetValue<bool>("RebuildDatabase"))
-    {
-        using var scope = app.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
-        dbContext.Database.EnsureCreated();
-        DBInitializer.ApplySeeds(dbContext, userManager, roleManager);
-    }
 }
 else
 {
@@ -109,14 +107,14 @@ else
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwaggerUI(options =>
-    {
-
-    });
 }
 
 app.UseHttpsRedirection();
