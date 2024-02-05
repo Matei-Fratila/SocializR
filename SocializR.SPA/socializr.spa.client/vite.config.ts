@@ -37,26 +37,30 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig({
-    plugins: [plugin()],
-    resolve: {
-        alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
-        }
-    },
-    server: {
-        proxy: {
-            '/api': {
-                target: 'https://localhost:7264',
-                changeOrigin: true,
-                secure: false,
-                rewrite: path => path.replace('/api', '')
+export default defineConfig(({ mode }) => {
+    const isDev = mode === 'development';
+
+    return {
+        plugins: [plugin()],
+        resolve: {
+            alias: {
+                '@': fileURLToPath(new URL('./src', import.meta.url))
             }
         },
-        port: 5173,
-        https: {
-            key: fs.readFileSync(keyFilePath),
-            cert: fs.readFileSync(certFilePath),
+        server: {
+            proxy: {
+                '/api': {
+                    target: isDev ? 'https://localhost:7264' : 'https://socializrspaserver.azurewebsites.net',
+                    changeOrigin: true,
+                    secure: false,
+                    rewrite: path => path.replace('/api', '')
+                }
+            },
+            port: 5173,
+            https: {
+                key: fs.readFileSync(keyFilePath),
+                cert: fs.readFileSync(certFilePath),
+            }
         }
     }
 })
