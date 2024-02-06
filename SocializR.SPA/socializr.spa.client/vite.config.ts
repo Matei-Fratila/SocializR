@@ -51,8 +51,8 @@ export default defineConfig(({ mode }) => {
             proxy: {
                 '/api': {
                     target: isDev ? 'https://localhost:7264' : 'https://socializrspaserver.azurewebsites.net',
-                    changeOrigin: true,
-                    secure: false,
+                    changeOrigin: isDev ? true : false,
+                    secure: isDev ? false : true,
                     rewrite: path => path.replace('/api', '')
                 }
             },
