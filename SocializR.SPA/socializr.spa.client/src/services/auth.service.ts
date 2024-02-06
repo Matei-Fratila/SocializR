@@ -4,7 +4,7 @@ import { CurrentUser, LoginRequest, LoginResponse, RegisterRequest } from '../ty
 class AuthService {
     async login(loginRequest: LoginRequest) {
         try {
-            const axiosResponse: AxiosResponse = await axios.post('api/Auth/login', loginRequest);
+            const axiosResponse: AxiosResponse = await axios.post('Auth/login', loginRequest);
             const response: LoginResponse = axiosResponse.data;
 
             if (response.currentUser) {
