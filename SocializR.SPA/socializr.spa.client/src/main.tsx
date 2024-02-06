@@ -68,11 +68,13 @@ const router = createBrowserRouter([
 ])
 
 if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-axios.defaults.baseURL = "/api/";
+  axios.defaults.baseURL = "/api/";
+} else {
+  axios.defaults.baseURL = "";
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router}/>
+    <RouterProvider router={router} />
   </React.StrictMode>
 )
