@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using SocializR.Models.Entities;
 using SocializR.Models.ViewModels.Account;
 
 namespace SocializR.SPA.Server.Controllers;

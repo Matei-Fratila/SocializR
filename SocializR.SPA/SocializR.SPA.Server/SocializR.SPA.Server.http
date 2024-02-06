@@ -1,6 +1,6 @@
 @SocializR.SPA.Server_HostAddress = http://localhost:5001
 
-GET {{SocializR.SPA.Server_HostAddress}}/weatherforecast/
+GET {{SocializR.SPA.Server_HostAddress}}/Counties/
 Accept: application/json
 
 ###

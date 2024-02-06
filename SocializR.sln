@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{03684CE3-E88C-4D3F-8E63-EFA64143FDED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocializR.Common", "Common\SocializR.Common.csproj", "{03684CE3-E88C-4D3F-8E63-EFA64143FDED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocializR.DataAccess", "Socializr.DataAccess\SocializR.DataAccess.csproj", "{6041160B-CEE3-482A-8D5E-834426463BD0}"
 EndProject
@@ -17,6 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils", "Utils\Utils.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocializR.SPA.Server", "SocializR.SPA\SocializR.SPA.Server\SocializR.SPA.Server.csproj", "{6B24C3E4-B5FC-41EE-A3CB-0C539E7D1F4A}"
 	ProjectSection(ProjectDependencies) = postProject
+		{03684CE3-E88C-4D3F-8E63-EFA64143FDED} = {03684CE3-E88C-4D3F-8E63-EFA64143FDED}
 		{5145C22B-0317-4EB6-8838-93079E6E3067} = {5145C22B-0317-4EB6-8838-93079E6E3067}
 	EndProjectSection
 EndProject

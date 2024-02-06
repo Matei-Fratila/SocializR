@@ -11,7 +11,7 @@ public static class ConfigurationExtensionMethods
 
         if (env.IsProduction())
         {
-            //services.AddScoped<IImageStorage, AzureStorageService>();
+            services.AddScoped<IImageStorage, LocalStorageService>();
         }
         else
         {
