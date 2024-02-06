@@ -9,6 +9,7 @@ import postsService from "../services/posts.service";
 import commentService from "../services/comment.service";
 import CommentForm from "./CommentForm";
 import authService from "../services/auth.service";
+import axios from "axios";
 
 const Post = ({ item, onRemoveItem }: PostProps) => {
     const authenticatedUserId = authService.getCurrentUserId();
@@ -73,7 +74,7 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
             <Row>
                 <Col sm={2} xs={12} className="mb-2">
                     <Link to={`/profile/${item.userId}`}>
-                        <img src={`/api/${item.userPhoto}`} alt="Profile picture" className="d-block m-auto rounded-circle shadow img-thumbnail user-photo avatar-float" />
+                        <img src={`${axios.defaults.baseURL}${item.userPhoto}`} alt="Profile picture" className="d-block m-auto rounded-circle shadow img-thumbnail user-photo avatar-float" />
                     </Link>
                 </Col>
                 <Col sm={10} xs={12}>
@@ -97,8 +98,8 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
                         {
                             item.media.map((file) => (
                                 <>
-                                    {file.type === MediaType.Image && <img alt="not found" className="card-img-bottom" src={`/api/${file.fileName}`} />}
-                                    {file.type === MediaType.Video && <video controls className="card-img-bottom" src={`/api/${file.fileName}`} />}
+                                    {file.type === MediaType.Image && <img alt="not found" className="card-img-bottom" src={`${axios.defaults.baseURL}${file.fileName}`} />}
+                                    {file.type === MediaType.Video && <video controls className="card-img-bottom" src={`${axios.defaults.baseURL}${file.fileName}`} />}
                                 </>))
                         }
 

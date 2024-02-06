@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
 import friendshipService from "../services/friendship.service";
 import { User } from "../types/types";
+import axios from "axios";
 
 const Friends = () => {
     const { id } = useParams();
@@ -38,7 +39,7 @@ const Friends = () => {
                     {friends.map((friend: User) => (
                         <>
                             <ListGroup.Item key={friend.id} action onClick={() => handleClickFriend(friend.id)}>
-                                <img className="rounded-circle user-photo shadow img-thumbnail" src={`/api/${friend.profilePhoto}`} />
+                                <img className="rounded-circle user-photo shadow img-thumbnail" src={`${axios.defaults.baseURL}${friend.profilePhoto}`} />
                                 {friend.firstName} {friend.lastName}
                             </ListGroup.Item>
                         </>

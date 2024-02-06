@@ -5,6 +5,7 @@ import albumService from "../services/album.service";
 import { Media, MediaType } from "../types/types";
 import FormCheckLabel from "react-bootstrap/esm/FormCheckLabel";
 import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
+import axios from "axios";
 
 const EditMedia = () => {
     const navigate = useNavigate();
@@ -59,8 +60,8 @@ const EditMedia = () => {
         <form onSubmit={handleSubmit}>
             <CardGroup>
                 <Card>
-                    {media.type === MediaType.Image && <img src={`/api/${media.fileName}`} className="card-img-top" alt="..."></img>}
-                    {media.type === MediaType.Video && <video controls src={`/api/${media.fileName}`} className="card-img-top"></video>}
+                    {media.type === MediaType.Image && <img src={`${axios.defaults.baseURL}${media.fileName}`} className="card-img-top" alt="..."></img>}
+                    {media.type === MediaType.Video && <video controls src={`${axios.defaults.baseURL}${media.fileName}`} className="card-img-top"></video>}
                     <input name="id" readOnly hidden value={media.id}></input>
                     <input name="albumId" readOnly hidden value={media.albumId}></input>
                     <textarea className="card-body" name="caption" placeholder="Caption..." value={media.caption}

@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import React from "react";
 import albumService from "../services/album.service";
 import { Media, MediaType } from "../types/types";
+import axios from "axios";
 
 const Gallery = () => {
     const { id } = useParams();
@@ -53,8 +54,8 @@ const Gallery = () => {
                     {album.media.map((media: Media) => (
                         <Col sm={6} lg={4} className="mb-3" key={media.id}>
                             <Card>
-                                {media.type === MediaType.Image && <img src={`/api/${media.fileName}`} className="card-img-top" alt="..."></img>}
-                                {media.type === MediaType.Video && <video controls src={`/api/${media.fileName}`} className="card-img-top"></video>}
+                                {media.type === MediaType.Image && <img src={`${axios.defaults.baseURL}${media.fileName}`} className="card-img-top" alt="..."></img>}
+                                {media.type === MediaType.Video && <video controls src={`${axios.defaults.baseURL}${media.fileName}`} className="card-img-top"></video>}
                                 <CardBody>
                                     <CardText>{media.caption}</CardText>
                                     <CardText><small className="text-muted">{media.createdDate}</small></CardText>

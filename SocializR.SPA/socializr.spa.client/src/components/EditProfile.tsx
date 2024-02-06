@@ -10,6 +10,7 @@ import Select from "react-select";
 import locationService from "../services/selectItems.service";
 import selectItemsService from "../services/selectItems.service";
 import { PencilFill } from "react-bootstrap-icons";
+import axios from "axios";
 
 const EditProfile = () => {
     const navigate = useNavigate();
@@ -115,7 +116,7 @@ const EditProfile = () => {
                 <h5><PencilFill /> Edit profile</h5>
                 <hr />
                 <img className="rounded-circle profile-user-photo shadow img-thumbnail float-center" alt="Avatar"
-                    src={file !== null ? URL.createObjectURL(file[0]) : `/api/${profile.userPhoto}`} />
+                    src={file !== null ? URL.createObjectURL(file[0]) : `${axios.defaults.baseURL}${profile.userPhoto}`} />
                 <Row className="form-group mb-3 mt-3">
                     <label className='col-4 col-form-label'>Avatar</label>
                     <Col xs={8}>
