@@ -12,6 +12,7 @@ import Gallery from './components/Gallery.tsx';
 import EditMedia from './components/EditMedia.tsx';
 import CreateAlbum from './components/CreateAlbum.tsx';
 import Friends from './components/Friends.tsx';
+import axios from 'axios';
 
 const router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
     element: <Register />
   }
 ])
+
+if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+axios.defaults.baseURL = "/api/";
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

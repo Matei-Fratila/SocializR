@@ -4,7 +4,7 @@ import { CurrentUser, LoginRequest, LoginResponse, RegisterRequest } from '../ty
 class AuthService {
     async login(loginRequest: LoginRequest) {
         try {
-            const axiosResponse: AxiosResponse = await axios.post('Auth/login', loginRequest);
+            const axiosResponse: AxiosResponse = await axios.post('/Auth/login', loginRequest);
             const response: LoginResponse = axiosResponse.data;
 
             if (response.currentUser) {
@@ -22,7 +22,7 @@ class AuthService {
 
     async register(registerRequest: RegisterRequest) {
         try {
-            await axios.post('api/Auth/register', registerRequest);
+            await axios.post('/Auth/register', registerRequest);
         } catch (e) {
             console.error(e);
         }

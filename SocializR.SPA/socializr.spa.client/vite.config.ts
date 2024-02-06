@@ -38,7 +38,6 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-    const isDev = mode === 'development';
 
     return {
         plugins: [plugin()],
@@ -50,9 +49,9 @@ export default defineConfig(({ mode }) => {
         server: {
             proxy: {
                 '/api': {
-                    target: isDev ? 'https://localhost:7264' : 'https://socializrspaserver.azurewebsites.net',
-                    changeOrigin: isDev ? true : false,
-                    secure: isDev ? false : true,
+                    target: 'https://localhost:7264',
+                    changeOrigin: true,
+                    secure: false,
                     rewrite: path => path.replace('/api', '')
                 }
             },
