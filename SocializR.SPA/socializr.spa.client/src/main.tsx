@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App.tsx';
 import Login from './components/Login.tsx';
 import Register from './components/Register.tsx';
-import { createBrowserRouter, Link, Navigate, RouterProvider, useNavigate } from 'react-router-dom';
+import { createBrowserRouter, Link, Navigate, RouterProvider } from 'react-router-dom';
 import Feed from './components/Feed.tsx';
 import Profile from './components/Profile.tsx';
 import EditProfile from './components/EditProfile.tsx';
