@@ -51,5 +51,7 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
             .WithMany(p => p.Users)
             .HasForeignKey(d => d.ProfilePhotoId)
             .HasConstraintName("FK_Users_Photos");
+
+        builder.HasQueryFilter(e => !e.IsDeleted);
     }
 }

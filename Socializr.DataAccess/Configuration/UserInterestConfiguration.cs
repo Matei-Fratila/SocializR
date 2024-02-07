@@ -21,5 +21,7 @@ internal class UserInterestConfiguration : IEntityTypeConfiguration<UserInterest
             .HasForeignKey(d => d.UserId)
             .OnDelete(DeleteBehavior.Cascade)
             .HasConstraintName("FK_UserInterests_Users");
+
+        builder.HasQueryFilter(e => !e.IsDeleted);
     }
 }

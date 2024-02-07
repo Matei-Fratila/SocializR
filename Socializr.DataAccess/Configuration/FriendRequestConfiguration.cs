@@ -6,8 +6,6 @@ internal class FriendRequestConfiguration : IEntityTypeConfiguration<FriendReque
     {
         builder.ToTable("FriendRequests");
 
-        builder.HasKey(e => new { e.RequesterUserId, e.RequestedUserId });
-
         builder.Property(e => e.RequesterUserId).HasColumnName("RequesterUserId");
 
         builder.Property(e => e.RequestedUserId).HasColumnName("RequestedUserId");
@@ -22,5 +20,7 @@ internal class FriendRequestConfiguration : IEntityTypeConfiguration<FriendReque
             .WithMany(p => p.FriendRequestsRequesterUser)
             .HasForeignKey(d => d.RequesterUserId)
             .HasConstraintName("FK_Friends_Users");
+
+        builder.HasQueryFilter(e => !e.IsDeleted);
     }
 }

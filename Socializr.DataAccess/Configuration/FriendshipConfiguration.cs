@@ -21,5 +21,7 @@ internal class FriendshipConfiguration : IEntityTypeConfiguration<Friendship>
             .HasForeignKey(d => d.SecondUserId)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("FK_Friends_Users3");
+
+        builder.HasQueryFilter(e => !e.IsDeleted);
     }
 }

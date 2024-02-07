@@ -116,7 +116,7 @@ const EditProfile = () => {
                 <h5><PencilFill /> Edit profile</h5>
                 <hr />
                 <img className="rounded-circle profile-user-photo shadow img-thumbnail float-center" alt="Avatar"
-                    src={file !== null ? URL.createObjectURL(file[0]) : `${axios.defaults.baseURL}${profile.userPhoto}`} />
+                    src={file.length !== 0 ? URL.createObjectURL(file[0]) : `${axios.defaults.baseURL}${profile.userPhoto}`} />
                 <Row className="form-group mb-3 mt-3">
                     <label className='col-4 col-form-label'>Avatar</label>
                     <Col xs={8}>

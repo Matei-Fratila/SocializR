@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App.tsx';
 import Login from './components/Login.tsx';
 import Register from './components/Register.tsx';
-import { createBrowserRouter, Link, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Link, Navigate, RouterProvider, useNavigate } from 'react-router-dom';
 import Feed from './components/Feed.tsx';
 import Profile from './components/Profile.tsx';
 import EditProfile from './components/EditProfile.tsx';
@@ -16,7 +16,6 @@ import axios from 'axios';
 
 const router = createBrowserRouter([
   {
-    path: "/",
     element: <App />,
     children: [
       {
@@ -28,16 +27,14 @@ const router = createBrowserRouter([
         element: <Profile />,
         handle: {
           crumb: () => <Link to="/profile/:id">Profile</Link>
-        },
-        children: [
-          {
-            path: "profile/edit/:id",
-            element: <EditProfile />,
-            handle: {
-              crumb: () => <Link to="/profile/edit/:id">Edit profile</Link>
-            }
-          }
-        ]
+        }
+      },
+      {
+        path: "profile/edit/:id",
+        element: <EditProfile />,
+        handle: {
+          crumb: () => <Link to="/profile/edit/:id">Edit profile</Link>
+        }
       },
       {
         path: "album/gallery/:id",
@@ -64,6 +61,10 @@ const router = createBrowserRouter([
   {
     path: "register",
     element: <Register />
+  },
+  {
+    path: "/",
+    element: <Navigate to="/feed"/>
   }
 ])
 

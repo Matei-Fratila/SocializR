@@ -6,10 +6,6 @@ internal class CountyConfiguration : IEntityTypeConfiguration<County>
     {
         builder.ToTable("Counties");
 
-        builder.HasKey(e => e.Id);
-
-        builder.Property(e => e.Id).HasColumnName("Id");
-
         builder.Property(e => e.Name)
             .IsRequired()
             .HasMaxLength(50)

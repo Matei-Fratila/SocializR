@@ -33,5 +33,7 @@ internal class MediaConfiguration : IEntityTypeConfiguration<Media>
             .HasForeignKey(d => d.UserId)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("FK_Photos_Users");
+
+        builder.HasQueryFilter(e => !e.IsDeleted);
     }
 }

@@ -21,5 +21,7 @@ internal class LikeConfiguration : IEntityTypeConfiguration<Like>
             .HasForeignKey(d => d.UserId)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("FK_Likes_Users");
+
+        builder.HasQueryFilter(e => !e.IsDeleted);
     }
 }

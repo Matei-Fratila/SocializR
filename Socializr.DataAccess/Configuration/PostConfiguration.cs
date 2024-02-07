@@ -1,4 +1,6 @@
-﻿namespace SocializR.DataAccess.Configuration;
+﻿using Socializr.Models.Entities.Base;
+
+namespace SocializR.DataAccess.Configuration;
 
 internal class PostConfiguration : IEntityTypeConfiguration<Post>
 {
@@ -16,5 +18,7 @@ internal class PostConfiguration : IEntityTypeConfiguration<Post>
             .WithMany(p => p.Posts)
             .HasForeignKey(d => d.UserId)
             .HasConstraintName("FK_Posts_Users");
+
+        builder.HasQueryFilter(e => !e.IsDeleted);
     }
 }

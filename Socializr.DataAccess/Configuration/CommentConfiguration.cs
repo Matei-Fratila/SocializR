@@ -25,5 +25,7 @@ internal class CommentConfiguration : IEntityTypeConfiguration<Comment>
             .HasForeignKey(d => d.UserId)
             .OnDelete(DeleteBehavior.ClientSetNull)
             .HasConstraintName("FK_Comments_Users");
+
+        builder.HasQueryFilter(e => !e.IsDeleted);
     }
 }

@@ -17,5 +17,7 @@ internal class AlbumConfiguration : IEntityTypeConfiguration<Album>
             .HasForeignKey(d => d.UserId)
             .HasConstraintName("FK_Albums_Users")
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasQueryFilter(e => !e.IsDeleted);
     }
 }
