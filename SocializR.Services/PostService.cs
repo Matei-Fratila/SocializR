@@ -39,12 +39,6 @@ public class PostService(CurrentUser _currentUser,
             if(authorizedUserId.HasValue) post.IsLikedByCurrentUser = post.Likes.Any(l => l.UserId == authorizedUserId);
         }
 
-        foreach (var comment in posts.SelectMany(p => p.Comments))
-        {
-            comment.UserPhoto = _imageStorage.UriFor(comment.UserPhoto ?? _defaultProfilePicture);
-            if(authorizedUserId.HasValue) comment.IsCurrentUserComment = comment.UserId == authorizedUserId;
-        }
-
         foreach (var media in posts.SelectMany(x => x.Media))
         {
             media.FileName = _imageStorage.UriFor(media.FileName ?? _defaultProfilePicture);
