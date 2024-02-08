@@ -79,6 +79,11 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));
+
+if (builder.Environment.IsProduction())
+{
+    builder.Services.Configure<AzureImageStorageSettings>(builder.Configuration.GetSection(nameof(AzureImageStorageSettings)));
+}
 builder.Services.AddBusinessLogic(builder.Environment);
 builder.Services.AddCurrentUser();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

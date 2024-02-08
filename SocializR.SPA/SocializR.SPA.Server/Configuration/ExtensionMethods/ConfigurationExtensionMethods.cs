@@ -1,4 +1,6 @@
-﻿namespace SocializR.SPA.Server.Configuration.ExtensionMethods;
+﻿using SocializR.Services.MediaServices;
+
+namespace SocializR.SPA.Server.Configuration.ExtensionMethods;
 
 public static class ConfigurationExtensionMethods
 {
@@ -11,7 +13,7 @@ public static class ConfigurationExtensionMethods
 
         if (env.IsProduction())
         {
-            services.AddScoped<IImageStorage, LocalStorageService>();
+            services.AddScoped<IImageStorage, AzureStorageService>();
         }
         else
         {
