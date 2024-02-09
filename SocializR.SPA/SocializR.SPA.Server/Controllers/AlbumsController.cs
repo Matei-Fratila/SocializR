@@ -2,6 +2,7 @@
 using Socializr.Models.ViewModels.Album;
 using SocializR.Models.Enums;
 using SocializR.Models.ViewModels.Album;
+using SocializR.Models.ViewModels.Media;
 using System.Net;
 
 namespace SocializR.SPA.Server.Controllers;
@@ -86,12 +87,15 @@ public class AlbumsController(ApplicationUnitOfWork _applicationUnitOfWork,
     }
 
     [HttpGet("media/{id}")]
-    public async Task<ActionResult<Media>> GetMediaAsync(Guid id)
+    public async Task<ActionResult<MediaViewModel>> GetMediaAsync(Guid id)
     {
         var media = await _applicationUnitOfWork.Media.GetAsync(id);
-        media.FileName = _imageStorage.UriFor(media.FileName);
 
-        return media;
+        var model = new MediaViewModel();
+        _mapper.Map(media, model);
+        model.FileName = _imageStorage.UriFor(media.FileName);
+
+        return model;
     }
 
     [HttpDelete("media/{id}")]
@@ -108,18 +112,20 @@ public class AlbumsController(ApplicationUnitOfWork _applicationUnitOfWork,
     }
 
     [HttpPut("media")]
-    public async Task<IActionResult> UpdateMediaAsync([FromForm] Media model)
+    public async Task<ActionResult<MediaViewModel>> UpdateMediaAsync([FromForm] MediaViewModel model)
     {
         var media = await _mediaService.GetAsync(model.Id);
+        var album = await _albumService.GetAsync(model.AlbumId);
 
         media.Caption = model.Caption;
         _mediaService.Update(media);
+        _albumService.Update(album);
 
         if (_applicationUnitOfWork.SaveChanges() == 0)
         {
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
 
-        return Ok();
+        return model;
     }
 }

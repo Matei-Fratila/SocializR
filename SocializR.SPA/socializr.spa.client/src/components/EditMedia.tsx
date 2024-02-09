@@ -50,7 +50,7 @@ const EditMedia = () => {
         try {
             albumService.updateMedia(formData);
         } catch (e) {
-
+            return;
         }
         navigate(`/album/gallery/${media.albumId}`);
         location.reload();
@@ -71,6 +71,7 @@ const EditMedia = () => {
                             className="form-check-input"
                             type="checkbox" 
                             name="isCoverPhoto"
+                            value={String(media.isCoverPhoto)}
                             checked={media.isCoverPhoto}
                             onChange={() => {
                                 const updatedMedia = { ...media, isCoverPhoto: !media.isCoverPhoto };

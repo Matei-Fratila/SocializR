@@ -4,12 +4,12 @@ import { Images, Pencil, Trash } from "react-bootstrap-icons";
 import { Link, useParams } from "react-router-dom";
 import React from "react";
 import albumService from "../services/album.service";
-import { Media, MediaType } from "../types/types";
+import { Album, Media, MediaType } from "../types/types";
 import axios from "axios";
 
 const Gallery = () => {
     const { id } = useParams();
-    const [album, setAlbum] = React.useState({
+    const [album, setAlbum] = React.useState<Album>({
         id: "",
         userId: "",
         name: "",
@@ -18,6 +18,7 @@ const Gallery = () => {
         coverFilePath: "",
         nrOfImages: 0,
         createdDate: "",
+        lastModifiedDate: "",
         media: [] as Media[]
     });
 
@@ -58,7 +59,10 @@ const Gallery = () => {
                                 {media.type === MediaType.Video && <video controls src={`${axios.defaults.baseURL}${media.fileName}`} className="card-img-top"></video>}
                                 <CardBody>
                                     <CardText>{media.caption}</CardText>
-                                    <CardText><small className="text-muted">{media.createdDate}</small></CardText>
+                                    <CardText>
+                                        <small className="text-muted">Created {media.createdDate}</small>
+                                        {(media.lastModifiedDate !== "") && <small className="text-muted float-end">Updated {media.lastModifiedDate}</small>}
+                                    </CardText>
                                 </CardBody>
                                 <CardFooter>
                                     <Button variant="link">

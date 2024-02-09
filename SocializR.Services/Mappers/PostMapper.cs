@@ -4,8 +4,6 @@ public class PostMapper : Profile
 {
     public PostMapper()
     {
-        CreateMap<Media, MediaViewModel>();
-
         CreateMap<Like, LikeViewModel>()
             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.User.FirstName))
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.User.LastName))
