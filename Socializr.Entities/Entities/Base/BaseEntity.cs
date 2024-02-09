@@ -8,7 +8,7 @@ public class BaseEntity : ISoftDeletable, IEntity
 
     public bool IsDeleted { get; set; }
 
-    public DateTime? CreatedDate { get; set; }
+    public DateTime CreatedDate { get; set; }
     public DateTime? LastModifiedDate { get; set; }
 
     [Timestamp]

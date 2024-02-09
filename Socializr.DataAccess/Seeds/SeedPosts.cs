@@ -18,7 +18,7 @@ static class SeedPosts
         {
             var userId = ids[random.Next(nrOfUsers)];
             var date = context.Users.Where(u=>u.Id==userId).Select(u=>u.CreatedDate).FirstOrDefault();
-            var dateGenerator = new DateGenerator(date.Value);
+            var dateGenerator = new DateGenerator(date);
 
             posts.Add(new Post
             {

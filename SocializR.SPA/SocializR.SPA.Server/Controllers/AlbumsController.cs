@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using Socializr.Models.ViewModels.Album;
-using SocializR.Models.Entities;
 using SocializR.Models.Enums;
 using SocializR.Models.ViewModels.Album;
-using SocializR.Models.ViewModels.Common;
-using SocializR.Models.ViewModels.Feed;
 using System.Net;
 
 namespace SocializR.SPA.Server.Controllers;

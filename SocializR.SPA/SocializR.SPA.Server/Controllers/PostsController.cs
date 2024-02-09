@@ -1,7 +1,4 @@
 ﻿using AutoMapper;
-using Common.Interfaces;
-using Microsoft.Extensions.Hosting;
-using SocializR.Models.Entities;
 using SocializR.Models.ViewModels.Feed;
 using System.Net;
 

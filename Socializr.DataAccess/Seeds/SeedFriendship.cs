@@ -34,7 +34,7 @@ public static class SeedFriendship
             var date1 = context.Users.Where(u => u.Id == ids[index1]).Select(u => u.CreatedDate).FirstOrDefault();
             var date2= context.Users.Where(u => u.Id == ids[index2]).Select(u => u.CreatedDate).FirstOrDefault();
 
-            var date = dateGenerator.GetRandomFriendshipDay(date1.Value, date2.Value);
+            var date = dateGenerator.GetRandomFriendshipDay(date1, date2);
 
             friendships.Add(new Friendship
             {

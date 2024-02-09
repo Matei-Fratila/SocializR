@@ -6,6 +6,6 @@ public class MediaViewModel
     public string Caption { get; set; }
     public Guid Id { get; set; }
     public string FileName { get; set; }
-    public DateTime CreatedDate { get; set; }
+    public string CreatedDate { get; set; }
     public bool IsCoverPhoto { get; set; }
 }

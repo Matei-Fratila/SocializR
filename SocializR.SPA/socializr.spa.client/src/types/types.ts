@@ -113,6 +113,7 @@ export type Album = {
     coverFilePath: string;
     nrOfImages: number;
     createdDate: string;
+    lastUpdatedDate: string;
     media: Media[];
 }
 
