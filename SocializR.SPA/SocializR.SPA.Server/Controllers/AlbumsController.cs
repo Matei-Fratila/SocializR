@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Socializr.Models.ViewModels.Album;
 using SocializR.Models.Enums;
 using SocializR.Models.ViewModels.Album;
 using SocializR.Models.ViewModels.Media;
-using System.Net;
 
 namespace SocializR.SPA.Server.Controllers;
 
-[ApiController]
 [Authorize]
+[ApiController]
 [Route("[controller]")]
 public class AlbumsController(ApplicationUnitOfWork _applicationUnitOfWork,
     CurrentUser _currentUser,
@@ -17,21 +17,25 @@ public class AlbumsController(ApplicationUnitOfWork _applicationUnitOfWork,
     IImageStorage _imageStorage,
     IMapper _mapper) : ControllerBase
 {
-    private readonly ILogger<PostsController> logger;
-
-    [HttpGet("{id}")]
+    [HttpGet("{id}", Name = "AlbumById")]
     [AllowAnonymous]
-    public async Task<IResult> GetAsync([FromRoute] Guid id)
+    public async Task<Results<Ok<AlbumViewModel>, NotFound>> GetAsync([FromRoute] Guid id)
     {
         var album = await _albumService.GetViewModelAsync(id);
 
+        if (album is null)
+        {
+            return TypedResults.NotFound();
+        }
+
         album.Media = album.Media.OrderByDescending(x => x.CreatedDate).ToList();
+
         foreach (var media in album.Media)
         {
             media.FileName = _imageStorage.UriFor(media.FileName);
         }
 
-        return Results.Ok(album);
+        return TypedResults.Ok(album);
     }
 
     [HttpPost]
@@ -63,51 +67,53 @@ public class AlbumsController(ApplicationUnitOfWork _applicationUnitOfWork,
 
         _albumService.Add(album);
 
-        if (!await _applicationUnitOfWork.SaveChangesAsync())
-        {
-            return Results.StatusCode(500);
-        }
+        await _applicationUnitOfWork.SaveChangesAsync();
 
         var result = new AlbumViewModel();
         _mapper.Map(album, result);
 
-        return Results.CreatedAtRoute(routeName: "/", routeValues: new {result.Id}, value: result);
+        return Results.CreatedAtRoute(routeName: "AlbumById", routeValues: new {result.Id}, value: result);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IResult> DeleteAsync([FromRoute] Guid id)
+    public async Task<Results<NotFound, NoContent>> DeleteAsync([FromRoute] Guid id)
     {
-        await _albumService.DeleteAsync(id);
-
-        if (_applicationUnitOfWork.SaveChanges() == 0)
+        if(!await _albumService.DeleteAsync(id))
         {
-            return Results.StatusCode(500);
+            return TypedResults.NotFound();
         }
 
-        return Results.NoContent();
+        await _applicationUnitOfWork.SaveChangesAsync();
+
+        return TypedResults.NoContent();
     }
 
     [HttpGet("media/{id}")]
-    public async Task<IResult> GetMediaAsync([FromRoute] Guid id)
+    public async Task<Results<Ok<MediaViewModel>, NotFound>> GetMediaAsync([FromRoute] Guid id)
     {
         var media = await _applicationUnitOfWork.Media.GetAsync(id);
+
+        if(media is null)
+        {
+            return TypedResults.NotFound();
+        }
 
         var model = new MediaViewModel();
         _mapper.Map(media, model);
         model.FileName = _imageStorage.UriFor(media.FileName);
 
-        return Results.Ok(model);
+        return TypedResults.Ok(model);
     }
 
     [HttpDelete("media/{id}")]
     public async Task<IResult> DeleteMediaAsync([FromRoute] Guid id)
     {
-        await _mediaService.DeleteAsync(id);
-
-        if (_applicationUnitOfWork.SaveChanges() == 0)
+        if(await _mediaService.DeleteAsync(id))
         {
-            return Results.StatusCode(500);
+            return Results.NotFound();
         }
+
+        await _applicationUnitOfWork.SaveChangesAsync();
 
         return Results.NoContent();
     }
@@ -116,16 +122,24 @@ public class AlbumsController(ApplicationUnitOfWork _applicationUnitOfWork,
     public async Task<IResult> UpdateMediaAsync([FromForm] MediaViewModel model)
     {
         var media = await _mediaService.GetAsync(model.Id);
+
+        if(media is null)
+        {
+            return Results.NotFound();
+        }
+
         var album = await _albumService.GetAsync(model.AlbumId);
+
+        if(album is null)
+        {
+            return Results.NotFound();
+        }
 
         media.Caption = model.Caption;
         _mediaService.Update(media);
         _albumService.Update(album);
 
-        if (_applicationUnitOfWork.SaveChanges() == 0)
-        {
-            return Results.StatusCode(500);
-        }
+        await _applicationUnitOfWork.SaveChangesAsync();
 
         return Results.NoContent();
     }

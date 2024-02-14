@@ -84,7 +84,7 @@ public class ProfileController(CurrentUser _currentUser,
     [HttpGet]
     public async Task<IActionResult> EditAsync(Guid id)
     {
-        ProfileViewModel model = null;
+        EditProfile model = null;
         var currentUser = await _userManager.GetUserAsync(User);
 
         if (id == Guid.Empty)
@@ -128,7 +128,7 @@ public class ProfileController(CurrentUser _currentUser,
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EditAsync(ProfileViewModel model)
+    public async Task<IActionResult> EditAsync(EditProfile model)
     {
         if (!ModelState.IsValid)
         {

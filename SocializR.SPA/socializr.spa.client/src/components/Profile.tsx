@@ -17,7 +17,7 @@ const Profile = () => {
 
     const [profile, setProfile] = React.useState<ProfileModel>({
         id: "",
-        userPhoto: "",
+        avatar: "",
         relationToCurrentUser: RelationType.Unknown,
         firstName: "",
         lastName: "",
@@ -32,8 +32,7 @@ const Profile = () => {
         description: "",
         mutualFriends: 0,
         interests: [] as SelectItem[],
-        albums: [] as AlbumModel[],
-        filePath: ""
+        albums: [] as AlbumModel[]
     });
 
     const handleFetchProfile = React.useCallback(async () => {
@@ -117,7 +116,7 @@ const Profile = () => {
             <Col lg={6} md={6} sm={12} xs={12}>
                 <Row>
                     <Col lg={3} md={4} sm={3} xs={6}>
-                        <img className="rounded-circle profile-user-photo shadow img-thumbnail" alt="Avatar" src={`${axios.defaults.baseURL}${profile.userPhoto}`} />
+                        <img className="rounded-circle profile-user-photo shadow img-thumbnail" alt="Avatar" src={`${axios.defaults.baseURL}${profile.avatar}`} />
                     </Col>
                     <Col lg={9} md={8} sm={9} xs={6}>
                         <h4>{profile.firstName} {profile.lastName}</h4>

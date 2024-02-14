@@ -6,7 +6,7 @@ public class ViewProfileMapper : Profile
 {
     public ViewProfileMapper()
     {
-        CreateMap<User, ViewProfileViewModel>()
+        CreateMap<User, ProfileViewModel>()
             .ForMember(dest => dest.City, opt =>
             {
                 opt.PreCondition(src => src.City != null);
@@ -24,7 +24,7 @@ public class ViewProfileMapper : Profile
             })
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => 
                 new SelectItem { Value = ((int)src.Gender).ToString(), Label = ((GenderTypes)src.Gender).ToString() }))
-            .ForMember(dest => dest.UserPhoto, opt =>
+            .ForMember(dest => dest.Avatar, opt =>
             {
                 opt.PreCondition(src => src.ProfilePhoto != null);
                 opt.MapFrom(u => u.ProfilePhoto.FileName);

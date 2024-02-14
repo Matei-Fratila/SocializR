@@ -1,71 +1,40 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using ProfileViewModel = SocializR.Models.ViewModels.Profile.ProfileViewModel;
 
 namespace SocializR.Services.UserServices;
 
-public class ProfileService(CurrentUser _currentUser, 
+public class ProfileService(CurrentUser _currentUser,
+    ApplicationUnitOfWork _unitOfWork,
+    UserManager<User> _userManager,
+    IOptionsMonitor<AppSettings> _appSettings,
     IFriendshipService _friendshipService,
     IFriendRequestService _friendRequestService,
-    UserManager<User> _userManager,
+    IMediaService _mediaService,
+    IAlbumService _albumService,
+    IImageStorage _imageStorage,
+    IPostService _postService,
     IMapper _mapper) : IProfileService
 {
-    public byte[] ConvertToByteArray(IFormFile content)
-    {
-        using (var memoryStream = new MemoryStream())
-        {
-            content.CopyTo(memoryStream);
-            return memoryStream.ToArray();
-        }
-    }
+    private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
+    private readonly string _defaultAlbumCover = _appSettings.CurrentValue.DefaultAlbumCover;
+    private readonly string _profilePicturesAlbumName = _appSettings.CurrentValue.ProfilePicturesAlbumName;
+    private readonly string _fileUploadLocation = _appSettings.CurrentValue.FileUploadLocation;
+    private readonly int _postsPerPage = _appSettings.CurrentValue.PostsPerPage;
+    private readonly int _commentsPerFirstPage = _appSettings.CurrentValue.CommentsPerFirstPage;
 
-    public async Task<bool> ChangeProfilePhoto(Guid photoId, Guid userId)
-    {
-        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
-        user.ProfilePhotoId = photoId;
-
-        var result = await _userManager.UpdateAsync(user);
-        return result.Succeeded;
-    }
-
-    public string GetUserPhoto(string id)
-    {
-        return _userManager.Users
-            .Where(u => u.Id.ToString() == id)
-            .Select(u => u.ProfilePhoto.FileName)
-            .FirstOrDefault();
-    }
-
-    public ProfileViewModel GetEditProfileVM() =>
-        _userManager.Users
-            .Where(u => u.Id == _currentUser.Id)
-            .ProjectTo<ProfileViewModel>(_mapper.ConfigurationProvider)
-            .FirstOrDefault();
-
-    public ProfileViewModel GetEditProfileVM(Guid id)
-    {
-        var user = _userManager.Users
-            .Where(u => u.Id == id && u.IsDeleted == false)
-            .FirstOrDefault();
-
-        var profile = _userManager.Users
-            .Where(u => u.Id == id && u.IsDeleted == false)
-            .ProjectTo<ProfileViewModel>(_mapper.ConfigurationProvider)
-            .FirstOrDefault();
-
-        return profile;
-    }
-
-    public async Task<ViewProfileViewModel> GetViewProfileVM(Guid id)
+    public async Task<ProfileViewModel> GetProfile(Guid id)
     {
         var model = await _userManager.Users
            .Include(u => u.ProfilePhoto)
            .Where(u => u.Id == id && u.IsDeleted == false)
-           .ProjectTo<ViewProfileViewModel>(_mapper.ConfigurationProvider)
+           .ProjectTo<ProfileViewModel>(_mapper.ConfigurationProvider)
            .FirstOrDefaultAsync();
 
         return model;
     }
 
-    public async Task<bool> UpdateUser(ProfileViewModel model)
+    public async Task UpdateProfile(EditProfile model)
     {
         var user = _userManager.Users
             .Include(u => u.City)
@@ -74,29 +43,45 @@ public class ProfileService(CurrentUser _currentUser,
             .Where(u => u.Id == model.Id)
             .FirstOrDefault();
 
-        if (user == null)
+        _mapper.Map<EditProfile, User>(model, user);
+        var result = await _userManager.UpdateAsync(user);
+
+        var file = model.Avatar;
+
+        if (file != null && result.Succeeded)
         {
-            return false;
+            var type = file.ContentType.ToString().Split('/');
+
+            if (file.Length > 0)
+            {
+                if (type[0] == "image")
+                {
+                    var album = await _albumService.GetAsync(_profilePicturesAlbumName, model.Id);
+                    if (album == null)
+                    {
+                        album = new Album { UserId = model.Id, Name = _profilePicturesAlbumName };
+                        _albumService.Add(album);
+                    }
+
+                    var imageName = await _imageStorage.SaveImage(file.OpenReadStream(), type[1]);
+                    var image = _mediaService.Add(imageName, MediaTypes.Image, album);
+
+                    if (await ChangeProfilePhoto(image.Id, model.Id))
+                    {
+                        _postService.Add(new Post
+                        {
+                            UserId = model.Id,
+                            Title = "Added a new profile photo",
+                            Body = "",
+                            CreatedOn = DateTime.Now,
+                            Media = [image]
+                        });
+                    }
+
+                    await _unitOfWork.SaveChangesAsync();
+                }
+            }
         }
-
-        _mapper.Map<ProfileViewModel, User>(model, user);
-
-        var result = await _userManager.UpdateAsync(user);
-
-        return result.Succeeded;
-    }
-
-    public async Task<bool> UpdateCurrentUser(ProfileViewModel model)
-    {
-        var user = _userManager.Users
-            .Where(u => u.Id == _currentUser.Id)
-            .FirstOrDefault();
-
-        _mapper.Map<ProfileViewModel, User>(model, user);
-
-        var result = await _userManager.UpdateAsync(user);
-
-        return result.Succeeded;
     }
 
     public RelationTypes GetRelationToCurrentUser(Guid? currentUserId, Guid id)
@@ -112,7 +97,7 @@ public class ProfileService(CurrentUser _currentUser,
         }
 
         var hasEntries = _friendshipService.Query
-            .Where(f => f.FirstUserId == id 
+            .Where(f => f.FirstUserId == id
                 && f.SecondUserId == _currentUser.Id)
             .Any();
 
@@ -122,7 +107,7 @@ public class ProfileService(CurrentUser _currentUser,
         }
 
         hasEntries = _friendshipService.Query
-            .Where(f => f.SecondUserId == id 
+            .Where(f => f.SecondUserId == id
                 && f.FirstUserId == _currentUser.Id)
             .Any();
 
@@ -132,7 +117,7 @@ public class ProfileService(CurrentUser _currentUser,
         }
 
         hasEntries = _friendRequestService.Query
-            .Where(f => f.RequesterUserId == id 
+            .Where(f => f.RequesterUserId == id
                 && f.RequestedUserId == _currentUser.Id)
             .Any();
 
@@ -142,7 +127,7 @@ public class ProfileService(CurrentUser _currentUser,
         }
 
         hasEntries = _friendRequestService.Query
-            .Where(f => f.RequestedUserId == id 
+            .Where(f => f.RequestedUserId == id
                 && f.RequesterUserId == _currentUser.Id)
             .Any();
 
@@ -152,5 +137,14 @@ public class ProfileService(CurrentUser _currentUser,
         }
 
         return RelationTypes.Strangers;
+    }
+
+    private async Task<bool> ChangeProfilePhoto(Guid photoId, Guid userId)
+    {
+        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        user.ProfilePhotoId = photoId;
+
+        var result = await _userManager.UpdateAsync(user);
+        return result.Succeeded;
     }
 }

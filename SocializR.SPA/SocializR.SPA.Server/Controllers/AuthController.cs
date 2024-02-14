@@ -16,14 +16,8 @@ public class AuthController(UserManager<User> _userManager,
     private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
 
     [HttpPost("login")]
-    public async Task<IResult> Login([FromBody] LogInViewModel model)
+    public async Task<IResult> LoginAsync([FromBody] LogInViewModel model)
     {
-        var app = _appSettings.CurrentValue;
-        if (!ModelState.IsValid)
-        {
-            return Results.BadRequest(ModelState);
-        }
-
         var user = await _userManager.FindByEmailAsync(model.Email);
 
         if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
@@ -41,13 +35,8 @@ public class AuthController(UserManager<User> _userManager,
     }
 
     [HttpPost("register")]
-    public async Task<IResult> Register([FromBody] RegisterViewModel model)
+    public async Task<IResult> RegisterAsync([FromBody] RegisterViewModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            return Results.BadRequest(ModelState);
-        }
-
         var user = _mapper.Map<User>(model);
         var result = await _userManager.CreateAsync(user, model.Password);
 

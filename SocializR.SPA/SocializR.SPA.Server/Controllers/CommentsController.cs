@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using SocializR.Models.ViewModels.Feed;
-using System.Net;
 
 namespace SocializR.SPA.Server.Controllers;
 
@@ -17,10 +16,7 @@ public class CommentsController(ApplicationUnitOfWork _applicationUnitOfWork,
     {
         _commentService.Remove(id);
 
-        if (!await _applicationUnitOfWork.SaveChangesAsync())
-        {
-            return Results.StatusCode(500);
-        }
+        await _applicationUnitOfWork.SaveChangesAsync();
 
         return Results.NoContent();
     }
@@ -34,16 +30,14 @@ public class CommentsController(ApplicationUnitOfWork _applicationUnitOfWork,
         newComment.User = _userManager.Users.FirstOrDefault(u => u.Id == newComment.UserId);
 
         _commentService.Add(newComment);
-        if (!await _applicationUnitOfWork.SaveChangesAsync())
-        {
-            throw new Exception("Ups we could not save the comment");
-        }
+        await _applicationUnitOfWork.SaveChangesAsync();
 
         var result = new CommentViewModel();
         _mapper.Map(newComment, result);
         result.IsCurrentUserComment = true;
 
-        return Results.CreatedAtRoute(routeName: "/", routeValues: new {result.Id}, value: result);
+        //implement get comment by comment id
+        return Results.Created(Url.Action(nameof(NextCommentsAsync)), result);
     }
 
     [HttpGet]

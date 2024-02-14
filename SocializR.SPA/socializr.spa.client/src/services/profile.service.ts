@@ -10,7 +10,7 @@ class ProfileService {
     }
 
     async editProfileAsync(data: any): Promise<Profile> {
-        const axiosResult: AxiosResponse = await axios.post(`/Profile`, data, {headers: {...authHeader(), 'Content-Type': 'multipart/form-data'}});
+        const axiosResult: AxiosResponse = await axios.put(`/Profile`, data, {headers: {...authHeader(), 'Content-Type': 'multipart/form-data'}});
         const profile: Profile = axiosResult.data;
         return profile;
     }

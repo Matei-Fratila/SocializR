@@ -76,7 +76,7 @@ export type Comments = Array<Comment>;
 
 export type Profile = {
     id: string;
-    userPhoto: string;
+    avatar: string;
     relationToCurrentUser: RelationType;
     firstName: string;
     lastName: string;
@@ -90,7 +90,6 @@ export type Profile = {
     nrOfPhotos: number;
     mutualFriends: number;
     description: string;
-    filePath: string;
     interests: SelectItem[];
     albums: Album[];
 }

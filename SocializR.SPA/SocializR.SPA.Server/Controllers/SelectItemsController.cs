@@ -10,7 +10,7 @@ public class SelectItemsController(ICityService _cityService,
     IInterestService _interestService) : ControllerBase
 {
     [HttpGet("/Counties")]
-    public async Task<IResult> GetCounties()
+    public async Task<IResult> GetCountiesAsync()
     {
         var counties = await _countyService.GetSelectItemsAsync();
 
@@ -18,7 +18,7 @@ public class SelectItemsController(ICityService _cityService,
     }
 
     [HttpGet("/Cities")]
-    public async Task<IResult> GetCities([FromQuery] Guid id)
+    public async Task<IResult> GetCitiesAsync([FromQuery] Guid id)
     {
         var cities = await _cityService.GetSelectItemsByCountyAsync(id);
 
@@ -26,7 +26,7 @@ public class SelectItemsController(ICityService _cityService,
     }
 
     [HttpGet("/Interests")]
-    public async Task<IResult> GetInterests()
+    public async Task<IResult> GetInterestsAsync()
     {
         var interests = await _interestService.GetSelectItemsAsync();
 

@@ -1,9 +1,4 @@
-﻿using AutoMapper;
-using Common.Interfaces;
-using SocializR.Models.Entities;
-using System.Net;
-
-namespace SocializR.Web.Controllers;
+﻿namespace SocializR.Web.Controllers;
 
 [ApiController]
 [Authorize]
@@ -13,8 +8,7 @@ public class FriendshipController(ApplicationUnitOfWork _unitOfWork,
     CurrentUser _currentUser,
     IImageStorage _imageStorage,
     IFriendshipService _friendshipService, 
-    IFriendRequestService _friendRequestService, 
-    IMapper _mapper) : ControllerBase
+    IFriendRequestService _friendRequestService) : ControllerBase
 {
     [HttpGet("{userId}")]
     [AllowAnonymous]
@@ -34,11 +28,7 @@ public class FriendshipController(ApplicationUnitOfWork _unitOfWork,
     public async Task<IResult> AddFriendAsync([FromRoute] Guid userId)
     {
         _friendshipService.Create(userId, _currentUser.Id);
-
-        if (!await _unitOfWork.SaveChangesAsync())
-        {
-            _friendRequestService.Delete(userId, _currentUser.Id);
-        }
+        await _unitOfWork.SaveChangesAsync();
 
         return Results.Created();
     }
@@ -47,11 +37,7 @@ public class FriendshipController(ApplicationUnitOfWork _unitOfWork,
     public async Task<IResult> UnfriendAsync([FromRoute] Guid userId)
     {
         await _friendshipService.DeleteAsync(userId, _currentUser.Id);
-
-        if (!await _unitOfWork.SaveChangesAsync())
-        {
-            return Results.StatusCode(500);
-        }
+        await _unitOfWork.SaveChangesAsync();
 
         return Results.NoContent();
     }
@@ -65,10 +51,7 @@ public class FriendshipController(ApplicationUnitOfWork _unitOfWork,
             RequesterUserId = _currentUser.Id
         });
 
-        if (!await _unitOfWork.SaveChangesAsync())
-        {
-            return Results.StatusCode(500);
-        }
+        await _unitOfWork.SaveChangesAsync();
 
         return Results.Created();
     }
@@ -77,11 +60,7 @@ public class FriendshipController(ApplicationUnitOfWork _unitOfWork,
     public async Task<IResult> DeleteAsync([FromRoute] Guid userId)
     {
         _friendRequestService.Delete(_currentUser.Id, userId);
-
-        if (!await _unitOfWork.SaveChangesAsync())
-        {
-            return Results.StatusCode(500);
-        }
+        await _unitOfWork.SaveChangesAsync();
 
         return Results.NoContent();
     }

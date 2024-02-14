@@ -43,7 +43,7 @@ public class AlbumService(ApplicationUnitOfWork unitOfWork,
         }
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
         var album = await UnitOfWork.Albums.Query
             .Where(a => a.Id == id)
@@ -51,9 +51,11 @@ public class AlbumService(ApplicationUnitOfWork unitOfWork,
 
         if(album == null)
         {
-            return;
+            return false;
         }
 
         Remove(album);
+
+        return true;
     }
 }

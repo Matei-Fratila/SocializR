@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using SocializR.Models.ViewModels.Feed;
-using System.Net;
 
 namespace SocializR.SPA.Server.Controllers;
 
@@ -13,11 +12,9 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
     IMapper _mapper,
     ILikeService _likeService) : ControllerBase
 {
-    private readonly ILogger<PostsController> logger;
-
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IResult> GetPaginatedAsync(Guid userId, int pageNumber = 0, bool isProfileView = false)
+    public async Task<IResult> GetAsync(Guid userId, int pageNumber = 0, bool isProfileView = false)
     {
         Guid? authorizedUserId = null;
 
@@ -38,17 +35,7 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
     public async Task<IResult> CreateAsync([FromForm] AddPostViewModel model)
     {
         var post = await _postService.CreateAsync(model);
-
-        try
-        {
-            if (!await _applicationUnitOfWork.SaveChangesAsync())
-            {
-                return Results.StatusCode(500);
-            }
-        } catch (Exception e)
-        {
-
-        }
+        await _applicationUnitOfWork.SaveChangesAsync();
 
         var result = new PostViewModel();
         _mapper.Map(post, result);
@@ -58,18 +45,15 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
             media.FileName = _imageStorage.UriFor(media.FileName);
         }
 
-        return Results.Created();
+        //implement get post by post id
+        return Results.Created(Url.Action(nameof(GetAsync)), result);
     }
 
     [HttpDelete("{id}")]
     public async Task<IResult> DeleteAsync([FromRoute] Guid id)
     {
         await _postService.DeleteAsync(id);
-
-        if (_applicationUnitOfWork.SaveChanges() == 0)
-        {
-            return Results.StatusCode(500);
-        }
+        await _applicationUnitOfWork.SaveChangesAsync();
 
         return Results.NoContent();
     }
@@ -80,11 +64,7 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
         string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         await _likeService.AddLikeAsync(id, new Guid(userId));
-
-        if (_applicationUnitOfWork.SaveChanges() == 0)
-        {
-            return Results.StatusCode(500);
-        }
+        await _applicationUnitOfWork.SaveChangesAsync();
 
         return Results.Created();
     }
@@ -92,14 +72,15 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
     [HttpDelete("like/{id}")]
     public async Task<IResult> DeleteLikeAsync([FromRoute] Guid id)
     {
-        string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier);
 
-        await _likeService.DeleteLikeAsync(id, new Guid(userId));
-
-        if (_applicationUnitOfWork.SaveChanges() == 0)
+        if(userId is null)
         {
-            return Results.StatusCode(500);
+            return Results.NotFound();
         }
+
+        await _likeService.DeleteLikeAsync(id, new Guid(userId.Value));
+        await _applicationUnitOfWork.SaveChangesAsync();
 
         return Results.NoContent();
     }
