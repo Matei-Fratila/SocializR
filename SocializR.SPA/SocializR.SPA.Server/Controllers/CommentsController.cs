@@ -13,20 +13,20 @@ public class CommentsController(ApplicationUnitOfWork _applicationUnitOfWork,
     ICommentService _commentService) : ControllerBase
 {
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+    public async Task<IResult> DeleteAsync([FromRoute] Guid id)
     {
         _commentService.Remove(id);
 
         if (!await _applicationUnitOfWork.SaveChangesAsync())
         {
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Results.StatusCode(500);
         }
 
-        return Ok();
+        return Results.NoContent();
     }
 
     [HttpPost]
-    public async Task<CommentViewModel> CreateAsync(AddCommentViewModel comment)
+    public async Task<IResult> CreateAsync([FromBody] AddCommentViewModel comment)
     {
         var newComment = new Comment();
         _mapper.Map(comment, newComment);
@@ -43,12 +43,12 @@ public class CommentsController(ApplicationUnitOfWork _applicationUnitOfWork,
         _mapper.Map(newComment, result);
         result.IsCurrentUserComment = true;
 
-        return result;
+        return Results.CreatedAtRoute(routeName: "/", routeValues: new {result.Id}, value: result);
     }
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<List<CommentViewModel>> NextCommentsAsync(Guid postId, int pageNumber)
+    public async Task<IResult> NextCommentsAsync([FromQuery] Guid postId, [FromQuery] int pageNumber)
     {
         Guid? authorizedUserId = null;
 
@@ -61,6 +61,6 @@ public class CommentsController(ApplicationUnitOfWork _applicationUnitOfWork,
             userId: authorizedUserId,
             pageNumber);
 
-        return comments;
+        return Results.Ok(comments);
     }
 }

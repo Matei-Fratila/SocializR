@@ -7,7 +7,8 @@ public class MediaViewModel
     public Guid Id { get; set; }
     public Guid AlbumId { get; set; }
     public string FileName { get; set; }
-    public string CreatedDate { get; set; }
-    public string LastModifiedDate { get; set; }
-    public bool IsCoverPhoto { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public string CreatedDateDisplay { get; set; }
+    public DateTime LastModifiedDate { get; set; }
+    public string LastModifiedDateDisplay { get; set; }
 }

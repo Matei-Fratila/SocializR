@@ -13,6 +13,7 @@ import EditMedia from './components/EditMedia.tsx';
 import CreateAlbum from './components/CreateAlbum.tsx';
 import Friends from './components/Friends.tsx';
 import axios from 'axios';
+import Media from './components/Media.tsx';
 
 const router = createBrowserRouter([
   {
@@ -41,7 +42,11 @@ const router = createBrowserRouter([
         element: <Gallery />
       },
       {
-        path: "album/gallery/media/:id",
+        path: "media/:id",
+        element: <Media />
+      },
+      {
+        path: "media/edit/:id",
         element: <EditMedia />
       },
       {

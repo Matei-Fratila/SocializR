@@ -17,7 +17,7 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult<IEnumerable<PostViewModel>>> GetPaginatedAsync(Guid userId, int pageNumber = 0, bool isProfileView = false)
+    public async Task<IResult> GetPaginatedAsync(Guid userId, int pageNumber = 0, bool isProfileView = false)
     {
         Guid? authorizedUserId = null;
 
@@ -26,14 +26,16 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
             authorizedUserId = new Guid(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         }
 
-        return await _postService.GetPaginatedAsync(userId, 
+        var postsResult = await _postService.GetPaginatedAsync(userId, 
             authorizedUserId,
             pageNumber, 
             isProfileView: isProfileView);
+
+        return Results.Ok(postsResult);
     }
 
     [HttpPost]
-    public async Task<ActionResult<PostViewModel>> CreateAsync([FromForm]AddPostViewModel model)
+    public async Task<IResult> CreateAsync([FromForm] AddPostViewModel model)
     {
         var post = await _postService.CreateAsync(model);
 
@@ -41,7 +43,7 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
         {
             if (!await _applicationUnitOfWork.SaveChangesAsync())
             {
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                return Results.StatusCode(500);
             }
         } catch (Exception e)
         {
@@ -56,24 +58,24 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
             media.FileName = _imageStorage.UriFor(media.FileName);
         }
 
-        return result;
+        return Results.Created();
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+    public async Task<IResult> DeleteAsync([FromRoute] Guid id)
     {
         await _postService.DeleteAsync(id);
 
         if (_applicationUnitOfWork.SaveChanges() == 0)
         {
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Results.StatusCode(500);
         }
 
-        return Ok();
+        return Results.NoContent();
     }
 
     [HttpPost("like/{id}")]
-    public async Task<IActionResult> LikeAsync([FromRoute]Guid id)
+    public async Task<IResult> LikeAsync([FromRoute] Guid id)
     {
         string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -81,14 +83,14 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
 
         if (_applicationUnitOfWork.SaveChanges() == 0)
         {
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Results.StatusCode(500);
         }
 
-        return Ok();
+        return Results.Created();
     }
 
     [HttpDelete("like/{id}")]
-    public async Task<IActionResult> DeleteLikeAsync([FromRoute]Guid id)
+    public async Task<IResult> DeleteLikeAsync([FromRoute] Guid id)
     {
         string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -96,9 +98,9 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
 
         if (_applicationUnitOfWork.SaveChanges() == 0)
         {
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Results.StatusCode(500);
         }
 
-        return Ok();
+        return Results.NoContent();
     }
 }

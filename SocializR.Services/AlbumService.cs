@@ -19,7 +19,7 @@ public class AlbumService(ApplicationUnitOfWork unitOfWork,
     public async Task<AlbumViewModel> GetViewModelAsync(Guid id)
         => await UnitOfWork.Albums.Query
             .Where(a => a.Id == id)
-            .Include(a => a.Media)
+            .Include(a => a.Media.OrderByDescending(m => m.CreatedDate))
             .ProjectTo<AlbumViewModel>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
 

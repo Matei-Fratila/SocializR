@@ -46,8 +46,8 @@ const Album = ({ item, onDelete }: AlbumProps) => {
                 </CardBody>
                 <CardFooter>
                     <small className="text-muted">{album.nrOfImages} photos</small>
-                    <small className="text-muted float-end">Created {album.createdDate}</small>
-                    {album.lastModifiedDate !== "" && <small className="text-muted float-end">Updated {album.lastModifiedDate}</small>}
+                    <small className="text-muted float-end">Created {album.createdDateDisplay}</small>
+                    {album.lastModifiedDateDisplay !== "" && <small className="text-muted float-end">Updated {album.lastModifiedDateDisplay}</small>}
                 </CardFooter>
             </Card>
         </Col>);

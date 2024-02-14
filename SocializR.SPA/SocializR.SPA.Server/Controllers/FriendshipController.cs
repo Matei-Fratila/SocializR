@@ -18,7 +18,7 @@ public class FriendshipController(ApplicationUnitOfWork _unitOfWork,
 {
     [HttpGet("{userId}")]
     [AllowAnonymous]
-    public async Task<ActionResult<List<UserViewModel>>> GetAllAsync(Guid userId)
+    public async Task<IResult> GetAllAsync([FromRoute] Guid userId)
     {
         var friends = await _friendshipService.GetAllAsync(userId);
 
@@ -27,12 +27,11 @@ public class FriendshipController(ApplicationUnitOfWork _unitOfWork,
             friend.ProfilePhoto = _imageStorage.UriFor(friend.ProfilePhoto ?? _configuration.CurrentValue.DefaultProfilePicture);
         }
 
-        return friends;
+        return Results.Ok(friends);
     }
 
-
     [HttpPost("{userId}")]
-    public async Task<IActionResult> AddFriendAsync([FromRoute]Guid userId)
+    public async Task<IResult> AddFriendAsync([FromRoute] Guid userId)
     {
         _friendshipService.Create(userId, _currentUser.Id);
 
@@ -41,24 +40,24 @@ public class FriendshipController(ApplicationUnitOfWork _unitOfWork,
             _friendRequestService.Delete(userId, _currentUser.Id);
         }
 
-        return Ok();
+        return Results.Created();
     }
 
     [HttpDelete("{userId}")]
-    public async Task<IActionResult> UnfriendAsync([FromRoute]Guid userId)
+    public async Task<IResult> UnfriendAsync([FromRoute] Guid userId)
     {
         await _friendshipService.DeleteAsync(userId, _currentUser.Id);
 
         if (!await _unitOfWork.SaveChangesAsync())
         {
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Results.StatusCode(500);
         }
 
-        return Ok();
+        return Results.NoContent();
     }
 
     [HttpPost("/Friendrequest/{userId}")]
-    public async Task<IActionResult> CreateAsync(Guid userId)
+    public async Task<IResult> CreateAsync([FromRoute] Guid userId)
     {
         _friendRequestService.Add(new FriendRequest
         {
@@ -68,23 +67,23 @@ public class FriendshipController(ApplicationUnitOfWork _unitOfWork,
 
         if (!await _unitOfWork.SaveChangesAsync())
         {
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Results.StatusCode(500);
         }
 
-        return Ok();
+        return Results.Created();
     }
 
     [HttpDelete("/Friendrequest/{userId}")]
-    public async Task<IActionResult> DeleteAsync(Guid userId)
+    public async Task<IResult> DeleteAsync([FromRoute] Guid userId)
     {
         _friendRequestService.Delete(_currentUser.Id, userId);
 
         if (!await _unitOfWork.SaveChangesAsync())
         {
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Results.StatusCode(500);
         }
 
-        return Ok();
+        return Results.NoContent();
     }
 
 }

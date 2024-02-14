@@ -31,7 +31,7 @@ public class ProfileController(CurrentUser _currentUser,
 
     [HttpGet("{id}")]
     [AllowAnonymous]
-    public async Task<ActionResult<ViewProfileViewModel>> GetAsync([FromRoute]Guid id)
+    public async Task<IResult> GetAsync([FromRoute] Guid id)
     {
         var currentUser = await _userManager.GetUserAsync(User);
 
@@ -42,15 +42,15 @@ public class ProfileController(CurrentUser _currentUser,
 
         var model = await _profileService.GetViewProfileVM(id);
 
+        if (model == null)
+        {
+            return Results.NotFound();
+        }
+
         model.UserPhoto = _imageStorage.UriFor(model.UserPhoto ?? _defaultProfilePicture);
         foreach (var album in model.Albums)
         {
             album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath ?? _defaultAlbumCover);
-        }
-
-        if (model == null)
-        {
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
 
         if (id != currentUser?.Id)
@@ -65,14 +65,13 @@ public class ProfileController(CurrentUser _currentUser,
         {
             model.Albums = null;
             model.Interests = null;
-            return model;
         }
 
-        return model;
+        return Results.Ok(model);
     }
 
     [HttpPost]
-    public async Task<ActionResult<ViewProfileViewModel>> EditAsync([FromForm]ProfileViewModel model)
+    public async Task<IResult> EditAsync([FromForm] ProfileViewModel model)
     {
         var currentUser = await _userManager.GetUserAsync(User);
         var result = await _profileService.UpdateUser(model);
@@ -101,7 +100,7 @@ public class ProfileController(CurrentUser _currentUser,
 
                         if (image == null)
                         {
-                            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                            return Results.StatusCode(500);
                         }
 
                         var hasModified = await _profileService.ChangeProfilePhoto(image.Id, model.Id);
@@ -131,9 +130,11 @@ public class ProfileController(CurrentUser _currentUser,
 
         if (!result)
         {
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Results.StatusCode(500);
         }
 
-        return await _profileService.GetViewProfileVM(model.Id);
+        var profile = await _profileService.GetViewProfileVM(model.Id);
+
+        return Results.CreatedAtRoute(routeName: "/", routeValues: new { model.Id }, value: profile);
     }
 }

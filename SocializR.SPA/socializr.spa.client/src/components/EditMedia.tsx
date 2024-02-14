@@ -1,28 +1,32 @@
-import { Button, Card, CardFooter, CardGroup, FormCheck } from "react-bootstrap";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Button, Card, CardFooter, CardGroup } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
 import albumService from "../services/album.service";
 import { Media, MediaType } from "../types/types";
-import FormCheckLabel from "react-bootstrap/esm/FormCheckLabel";
-import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
 import axios from "axios";
 
 const EditMedia = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-    const { isCoverPhoto } = useLocation().state;
-    const [media, setMedia] = React.useState({ id: "", albumId: "", caption: "", type: MediaType.Unspecified, createdDate: "", fileName: "", isCoverPhoto: false });
+    const [media, setMedia] = React.useState<Media>(
+        { 
+            id: "", 
+            albumId: "", 
+            caption: "", 
+            type: MediaType.Unspecified, 
+            createdDate: new Date(),
+            createdDateDisplay: "",
+            lastModifiedDate: new Date(),
+            lastModifiedDateDisplay: "", 
+            fileName: ""
+        });
 
     const handleFetchMedia = React.useCallback(async () => {
         try {
             if (id !== undefined) {
                 const mediaResponse: Media = await albumService.getMedia(id);
 
-                setMedia(prevMedia => {
-                    const updatedMedia = { ...mediaResponse, isCoverPhoto: prevMedia.isCoverPhoto };
-                    console.log(updatedMedia);
-                    return updatedMedia;
-                  });
+                setMedia(mediaResponse);
             }
         }
         catch {
@@ -33,14 +37,14 @@ const EditMedia = () => {
         handleFetchMedia();
     }, [id]);
 
-    React.useEffect(() => {
-        console.log("is cover photo changed");
-        setMedia(prevMedia => {
-            const updatedMedia = { ...prevMedia, isCoverPhoto: isCoverPhoto };
-            console.log(updatedMedia);
-            return updatedMedia;
-          });
-    }, [isCoverPhoto]);
+    // React.useEffect(() => {
+    //     console.log("is cover photo changed");
+    //     setMedia(prevMedia => {
+    //         const updatedMedia = { ...prevMedia, isCoverPhoto: isCoverPhoto };
+    //         console.log(updatedMedia);
+    //         return updatedMedia;
+    //       });
+    // }, [isCoverPhoto]);
 
     const handleSubmit = (event: any) => {
         event.preventDefault();
@@ -66,7 +70,7 @@ const EditMedia = () => {
                     <input name="albumId" readOnly hidden value={media.albumId}></input>
                     <textarea className="card-body" name="caption" placeholder="Caption..." value={media.caption}
                         onChange={e => setMedia({ ...media, caption: e.target.value })} />
-                    <FormCheck>
+                    {/* <FormCheck>
                         <FormCheckInput
                             className="form-check-input"
                             type="checkbox" 
@@ -82,10 +86,10 @@ const EditMedia = () => {
                         <FormCheckLabel className="form-check-label">
                             Album cover photo
                         </FormCheckLabel>
-                    </FormCheck>
+                    </FormCheck> */}
                     <CardFooter>
                         <Button type="submit" value="Submit">Save changes</Button>
-                        <small className="text-muted float-end">{media.createdDate}</small>
+                        <small className="text-muted float-end">{media.createdDateDisplay}</small>
                     </CardFooter>
                 </Card>
             </CardGroup>

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OwaspHeaders.Core.Extensions;
 using SocializR.DataAccess.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -109,6 +110,7 @@ else
     app.UseHsts();
 }
 
+//app.UseSecureHeadersMiddleware();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseSwagger();

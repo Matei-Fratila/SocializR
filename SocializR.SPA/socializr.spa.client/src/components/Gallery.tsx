@@ -17,8 +17,10 @@ const Gallery = () => {
         coverId: "",
         coverFilePath: "",
         nrOfImages: 0,
-        createdDate: "",
-        lastModifiedDate: "",
+        createdDateDisplay: "",
+        lastModifiedDateDisplay: "",
+        createdDate: new Date(),
+        lastModifiedDate: new Date(),
         media: [] as Media[]
     });
 
@@ -37,7 +39,7 @@ const Gallery = () => {
         handleFetchGallery();
     }, [id]);
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (id: string = "") => {
         try {
             await albumService.deleteMedia(id);
             setAlbum({ ...album, media: album.media.filter(m => m.id !== id) });
@@ -52,21 +54,24 @@ const Gallery = () => {
             <hr/>
             <CardGroup>
                 <Row>
+                    {album.media.length === 0 && <h2>There are no pictures </h2>}
                     {album.media.map((media: Media) => (
                         <Col sm={6} lg={4} className="mb-3" key={media.id}>
                             <Card>
-                                {media.type === MediaType.Image && <img src={`${axios.defaults.baseURL}${media.fileName}`} className="card-img-top" alt="..."></img>}
-                                {media.type === MediaType.Video && <video controls src={`${axios.defaults.baseURL}${media.fileName}`} className="card-img-top"></video>}
+                                <Link to={`/media/${media.id}`} state={{onDelete: handleDelete}}>
+                                    {media.type === MediaType.Image && <img src={`${axios.defaults.baseURL}${media.fileName}`} className="card-img-top" alt="..."></img>}
+                                    {media.type === MediaType.Video && <video controls src={`${axios.defaults.baseURL}${media.fileName}`} className="card-img-top"></video>}
+                                </Link>
                                 <CardBody>
                                     <CardText>{media.caption}</CardText>
                                     <CardText>
-                                        <small className="text-muted">Created {media.createdDate}</small>
-                                        {(media.lastModifiedDate !== "") && <small className="text-muted float-end">Updated {media.lastModifiedDate}</small>}
+                                        <small className="text-muted">Created {media.createdDateDisplay}</small>
+                                        {(media.lastModifiedDateDisplay !== "") && <small className="text-muted float-end">Updated {media.lastModifiedDateDisplay}</small>}
                                     </CardText>
                                 </CardBody>
                                 <CardFooter>
                                     <Button variant="link">
-                                        <Link to={`/album/gallery/media/${media.id}`} state={{ isCoverPhoto: media.id === album.coverId }}>
+                                        <Link to={`/media/edit/${media.id}`} state={{ isCoverPhoto: media.id === album.coverId }}>
                                             <Pencil />
                                         </Link>
                                     </Button>

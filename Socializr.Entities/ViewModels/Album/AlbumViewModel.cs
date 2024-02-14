@@ -12,8 +12,10 @@ public class AlbumViewModel : IValidatableObject
     public Guid CoverId { get; set; }
     public string CoverFilePath { get; set; }
     public int NrOfImages { get; set; }
-    public string CreatedDate { get; set; }
-    public string LastModifiedDate { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public string CreatedDateDisplay { get; set; }
+    public DateTime LastModifiedDate { get; set; }
+    public string LastModifiedDateDisplay { get; set; }
     public List<MediaViewModel> Media { get; set; } = new List<MediaViewModel>();
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

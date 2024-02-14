@@ -112,8 +112,10 @@ export type Album = {
     coverId: string;
     coverFilePath: string;
     nrOfImages: number;
-    createdDate: string;
-    lastModifiedDate: string;
+    createdDate: Date;
+    createdDateDisplay: string;
+    lastModifiedDate: Date;
+    lastModifiedDateDisplay: string;
     media: Media[];
 }
 
@@ -122,8 +124,10 @@ export type Media = {
     albumId: string;
     type: MediaType;
     caption: string;
-    createdDate: string;
-    lastModifiedDate: string;
+    createdDate: Date;
+    createdDateDisplay: string;
+    lastModifiedDate: Date;
+    lastModifiedDateDisplay: string;
     fileName: string;
 }
 

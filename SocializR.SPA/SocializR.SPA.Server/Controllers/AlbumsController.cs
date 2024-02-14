@@ -21,20 +21,21 @@ public class AlbumsController(ApplicationUnitOfWork _applicationUnitOfWork,
 
     [HttpGet("{id}")]
     [AllowAnonymous]
-    public async Task<ActionResult<AlbumViewModel>> GetAsync(Guid id)
+    public async Task<IResult> GetAsync([FromRoute] Guid id)
     {
         var album = await _albumService.GetViewModelAsync(id);
 
+        album.Media = album.Media.OrderByDescending(x => x.CreatedDate).ToList();
         foreach (var media in album.Media)
         {
             media.FileName = _imageStorage.UriFor(media.FileName);
         }
 
-        return album;
+        return Results.Ok(album);
     }
 
     [HttpPost]
-    public async Task<ActionResult<AlbumViewModel>> CreateAsync([FromForm] CreateAlbumViewModel model)
+    public async Task<IResult> CreateAsync([FromForm] CreateAlbumViewModel model)
     {
         var album = new Album 
         { 
@@ -42,7 +43,7 @@ public class AlbumsController(ApplicationUnitOfWork _applicationUnitOfWork,
             UserId = _currentUser.Id 
         };
 
-        for (var i = 0; i < model.Files.Length; i++)
+        for (var i = 0; i < model.Files?.Length; i++)
         {
             var type = model.Files[i].ContentType.ToString().Split('/');
             if (type[0] == "image" || type[0] == "video")
@@ -64,30 +65,30 @@ public class AlbumsController(ApplicationUnitOfWork _applicationUnitOfWork,
 
         if (!await _applicationUnitOfWork.SaveChangesAsync())
         {
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Results.StatusCode(500);
         }
 
         var result = new AlbumViewModel();
         _mapper.Map(album, result);
 
-        return result;
+        return Results.CreatedAtRoute(routeName: "/", routeValues: new {result.Id}, value: result);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAsync(Guid id)
+    public async Task<IResult> DeleteAsync([FromRoute] Guid id)
     {
         await _albumService.DeleteAsync(id);
 
         if (_applicationUnitOfWork.SaveChanges() == 0)
         {
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Results.StatusCode(500);
         }
 
-        return Ok();
+        return Results.NoContent();
     }
 
     [HttpGet("media/{id}")]
-    public async Task<ActionResult<MediaViewModel>> GetMediaAsync(Guid id)
+    public async Task<IResult> GetMediaAsync([FromRoute] Guid id)
     {
         var media = await _applicationUnitOfWork.Media.GetAsync(id);
 
@@ -95,24 +96,24 @@ public class AlbumsController(ApplicationUnitOfWork _applicationUnitOfWork,
         _mapper.Map(media, model);
         model.FileName = _imageStorage.UriFor(media.FileName);
 
-        return model;
+        return Results.Ok(model);
     }
 
     [HttpDelete("media/{id}")]
-    public async Task<IActionResult> DeleteMediaAsync(Guid id)
+    public async Task<IResult> DeleteMediaAsync([FromRoute] Guid id)
     {
         await _mediaService.DeleteAsync(id);
 
         if (_applicationUnitOfWork.SaveChanges() == 0)
         {
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Results.StatusCode(500);
         }
 
-        return Ok();
+        return Results.NoContent();
     }
 
     [HttpPut("media")]
-    public async Task<ActionResult<MediaViewModel>> UpdateMediaAsync([FromForm] MediaViewModel model)
+    public async Task<IResult> UpdateMediaAsync([FromForm] MediaViewModel model)
     {
         var media = await _mediaService.GetAsync(model.Id);
         var album = await _albumService.GetAsync(model.AlbumId);
@@ -123,9 +124,9 @@ public class AlbumsController(ApplicationUnitOfWork _applicationUnitOfWork,
 
         if (_applicationUnitOfWork.SaveChanges() == 0)
         {
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Results.StatusCode(500);
         }
 
-        return model;
+        return Results.NoContent();
     }
 }

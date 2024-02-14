@@ -16,19 +16,19 @@ public class AuthController(UserManager<User> _userManager,
     private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LogInViewModel model)
+    public async Task<IResult> Login([FromBody] LogInViewModel model)
     {
         var app = _appSettings.CurrentValue;
         if (!ModelState.IsValid)
         {
-            return BadRequest(ModelState);
+            return Results.BadRequest(ModelState);
         }
 
         var user = await _userManager.FindByEmailAsync(model.Email);
 
         if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
         {
-            return Unauthorized();
+            return Results.Unauthorized();
         }
 
         var roles = await _userManager.GetRolesAsync(user);
@@ -37,15 +37,15 @@ public class AuthController(UserManager<User> _userManager,
 
         currentUser.ProfilePhoto = _imageStorage.UriFor(currentUser.ProfilePhoto ?? _defaultProfilePicture);
 
-        return Ok(new { Token = token, CurrentUser = currentUser });
+        return Results.Ok(new { Token = token, CurrentUser = currentUser });
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterViewModel model)
+    public async Task<IResult> Register([FromBody] RegisterViewModel model)
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest(ModelState);
+            return Results.BadRequest(ModelState);
         }
 
         var user = _mapper.Map<User>(model);
@@ -53,9 +53,9 @@ public class AuthController(UserManager<User> _userManager,
 
         if(result.Succeeded)
         {
-            return Ok();
+            return Results.Ok();
         }
 
-        return BadRequest(result.Errors);
+        return Results.BadRequest(result.Errors);
     }
 }
