@@ -11,6 +11,7 @@ import locationService from "../services/selectItems.service";
 import selectItemsService from "../services/selectItems.service";
 import { PencilFill } from "react-bootstrap-icons";
 import axios from "axios";
+import authService from "../services/auth.service";
 
 const EditProfile = () => {
     const navigate = useNavigate();
@@ -21,9 +22,9 @@ const EditProfile = () => {
         firstName: "",
         lastName: "",
         birthDate: new Date(),
-        city: { label: "", value: ""},
-        county: { label: "", value: ""},
-        gender: { label: "", value: ""},
+        city: { label: "", value: "" },
+        county: { label: "", value: "" },
+        gender: { label: "", value: "" },
         isPrivate: false,
         description: "",
         interests: [] as SelectItem[]
@@ -33,17 +34,13 @@ const EditProfile = () => {
     const [counties, setCounties] = React.useState([] as SelectItem[]);
     const [cities, setCities] = React.useState([] as SelectItem[]);
     const [interests, setInterests] = React.useState([] as SelectItem[]);
-    const [file, setFile] = React.useState<File[]>([]);
+    const [avatar, setAvatar] = React.useState<File>();
 
     const ProfileSchema = Yup.object().shape({
         firstName: Yup.string()
             .required("First Name is required"),
         lastName: Yup.string()
-            .required("Last Name is required"),
-        // county: Yup.string()
-        //     .required("County is required"),
-        // city: Yup.string()
-        //     .required("City is required"),
+            .required("Last Name is required")
     });
 
     const handleFetchProfile = React.useCallback(async () => {
@@ -116,26 +113,40 @@ const EditProfile = () => {
                 <h5><PencilFill /> Edit profile</h5>
                 <hr />
                 <img className="rounded-circle profile-user-photo shadow img-thumbnail float-center" alt="Avatar"
-                    src={file.length !== 0 ? URL.createObjectURL(file[0]) : `${axios.defaults.baseURL}${profile.avatar}`} />
+                    src={avatar !== undefined ? URL.createObjectURL(avatar) : `${axios.defaults.baseURL}${profile.avatar}`} />
                 <Row className="form-group mb-3 mt-3">
                     <label className='col-4 col-form-label'>Avatar</label>
                     <Col xs={8}>
-                        <input className="form-control" type="file" accept="image/*" name="media" onChange={(e) => setFile(Array.from(e.target.files ?? []))} />
+                        <input className="form-control" type="file" accept="image/*" name="avatar" onChange={(e) => {
+                            if (e.target.files) {
+                                setAvatar(e.target.files[0])
+                            }
+                        }}
+                        />
                     </Col>
                 </Row>
                 <Formik
-                    initialValues={{ ...profile, isPrivate: profile.isPrivate ? "true" : "false" }}
+                    initialValues={{
+                        ...profile,
+                        isPrivate: profile.isPrivate ? "true" : "false"
+                    }}
                     enableReinitialize
                     validationSchema={ProfileSchema}
                     onSubmit={async (values) => {
                         let data = null;
-                        if (file !== null) {
-                            data = { ...values, file: file[0] }
+                        if (avatar !== null) {
+                            data = { ...values, avatar: avatar }
                         } else {
                             data = values;
                         }
-                        await profileService.editProfileAsync(data);
-                        navigate(`/profile/${profile.id}`);
+                        try {
+                            await profileService.editProfileAsync(data);
+                            const avatar = await profileService.getAvatarAsync(profile.id);
+                            authService.updateCurrentUserPhoto(avatar);
+                            navigate(`/profile/${profile.id}`);
+                        } catch (error) {
+                            console.error(error);
+                        }
                     }}>
                     {(props) => (
                         <Form>
@@ -233,7 +244,7 @@ const EditProfile = () => {
                                     <Select
                                         value={profile.gender}
                                         options={genders}
-                                        onChange={(option) => setProfile({ ...profile, gender: {label: option?.label, value: option?.value} as SelectItem })}
+                                        onChange={(option) => setProfile({ ...profile, gender: { label: option?.label, value: option?.value } as SelectItem })}
                                         className={` ${props.touched.gender && props.errors.gender
                                             ? "is-invalid"
                                             : ""
@@ -255,10 +266,10 @@ const EditProfile = () => {
                                     <Select
                                         value={profile.county}
                                         options={counties}
-                                        onChange={(option) => setProfile({ 
-                                            ...profile, 
-                                            county: {label: option?.label, value: option?.value} as SelectItem, 
-                                            city: {label: "", value: ""} as SelectItem
+                                        onChange={(option) => setProfile({
+                                            ...profile,
+                                            county: { label: option?.label, value: option?.value } as SelectItem,
+                                            city: { label: "", value: "" } as SelectItem
                                         })}
                                         className={` ${props.touched.county && props.errors.county
                                             ? "is-invalid"
@@ -281,7 +292,7 @@ const EditProfile = () => {
                                     <Select
                                         value={profile.city}
                                         options={cities}
-                                        onChange={(option) => setProfile({ ...profile, city: {label: option?.label, value: option?.value} as SelectItem })}
+                                        onChange={(option) => setProfile({ ...profile, city: { label: option?.label, value: option?.value } as SelectItem })}
                                         className={`${props.touched.city && props.errors.city
                                             ? "is-invalid"
                                             : ""
@@ -300,8 +311,8 @@ const EditProfile = () => {
                                     <label htmlFor="interests" className='col-form-label'>Interests</label>
                                 </Col>
                                 <Col md={8} xs={12}>
-                                    <Select value={profile.interests} isMulti={true} options={interests} 
-                                    onChange={(options) => setProfile({ ...profile, interests: options.map(o => o) })} />
+                                    <Select value={profile.interests} isMulti={true} options={interests}
+                                        onChange={(options) => setProfile({ ...profile, interests: options.map(o => o) })} />
                                 </Col>
                             </Row>
 

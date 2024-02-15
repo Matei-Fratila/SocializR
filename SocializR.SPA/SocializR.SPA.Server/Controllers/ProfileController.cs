@@ -66,4 +66,14 @@ public class ProfileController(CurrentUser _currentUser,
 
         return Results.NoContent();
     }
+
+    [HttpGet("avatar/{id}")]
+    [AllowAnonymous]
+    public async Task<IResult> GetAvatar([FromRoute] Guid id)
+    {
+        var profile = await _profileService.GetProfile(id);
+        var result = _imageStorage.UriFor(profile?.Avatar);
+
+        return Results.Ok(result);
+    }
 }

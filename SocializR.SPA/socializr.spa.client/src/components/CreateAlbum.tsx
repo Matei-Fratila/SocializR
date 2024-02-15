@@ -21,8 +21,8 @@ const CreateAlbum = () => {
         try {
             await albumService.createAlbum(formData);
             navigate(`/profile/${authenticatedUserId}`);
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error(error);
         }
     }
 
@@ -32,6 +32,7 @@ const CreateAlbum = () => {
             <Card className="shadow">
                 <form method="post" onSubmit={handleSubmit}>
                     <CardHeader>
+                        <input type="text" hidden name="userId" value={authenticatedUserId} />
                         <input className="form-control" type="text" name="name" placeholder="Album name" value={albumName}
                             onChange={e => setAlbumName(e.target.value)}>
                         </input>

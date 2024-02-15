@@ -6,6 +6,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/esm/Row';
 import Button from 'react-bootstrap/esm/Button';
 import { Col } from 'react-bootstrap';
+import axios, { AxiosError } from 'axios';
 
 const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -22,15 +23,24 @@ const Login = () => {
     return (<Formik
         initialValues={{ email: "", password: "" }}
         validationSchema={LoginSchema}
-        onSubmit={async (values) => {
-            console.log(values);
-            await authService.login({ email: values.email, password: values.password });
-            navigate("/feed");
+        onSubmit={async (values, { setSubmitting, setErrors }) => {
+            try {
+                await authService.login({ email: values.email, password: values.password });
+                navigate("/feed");
+            } catch (error) {
+                setSubmitting(false);
+                if (axios.isAxiosError(error)) {
+                    const statusCode = (error as AxiosError).response?.status;
+                    if (statusCode === 401) {
+                        setErrors({password: "You have entered an invalid username or password"});
+                    }
+                }
+            }
         }}>
         {(props) => (
             <Container>
                 <h5> Login or <Link to={`/register`}>Register</Link> if you don't have an account</h5>
-                <hr/>
+                <hr />
                 <Form>
                     <Row className='mb-3 form-group'>
                         <Col xs={12} sm={2} className='col-form-label'>

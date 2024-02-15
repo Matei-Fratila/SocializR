@@ -54,13 +54,6 @@ public class MediaService(CurrentUser _currentUser,
             return null;
         }
 
-        associatedPost ??= new Post
-        {
-            Body = $"{_currentUser.FirstName} {_currentUser.LastName} uploaded a new profile picture",
-            UserId = _currentUser.Id,
-            CreatedOn = DateTime.Now
-        };
-
         var media = new Media
         {
             FileName = fileName,

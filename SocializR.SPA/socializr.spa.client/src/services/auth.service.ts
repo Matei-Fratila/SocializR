@@ -3,16 +3,12 @@ import { CurrentUser, LoginRequest, LoginResponse, RegisterRequest } from '../ty
 
 class AuthService {
     async login(loginRequest: LoginRequest) {
-        try {
-            const axiosResponse: AxiosResponse = await axios.post('/Auth/login', loginRequest);
-            const response: LoginResponse = axiosResponse.data;
+        const axiosResponse: AxiosResponse = await axios.post('/Auth/login', loginRequest);
+        const response: LoginResponse = axiosResponse.data;
 
-            if (response.currentUser) {
-                const user = { ...response.currentUser, token: response.token };
-                localStorage.setItem('user', JSON.stringify(user));
-            }
-        } catch (e) {
-            console.error(e);
+        if (response.currentUser) {
+            const user = { ...response.currentUser, token: response.token };
+            localStorage.setItem('user', JSON.stringify(user));
         }
     }
 
@@ -42,6 +38,14 @@ class AuthService {
         }
 
         return "";
+    }
+
+    updateCurrentUserPhoto(photo: string) {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            const user: CurrentUser = JSON.parse(userStr);
+            localStorage.setItem('user', JSON.stringify({...user, profilePhoto: photo}));
+        }
     }
 
     getCurrentUserId(): string | undefined {

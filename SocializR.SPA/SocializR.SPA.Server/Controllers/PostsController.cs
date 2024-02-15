@@ -45,8 +45,7 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
             media.FileName = _imageStorage.UriFor(media.FileName);
         }
 
-        //implement get post by post id
-        return Results.Created(Url.Action(nameof(GetAsync)), result);
+        return Results.Created("", result);
     }
 
     [HttpDelete("{id}")]

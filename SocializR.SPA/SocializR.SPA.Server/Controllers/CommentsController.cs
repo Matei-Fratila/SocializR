@@ -36,8 +36,7 @@ public class CommentsController(ApplicationUnitOfWork _applicationUnitOfWork,
         _mapper.Map(newComment, result);
         result.IsCurrentUserComment = true;
 
-        //implement get comment by comment id
-        return Results.Created(Url.Action(nameof(NextCommentsAsync)), result);
+        return Results.Created("", result);
     }
 
     [HttpGet]

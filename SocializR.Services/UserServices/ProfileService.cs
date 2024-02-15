@@ -64,9 +64,9 @@ public class ProfileService(CurrentUser _currentUser,
                     }
 
                     var imageName = await _imageStorage.SaveImage(file.OpenReadStream(), type[1]);
-                    var image = _mediaService.Add(imageName, MediaTypes.Image, album);
+                    var media = _mediaService.Add(imageName, MediaTypes.Image, album);
 
-                    if (await ChangeProfilePhoto(image.Id, model.Id))
+                    if (await ChangeProfilePhoto(media.Id, model.Id))
                     {
                         _postService.Add(new Post
                         {
@@ -74,7 +74,7 @@ public class ProfileService(CurrentUser _currentUser,
                             Title = "Added a new profile photo",
                             Body = "",
                             CreatedOn = DateTime.Now,
-                            Media = [image]
+                            Media = [media]
                         });
                     }
 
