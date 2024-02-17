@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.RateLimiting;
 using SocializR.Models.ViewModels.Account;
 
 namespace SocializR.SPA.Server.Controllers;
@@ -15,6 +16,7 @@ public class AuthController(UserManager<User> _userManager,
 {
     private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
 
+    [EnableRateLimiting("ShortLimit")]
     [HttpPost("login")]
     public async Task<IResult> LoginAsync([FromBody] LogInViewModel model)
     {

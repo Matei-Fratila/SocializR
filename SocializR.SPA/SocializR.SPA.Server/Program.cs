@@ -1,13 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using OwaspHeaders.Core.Extensions;
 using SocializR.DataAccess.Seeds;
+using System.Net;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -101,6 +100,33 @@ builder.Services.AddBusinessLogic(builder.Environment);
 builder.Services.AddCurrentUser();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = (int)HttpStatusCode.TooManyRequests;
+    options.OnRejected = async (context, token) =>
+    {
+        await context.HttpContext.Response.WriteAsync("Too many requests. Please try again later.", cancellationToken: token);
+    };
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+    RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress.ToString(),
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            QueueLimit = 10,
+            PermitLimit = 50,
+            Window = TimeSpan.FromSeconds(15)
+        }));
+    options.AddPolicy(policyName: "ShortLimit", context =>
+    {
+        return RateLimitPartition.GetFixedWindowLimiter(context.Connection.RemoteIpAddress.ToString(),
+        _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 10,
+            Window = TimeSpan.FromSeconds(15)
+        });
+    });
+});
+
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
@@ -124,18 +150,19 @@ else
 }
 
 //app.UseSecureHeadersMiddleware();
+
+app.UseRateLimiter();
+
 app.UseDefaultFiles();
+
 app.UseStaticFiles();
+
 app.UseSwagger();
+
 app.UseSwaggerUI(options =>
 {
 
 });
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-}
 
 app.UseHttpsRedirection();
 
