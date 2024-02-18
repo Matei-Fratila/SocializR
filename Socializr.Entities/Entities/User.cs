@@ -15,6 +15,8 @@ public partial class User : IdentityUser<Guid>, IEntity
         Posts = new HashSet<Post>();
         UserInterests = new HashSet<UserInterest>();
     }
+    public string RefreshToken { get; set; }
+    public DateTime RefreshTokenExpiryTime { get; set; }
     public Guid? CityId { get; set; }
     public Guid? ProfilePhotoId { get; set; }
     public string FirstName { get; set; }
