@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using OwaspHeaders.Core.Extensions;
 using SocializR.DataAccess.Seeds;
+using SocializR.SPA.Server.ExceptionHandlers;
 using System.Net;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddExceptionHandler<DefaultExceptionHandler>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -19,6 +21,7 @@ builder.Services.AddSwaggerGen(c =>
         In = ParameterLocation.Header,
         Description = "Please enter token",
     });
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement {
         {
             new OpenApiSecurityScheme {
@@ -143,13 +146,13 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler(opt => { });
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
     app.UseCors("Restricted");
+    //swagger ui not working if security headers are enabled (index.html contains <script> and <styles> tags)
+    app.UseSecureHeadersMiddleware();
 }
-
-//app.UseSecureHeadersMiddleware();
 
 app.UseRateLimiter();
 
@@ -159,10 +162,7 @@ app.UseStaticFiles();
 
 app.UseSwagger();
 
-app.UseSwaggerUI(options =>
-{
-
-});
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
