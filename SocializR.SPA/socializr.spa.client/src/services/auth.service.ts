@@ -1,9 +1,10 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
+import axiosInstance from '../helpers/axios-helper';
 import { CurrentUser, LoginRequest, LoginResponse, RegisterRequest } from '../types/types';
 
 class AuthService {
     async login(loginRequest: LoginRequest) {
-        const axiosResponse: AxiosResponse = await axios.post('/Auth/login', loginRequest);
+        const axiosResponse: AxiosResponse = await axiosInstance.post('/Auth/login', loginRequest);
         const response: LoginResponse = axiosResponse.data;
 
         if (response.currentUser) {
@@ -18,9 +19,26 @@ class AuthService {
 
     async register(registerRequest: RegisterRequest) {
         try {
-            await axios.post('/Auth/register', registerRequest);
+            await axiosInstance.post('/Auth/register', registerRequest);
         } catch (e) {
             console.error(e);
+        }
+    }
+
+    async getRefreshToken() {
+        try {
+            const resp = await axiosInstance.post("auth/refresh", {accessToken: this.getAccessToken()}, { headers: {'Content-Type': 'application/json' } });
+            return resp.data;
+        } catch (e) {
+            console.log("Error", e);
+        }
+    };
+
+    saveToken(accessToken: string){
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            const user: CurrentUser = JSON.parse(userStr);
+            localStorage.setItem('user', JSON.stringify({ ...user, token: accessToken }));
         }
     }
 
@@ -44,7 +62,7 @@ class AuthService {
         const userStr = localStorage.getItem('user');
         if (userStr) {
             const user: CurrentUser = JSON.parse(userStr);
-            localStorage.setItem('user', JSON.stringify({...user, profilePhoto: photo}));
+            localStorage.setItem('user', JSON.stringify({ ...user, profilePhoto: photo }));
         }
     }
 
@@ -56,6 +74,15 @@ class AuthService {
         }
 
         return;
+    }
+
+    getAccessToken() {
+        const userStr = localStorage.getItem('user');
+        let user = null;
+        if (userStr)
+            user = JSON.parse(userStr);
+
+        return user?.token;
     }
 }
 

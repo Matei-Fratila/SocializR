@@ -1,30 +1,54 @@
-﻿namespace SocializR.SPA.Server.Services;
-public class TokenService(IOptionsMonitor<JwtSettings> _jwtSettings)
+﻿using SocializR.Common.Interfaces;
+using System.Security.Cryptography;
+
+namespace SocializR.SPA.Server.Services;
+public class TokenService(IOptionsMonitor<JwtSettings> _jwtSettings) : ITokenService
 {
-    public string GenerateToken(User user, IList<string> roles)
+    public string GenerateAccessToken(IEnumerable<Claim> claims)
     {
-        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.CurrentValue.SecretKey));
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var claims = new List<Claim>
-        {
-            new(ClaimTypes.Name, user.UserName),
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        };
-
-        foreach (var role in roles)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, role));
-        }
+        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.CurrentValue.SecretKey));
 
         var token = new JwtSecurityToken(
-            _jwtSettings.CurrentValue.Issuer,
-            _jwtSettings.CurrentValue.Audience,
-            claims,
-            expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_jwtSettings.CurrentValue.DurationInMinutes)),
-            signingCredentials: credentials
-        );
+            issuer: _jwtSettings.CurrentValue.Issuer,
+            audience: _jwtSettings.CurrentValue.Audience,
+            expires: DateTime.Now.AddMinutes(_jwtSettings.CurrentValue.TokenValidityInMinutes),
+            claims: claims,
+            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+            );
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+        return tokenString;
+    }
+
+    public string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
+    }
+
+    public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+    {
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = false, 
+            ValidateIssuer = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.CurrentValue.SecretKey)),
+            ValidateLifetime = false 
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        SecurityToken securityToken;
+        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+        var jwtSecurityToken = securityToken as JwtSecurityToken;
+
+        if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            throw new SecurityTokenException("Invalid token");
+
+        return principal;
     }
 }

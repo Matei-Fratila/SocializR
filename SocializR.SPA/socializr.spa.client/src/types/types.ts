@@ -94,6 +94,20 @@ export type Profile = {
     albums: Album[];
 }
 
+export type ProfileForm = {
+    id: string;
+    avatar: File;
+    firstName: string;
+    lastName: string;
+    birthDate: Date;
+    city: SelectItem;
+    county: SelectItem;
+    gender: SelectItem;
+    isPrivate: boolean;
+    description: string;
+    interests: SelectItem[];
+}
+
 export type ProfileProps = {
     profile: Profile;
 }

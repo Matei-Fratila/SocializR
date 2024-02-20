@@ -1,27 +1,27 @@
-import axios, { AxiosResponse } from 'axios';
-import authHeader from './auth-header';
+import { AxiosResponse } from 'axios';
+import axiosInstance from '../helpers/axios-helper';
 import { User } from '../types/types';
 
 class FriendshipService {
     async getAllFriends(id: string): Promise<User[]> {
-        const axiosResponse: AxiosResponse = await axios.get(`/friendship/${id}`, { headers: authHeader() });
+        const axiosResponse: AxiosResponse = await axiosInstance.get(`/friendship/${id}`);
         return axiosResponse.data as User[];
     }
 
     async addFriend(id: string) {
-        await axios.post(`/friendship/${id}`, {}, { headers: authHeader() });
+        await axiosInstance.post(`/friendship/${id}`);
     }
 
     async deleteFriend(id: string) {
-        await axios.delete(`/friendship/${id}`, { headers: authHeader() });
+        await axiosInstance.delete(`/friendship/${id}`);
     }
 
     async createFriendRequest(id: string) {
-        await axios.post(`/friendrequest/${id}`, {}, { headers: authHeader() });
+        await axiosInstance.post(`/friendrequest/${id}`);
     }
 
     async deleteFriendRequest(id: string) {
-        await axios.delete(`/friendrequest/${id}`, { headers: authHeader() });
+        await axiosInstance.delete(`/friendrequest/${id}`);
     }
 }
 

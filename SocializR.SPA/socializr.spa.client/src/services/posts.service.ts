@@ -1,30 +1,30 @@
-import axios, { AxiosResponse } from 'axios';
-import authHeader from './auth-header';
+import { AxiosResponse } from 'axios';
+import axiosInstance from '../helpers/axios-helper';
 import { Post } from '../types/types';
 import authService from './auth.service';
 
 class PostsService {
     async getPaginatedAsync(userId: string, pageNumber: number, isProfileView: boolean) {
-        return await axios.get('/Posts', { params: { userId: userId, pageNumber: pageNumber, isProfileView: isProfileView }, headers: authHeader() });
+        return await axiosInstance.get('/Posts', { params: { userId: userId, pageNumber: pageNumber, isProfileView: isProfileView } });
     }
 
     async likePost(id: string) {
-        return await axios.post(`/Posts/like/${id}`, {}, { headers: authHeader() });
+        return await axiosInstance.post(`/Posts/like/${id}`);
     }
 
     async dislikePost(id: string) {
-        return await axios.delete(`/Posts/like/${id}`, { headers: authHeader() });
+        return await axiosInstance.delete(`/Posts/like/${id}`);
     }
 
     async createPost(data: FormData): Promise<Post> {
-        const axiosResponse: AxiosResponse = await axios.post(`/Posts`, data, { headers: authHeader() });
+        const axiosResponse: AxiosResponse = await axiosInstance.post(`/Posts`, data);
         const post: Post = axiosResponse.data;
         post.userPhoto = authService.getCurrentUserPhoto();
         return post;
     }
 
     async deletePost(id: string) {
-        return await axios.delete(`/Posts/${id}`, { headers: authHeader() });
+        return await axiosInstance.delete(`/Posts/${id}`);
     }
 }
 

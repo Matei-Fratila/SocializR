@@ -12,7 +12,6 @@ import Gallery from './components/Gallery.tsx';
 import EditMedia from './components/EditMedia.tsx';
 import CreateAlbum from './components/CreateAlbum.tsx';
 import Friends from './components/Friends.tsx';
-import axios from 'axios';
 import Media from './components/Media.tsx';
 
 const router = createBrowserRouter([
@@ -69,15 +68,9 @@ const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <Navigate to="/feed"/>
+    element: <Navigate to="/feed" />
   }
-])
-
-if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-  axios.defaults.baseURL = "/api/";
-} else {
-  axios.defaults.baseURL = "";
-}
+]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
