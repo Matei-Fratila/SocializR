@@ -1,5 +1,4 @@
-import { AxiosResponse } from 'axios';
-import axiosInstance from '../helpers/axios-helper';
+import axios, { AxiosResponse } from 'axios';
 import { CurrentUser, LoginRequest, LoginResponse, RegisterRequest } from '../types/types';
 
 class AuthService {
@@ -19,7 +18,7 @@ class AuthService {
 
     async register(registerRequest: RegisterRequest) {
         try {
-            await axiosInstance.post('/Auth/register', registerRequest);
+            await axios.post('/Auth/register', registerRequest);
         } catch (e) {
             console.error(e);
         }
@@ -27,7 +26,7 @@ class AuthService {
 
     async getRefreshToken() {
         try {
-            const resp = await axiosInstance.post("auth/refresh", {accessToken: this.getAccessToken()}, { headers: {'Content-Type': 'application/json' } });
+            const resp = await axios.post("auth/refresh", {accessToken: this.getAccessToken()}, { headers: {'Content-Type': 'application/json' } });
             return resp.data;
         } catch (e) {
             console.log("Error", e);

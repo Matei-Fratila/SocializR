@@ -115,8 +115,8 @@ public class AuthController(UserManager<User> _userManager,
     [Route("revoke")]
     public async Task<IResult> RevokeAsync()
     {
-        var username = User.Identity.Name;
-        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == username);
+        var userId = new Guid(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user == null)
         {
