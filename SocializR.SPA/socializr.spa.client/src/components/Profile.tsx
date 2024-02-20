@@ -10,7 +10,7 @@ import PostList from "./PostList";
 import Select from 'react-select';
 import Album from "./Album";
 import friendshipService from "../services/friendship.service";
-import axios from "axios";
+import axiosInstance from "../helpers/axios-helper";
 
 const Profile = () => {
     const { id } = useParams();
@@ -116,7 +116,7 @@ const Profile = () => {
             <Col lg={6} md={6} sm={12} xs={12}>
                 <Row>
                     <Col lg={3} md={4} sm={3} xs={6}>
-                        <img className="rounded-circle profile-user-photo shadow img-thumbnail" alt="Avatar" src={`${axios.defaults.baseURL}${profile.avatar}`} />
+                        <img className="rounded-circle profile-user-photo shadow img-thumbnail" alt="Avatar" src={`${axiosInstance.defaults.baseURL}${profile.avatar}`} />
                     </Col>
                     <Col lg={9} md={8} sm={9} xs={6}>
                         <h4>{profile.firstName} {profile.lastName}</h4>

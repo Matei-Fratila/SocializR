@@ -10,7 +10,7 @@ import Select from "react-select";
 import locationService from "../services/selectItems.service";
 import selectItemsService from "../services/selectItems.service";
 import { PencilFill } from "react-bootstrap-icons";
-import axios from "axios";
+import axiosInstance from "../helpers/axios-helper";
 import authService from "../services/auth.service";
 
 const EditProfile = () => {
@@ -113,7 +113,7 @@ const EditProfile = () => {
                 <h5><PencilFill /> Edit profile</h5>
                 <hr />
                 <img className="rounded-circle profile-user-photo shadow img-thumbnail float-center" alt="Avatar"
-                    src={avatar !== undefined ? URL.createObjectURL(avatar) : `${axios.defaults.baseURL}${profile.avatar}`} />
+                    src={avatar !== undefined ? URL.createObjectURL(avatar) : `${axiosInstance.defaults.baseURL}${profile.avatar}`} />
                 <Row className="form-group mb-3 mt-3">
                     <label className='col-4 col-form-label'>Avatar</label>
                     <Col xs={8}>

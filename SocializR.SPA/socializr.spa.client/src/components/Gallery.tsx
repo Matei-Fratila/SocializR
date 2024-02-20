@@ -5,7 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import React from "react";
 import albumService from "../services/album.service";
 import { Album, Media, MediaType } from "../types/types";
-import axios from "axios";
+import axiosInstance from "../helpers/axios-helper";
 
 const Gallery = () => {
     const { id } = useParams();
@@ -59,8 +59,8 @@ const Gallery = () => {
                         <Col sm={6} lg={4} className="mb-3" key={media.id}>
                             <Card>
                                 <Link to={`/media/${media.id}`} state={{onDelete: handleDelete}}>
-                                    {media.type === MediaType.Image && <img src={`${axios.defaults.baseURL}${media.fileName}`} className="card-img-top" alt="..."></img>}
-                                    {media.type === MediaType.Video && <video controls src={`${axios.defaults.baseURL}${media.fileName}`} className="card-img-top"></video>}
+                                    {media.type === MediaType.Image && <img src={`${axiosInstance.defaults.baseURL}${media.fileName}`} className="card-img-top" alt="..."></img>}
+                                    {media.type === MediaType.Video && <video controls src={`${axiosInstance.defaults.baseURL}${media.fileName}`} className="card-img-top"></video>}
                                 </Link>
                                 <CardBody>
                                     <CardText>{media.caption}</CardText>

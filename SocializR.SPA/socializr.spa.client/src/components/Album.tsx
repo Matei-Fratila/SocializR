@@ -4,7 +4,7 @@ import { Pencil, Trash } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import { AlbumProps } from "../types/types";
 import albumService from "../services/album.service";
-import axios from "axios";
+import axiosInstance from "../helpers/axios-helper";
 
 const Album = ({ item, onDelete }: AlbumProps) => {
     const authenticatedUserId = authService.getCurrentUserId();
@@ -36,7 +36,7 @@ const Album = ({ item, onDelete }: AlbumProps) => {
                     </CardHeader>
                 }
                 <Link to={`/album/gallery/${album.id}`}>
-                    <img src={`${axios.defaults.baseURL}${album.coverFilePath}`} className="card-img-bottom" />
+                    <img src={`${axiosInstance.defaults.baseURL}${album.coverFilePath}`} className="card-img-bottom" />
                 </Link>
                 <CardBody>
                     <CardTitle>{album.name}</CardTitle>
