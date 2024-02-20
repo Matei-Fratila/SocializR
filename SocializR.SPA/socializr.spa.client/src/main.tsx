@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App.tsx';
 import Login from './components/Login.tsx';
 import Register from './components/Register.tsx';
-import { createBrowserRouter, Link, Navigate, RouterProvider, useNavigate } from 'react-router-dom';
+import { createBrowserRouter, Link, Navigate, RouterProvider } from 'react-router-dom';
 import Feed from './components/Feed.tsx';
 import Profile from './components/Profile.tsx';
 import EditProfile from './components/EditProfile.tsx';
@@ -14,7 +14,6 @@ import CreateAlbum from './components/CreateAlbum.tsx';
 import Friends from './components/Friends.tsx';
 import axios from 'axios';
 import Media from './components/Media.tsx';
-import authService from './services/auth.service.ts';
 
 const router = createBrowserRouter([
   {
