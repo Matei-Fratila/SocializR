@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using SocializR.Models.Entities;
+using Socializr.Models.ViewModels.Paging;
 
 namespace SocializR.Services;
 
@@ -14,29 +14,28 @@ public class PostService(CurrentUser _currentUser,
     IOptionsMonitor<AppSettings> _appSettings,
     ICommentService _commentService) : BaseService<Post, PostService>(_unitOfWork), IPostService
 {
-    private readonly int _postsPerPage = _appSettings.CurrentValue.PostsPerPage;
     private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
     private readonly string _postsAlbumName = _appSettings.CurrentValue.PostsAlbumName;
 
-    public async Task<List<PostViewModel>> GetPaginatedAsync(Guid userId, Guid? authorizedUserId, int page, bool isProfileView = true)
+    public async Task<List<PostViewModel>> GetPaginatedAsync(PostsPagingDto paging)
     {
-        var posts = await UnitOfWork.Posts.Query
+        var posts = await UnitOfWork.Posts.Query.AsNoTracking()
             .Include(p => p.User)
             .Include(p => p.Media)
-            .Where(p => isProfileView 
-                ? p.UserId == userId
-                : p.UserId == userId || p.User.FriendsFirstUser.FirstOrDefault(f => f.SecondUserId == userId && f.FirstUser.IsDeleted == false) != null)
+            .Where(p => paging.IsProfileView 
+                ? p.UserId == paging.UserId
+                : p.UserId == paging.UserId || p.User.FriendsFirstUser.FirstOrDefault(f => f.SecondUserId == paging.UserId && f.FirstUser.IsDeleted == false) != null)
             .OrderByDescending(p => p.CreatedOn)
-            .Skip(page * _postsPerPage)
-            .Take(_postsPerPage)
+            .Skip(paging.PageIndex * paging.PageSize)
+            .Take(paging.PageSize )
             .ProjectTo<PostViewModel>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
         foreach (var post in posts)
         {
-            post.Comments = await _commentService.GetPaginatedAsync(post.Id, userId, 0);
+            post.Comments = await _commentService.GetPaginatedAsync(post.Id, paging.UserId, 0);
             post.UserPhoto = _imageStorage.UriFor(post.UserPhoto ?? _defaultProfilePicture);
-            if(authorizedUserId.HasValue) post.IsLikedByCurrentUser = post.Likes.Any(l => l.UserId == authorizedUserId);
+            post.IsLikedByCurrentUser = post.Likes.Any(l => l.UserId == paging.AuthorizedUserId);
         }
 
         foreach (var media in posts.SelectMany(x => x.Media))

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Socializr.Models.ViewModels.Paging;
 using SocializR.Models.ViewModels.Feed;
 
 namespace SocializR.SPA.Server.Controllers;
@@ -7,6 +8,7 @@ namespace SocializR.SPA.Server.Controllers;
 [Authorize]
 [Route("[controller]")]
 public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
+    IOptionsMonitor<AppSettings> _appSettings,
     IImageStorage _imageStorage,
     IPostService _postService,
     IMapper _mapper,
@@ -14,19 +16,23 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
 {
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IResult> GetAsync(Guid userId, int pageNumber = 0, bool isProfileView = false)
+    public async Task<IResult> GetAsync(Guid userId, int? pageIndex, int? pageSize, bool isProfileView = false)
     {
-        Guid? authorizedUserId = null;
+        Guid authorizedUserId = Guid.Empty;
 
         if (User.Identity.IsAuthenticated)
         {
             authorizedUserId = new Guid(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         }
 
-        var postsResult = await _postService.GetPaginatedAsync(userId, 
-            authorizedUserId,
-            pageNumber, 
-            isProfileView: isProfileView);
+        var postsResult = await _postService.GetPaginatedAsync(new PostsPagingDto
+        {
+            UserId = userId,
+            AuthorizedUserId = authorizedUserId,
+            PageIndex = pageIndex ?? 1,
+            PageSize = pageSize ?? _appSettings.CurrentValue.PostsPerPage,
+            IsProfileView = isProfileView
+        });
 
         return Results.Ok(postsResult);
     }
@@ -73,7 +79,7 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier);
 
-        if(userId is null)
+        if (userId is null)
         {
             return Results.NotFound();
         }

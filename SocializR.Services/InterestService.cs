@@ -1,9 +1,11 @@
-﻿using SocializR.Models.ViewModels;
+﻿using Microsoft.Extensions.Caching.Memory;
+using SocializR.Models.ViewModels;
 
 namespace SocializR.Services;
 
-public class InterestService(ApplicationUnitOfWork unitOfWork, 
-    IMapper _mapper) 
+public class InterestService(ApplicationUnitOfWork unitOfWork,
+    IMapper _mapper,
+    IMemoryCache _memoryCache)
     : BaseService<Interest, InterestService>(unitOfWork), IInterestService
 {
     public async Task<List<InterestViewModel>> GetAllAsync()
@@ -27,7 +29,7 @@ public class InterestService(ApplicationUnitOfWork unitOfWork,
             foreach (var interest in userInterests)
             {
                 var selectedInterest = selectedInterests.FirstOrDefault(i => i.Value == interest.ToString());
-                if(selectedInterest != null)
+                if (selectedInterest != null)
                 {
                     selectedInterest.Selected = true;
                 }
@@ -110,8 +112,17 @@ public class InterestService(ApplicationUnitOfWork unitOfWork,
     }
 
     public async Task<List<SelectItem>> GetSelectItemsAsync()
-        => await UnitOfWork.Interests.Query
-            .OrderBy(i => i.Name)
-            .ProjectTo<SelectItem>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+    {
+        var cachedValue = await _memoryCache.GetOrCreateAsync($"interests-select",
+            async cacheEntry =>
+            {
+                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                return await UnitOfWork.Interests.Query
+                    .OrderBy(i => i.Name)
+                    .ProjectTo<SelectItem>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
+            });
+
+        return cachedValue;
+    }
 }

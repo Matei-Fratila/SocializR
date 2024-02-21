@@ -5,7 +5,7 @@ import authService from './auth.service';
 
 class PostsService {
     async getPaginatedAsync(userId: string, pageNumber: number, isProfileView: boolean) {
-        return await axiosInstance.get('/Posts', { params: { userId: userId, pageNumber: pageNumber, isProfileView: isProfileView } });
+        return await axiosInstance.get('/Posts', { params: { userId: userId, pageIndex: pageNumber, isProfileView: isProfileView } });
     }
 
     async likePost(id: string) {

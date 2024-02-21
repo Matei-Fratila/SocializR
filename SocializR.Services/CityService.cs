@@ -1,8 +1,11 @@
-﻿using SocializR.Models.ViewModels;
+﻿using Microsoft.Extensions.Caching.Memory;
+using SocializR.Models.ViewModels;
 
 namespace SocializR.Services;
 
-public class CityService(ApplicationUnitOfWork unitOfWork, IMapper _mapper) 
+public class CityService(ApplicationUnitOfWork unitOfWork,
+    IMapper _mapper,
+    IMemoryCache _memoryCache)
     : BaseService<City, CityService>(unitOfWork), ICityService
 {
     public async Task<List<City>> GetAllAsync(Guid countyId)
@@ -19,11 +22,20 @@ public class CityService(ApplicationUnitOfWork unitOfWork, IMapper _mapper)
             .ToListAsync();
 
     public async Task<List<SelectItem>> GetSelectItemsByCountyAsync(Guid countyId)
-        => await UnitOfWork.Cities.Query
-            .Where(c => c.CountyId == countyId)
-            .OrderBy(u => u.Name)
-            .ProjectTo<SelectItem>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+    {
+        var cachedValue = await _memoryCache.GetOrCreateAsync($"cities-byCountyId-{countyId}",
+            async cacheEntry =>
+            {
+                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
+                return await UnitOfWork.Cities.Query
+                    .Where(c => c.CountyId == countyId)
+                    .OrderBy(u => u.Name)
+                    .ProjectTo<SelectItem>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
+            });
+
+        return cachedValue;
+    }
 
     public async Task<List<SelectListItem>> GetSelectListByCountyAsync(Guid countyId)
         => await UnitOfWork.Cities.Query

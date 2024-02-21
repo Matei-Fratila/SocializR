@@ -129,6 +129,11 @@ builder.Services.AddRateLimiter(options =>
     });
 });
 
+//Scrutor nuget not yet working with .Net 8
+//builder.Services.Decorate<ICountyService, CachedCountyService>();
+
+builder.Services.AddMemoryCache();
+
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
