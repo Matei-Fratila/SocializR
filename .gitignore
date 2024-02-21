@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 /SocializR.Web/wwwroot/images/uploads
 SocializR.SPA/SocializR.SPA.Server/wwwroot/images/uploads
+SocializR.SPA/SocializR.SPA.Server/appsettings.Development.json

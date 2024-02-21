@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.OutputCaching;
-using Microsoft.Extensions.Caching.Memory;
-using SocializR.Models.Enums;
+﻿using SocializR.Models.Enums;
 using SocializR.Models.ViewModels;
 
 namespace SocializR.SPA.Server.Controllers;

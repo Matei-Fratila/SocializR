@@ -133,6 +133,11 @@ builder.Services.AddRateLimiter(options =>
 //builder.Services.Decorate<ICountyService, CachedCountyService>();
 
 builder.Services.AddMemoryCache();
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("RedisConnectionString");
+    options.InstanceName = "Demo";
+});
 
 var app = builder.Build();
 
