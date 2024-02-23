@@ -8,6 +8,7 @@ namespace SocializR.SPA.Server.Controllers;
 [Authorize]
 [Route("[controller]")]
 public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
+    ILogger<PostsController> _logger,
     IOptionsMonitor<AppSettings> _appSettings,
     IImageStorage _imageStorage,
     IPostService _postService,
@@ -33,6 +34,11 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
             PageSize = pageSize ?? _appSettings.CurrentValue.PostsPerPage,
             IsProfileView = isProfileView
         });
+
+        using (_logger.BeginScope("Getting posts with page index {pageIndex} and page size {pageSize}", pageIndex ?? 1, pageSize ?? _appSettings.CurrentValue.PostsPerPage))
+        {
+            _logger.LogInformation("Received {count} countires from the query", postsResult.Count);
+        }
 
         return Results.Ok(postsResult);
     }

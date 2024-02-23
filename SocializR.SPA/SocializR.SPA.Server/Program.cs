@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OwaspHeaders.Core.Extensions;
+using Serilog;
 using SocializR.DataAccess.Seeds;
 using SocializR.SPA.Server.ExceptionHandlers;
 using System.Net;
@@ -138,6 +139,12 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.Configuration = builder.Configuration.GetConnectionString("RedisConnectionString");
     options.InstanceName = "Demo";
 });
+
+builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+if (builder.Environment.IsProduction())
+{
+    builder.Services.AddApplicationInsightsTelemetry();
+}
 
 var app = builder.Build();
 
