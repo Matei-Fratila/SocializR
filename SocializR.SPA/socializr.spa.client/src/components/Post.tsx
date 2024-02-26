@@ -125,7 +125,7 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
                                 <Container>
                                     <span className="float-end">{comments.length} out of {item.numberOfComments}</span>
                                     <Button variant="link" className="center" title="load more comments" data-toggle="tooltip" data-placement="bottom" onClick={handleLoadMoreComments}>
-                                        <span> Load more comments</span>
+                                        Load more comments
                                     </Button>
                                 </Container>}
 

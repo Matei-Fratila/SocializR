@@ -26,7 +26,7 @@ export interface CurrentUser {
     firstName: string,
     lastName: string,
     profilePhoto: string,
-    roles: [Role]
+    roles: Role[]
 }
 
 export interface Role {

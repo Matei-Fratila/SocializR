@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/esm/Row';
 import Button from 'react-bootstrap/esm/Button';
 import { Col } from 'react-bootstrap';
 import axios, { AxiosError } from 'axios';
+import GoogleLoginButton from './GoogleLoginButton';
 
 const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -96,6 +97,7 @@ const Login = () => {
                             ? "Logging in..."
                             : "Login"}
                     </Button>
+                    <GoogleLoginButton/>
                 </Form>
             </Container>
         )}

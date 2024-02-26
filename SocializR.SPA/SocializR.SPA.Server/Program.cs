@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
 using OwaspHeaders.Core.Extensions;
 using Serilog;
@@ -20,7 +21,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Please enter token",
+        Description = "JWT Authorization header required\"",
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement {
@@ -78,7 +79,21 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = false,//to investigate
         ValidateAudience = false//to investigate
     };
+})
+.AddGoogle(options =>
+{
+    IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
+    options.ClientId = googleAuthNSection["ClientId"];
+    options.ClientSecret = googleAuthNSection["ClientSecret"];
 });
+
+//Update the default authorization policy to accept both authentication schemes (app generated jwt and google)
+//builder.Services.AddAuthorization(options =>
+//{
+//    var defaultAuthorizationBuilder = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme, GoogleDefaults.AuthenticationScheme);
+//    defaultAuthorizationBuilder = defaultAuthorizationBuilder.RequireAuthenticatedUser();
+//    options.DefaultPolicy = defaultAuthorizationBuilder.Build();
+//});
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));

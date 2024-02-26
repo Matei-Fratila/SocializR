@@ -14,6 +14,7 @@ import CreateAlbum from './components/CreateAlbum.tsx';
 import Friends from './components/Friends.tsx';
 import axios from 'axios';
 import Media from './components/Media.tsx';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const router = createBrowserRouter([
   {
@@ -75,37 +76,10 @@ const router = createBrowserRouter([
 
 axios.defaults.baseURL = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? "/api/" : "";
 
-// axios.interceptors.request.use(async (config) => {
-//   config.headers["Authorization"] = `bearer ${authService.getAccessToken()}`;
-//   return config;
-// },
-//   (error) => {
-//     return Promise.reject(error);
-//   });
-
-// axios.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-//   async function (error) {
-//     const originalRequest = error?.config;
-
-//     if (error?.response?.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-
-//       const accessToken: string = await authService.getRefreshToken();
-//       authService.saveToken(accessToken);
-
-//       axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-//       return axios(originalRequest);
-//     }
-
-//     return Promise.reject(error);
-//   }
-// );
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  <GoogleOAuthProvider clientId='175734963131-86log97gsai6r4p063umtslbc05sdfbo.apps.googleusercontent.com'>
+    <React.StrictMode>
+      <RouterProvider router={router} />
+    </React.StrictMode>
+  </GoogleOAuthProvider>
 )

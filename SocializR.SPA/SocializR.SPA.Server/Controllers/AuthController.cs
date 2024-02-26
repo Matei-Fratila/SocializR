@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Google.Apis.Auth;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Socializr.Models.ViewModels.Auth;
@@ -7,21 +9,21 @@ using SocializR.Models.ViewModels.Account;
 namespace SocializR.SPA.Server.Controllers;
 
 [ApiController]
-[AllowAnonymous]
 [Route("[controller]")]
 public class AuthController(UserManager<User> _userManager,
+    ApplicationDbContext _applicationDbContext,
     TokenService _tokenService,
     IOptionsMonitor<AppSettings> _appSettings,
     IOptionsMonitor<JwtSettings> _jwtSettings,
     IMapper _mapper,
     IImageStorage _imageStorage,
+    ILogger<AuthController> _logger,
     IAccountService _accountService) : ControllerBase
 {
     private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
     private readonly int _refreshTokenValidityInDays = _jwtSettings.CurrentValue.RefreshTokenValidityInDays;
 
-    [EnableRateLimiting("ShortLimit")]
-    [HttpPost("login")]
+    [HttpPost("login"), AllowAnonymous, EnableRateLimiting("ShortLimit")]
     public async Task<IResult> LoginAsync([FromBody] LogInViewModel model)
     {
         var user = await _userManager.FindByEmailAsync(model.Email);
@@ -62,7 +64,7 @@ public class AuthController(UserManager<User> _userManager,
         });
     }
 
-    [HttpPost("register")]
+    [HttpPost("register"), AllowAnonymous]
     public async Task<IResult> RegisterAsync([FromBody] RegisterViewModel model)
     {
         var user = _mapper.Map<User>(model);
@@ -76,8 +78,45 @@ public class AuthController(UserManager<User> _userManager,
         return Results.BadRequest(result.Errors);
     }
 
-    [HttpPost]
-    [Route("refresh")]
+    [HttpPost("loginOrRegister"), Authorize(AuthenticationSchemes = GoogleDefaults.AuthenticationScheme)]
+    public async Task<IResult> LoginOrRegisterAsync()
+    {
+        string token = Request.Headers["Authorization"].ToString().Remove(0, 7); 
+
+        try
+        {
+            var payload = await GoogleJsonWebSignature.ValidateAsync(token);
+
+            var user = await _userManager.Users.Where(u => u.Email == payload.Email).FirstOrDefaultAsync();
+
+            if (user is null)
+            {
+                user = new User()
+                {
+                    FirstName = payload.GivenName,
+                    LastName = payload.FamilyName,
+                    Email = payload.Email
+                };
+            }
+            else
+            {
+                if (user.FirstName != payload.GivenName) user.FirstName = payload.GivenName;
+                if (user.LastName != payload.FamilyName) user.LastName = payload.FamilyName;
+                if (user.Email != payload.Email) user.Email = payload.Email;
+            }
+
+            await _applicationDbContext.SaveChangesAsync();
+            return Results.Ok(user.Id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Invalid google access token");
+        }
+        
+        return Results.NoContent();
+    }
+
+    [HttpPost("refresh"), AllowAnonymous]
     public async Task<IResult> RefreshAsync([FromBody] RefreshTokenModel model)
     {
         if (model.AccessToken.IsNullOrEmpty())
@@ -111,8 +150,7 @@ public class AuthController(UserManager<User> _userManager,
         return Results.Ok(newAccessToken);
     }
 
-    [HttpPost, Authorize]
-    [Route("revoke")]
+    [HttpPost("revoke"), Authorize]
     public async Task<IResult> RevokeAsync()
     {
         var userId = new Guid(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);

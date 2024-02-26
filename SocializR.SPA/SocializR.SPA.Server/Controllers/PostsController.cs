@@ -5,7 +5,6 @@ using SocializR.Models.ViewModels.Feed;
 namespace SocializR.SPA.Server.Controllers;
 
 [ApiController]
-[Authorize]
 [Route("[controller]")]
 public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
     ILogger<PostsController> _logger,
@@ -15,8 +14,7 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
     IMapper _mapper,
     ILikeService _likeService) : ControllerBase
 {
-    [HttpGet]
-    [AllowAnonymous]
+    [HttpGet, AllowAnonymous]
     public async Task<IResult> GetAsync(Guid userId, int? pageIndex, int? pageSize, bool isProfileView = false)
     {
         Guid authorizedUserId = Guid.Empty;
@@ -43,7 +41,7 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
         return Results.Ok(postsResult);
     }
 
-    [HttpPost]
+    [HttpPost, Authorize]
     public async Task<IResult> CreateAsync([FromForm] AddPostViewModel model)
     {
         var post = await _postService.CreateAsync(model);
@@ -60,7 +58,7 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
         return Results.Created("", result);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), Authorize]
     public async Task<IResult> DeleteAsync([FromRoute] Guid id)
     {
         await _postService.DeleteAsync(id);
@@ -69,7 +67,7 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
         return Results.NoContent();
     }
 
-    [HttpPost("like/{id}")]
+    [HttpPost("like/{id}"), Authorize]
     public async Task<IResult> LikeAsync([FromRoute] Guid id)
     {
         string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -80,7 +78,7 @@ public class PostsController(ApplicationUnitOfWork _applicationUnitOfWork,
         return Results.Created();
     }
 
-    [HttpDelete("like/{id}")]
+    [HttpDelete("like/{id}"), Authorize]
     public async Task<IResult> DeleteLikeAsync([FromRoute] Guid id)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier);

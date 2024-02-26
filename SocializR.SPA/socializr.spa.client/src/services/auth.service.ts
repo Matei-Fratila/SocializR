@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { CurrentUser, LoginRequest, LoginResponse, RegisterRequest } from '../types/types';
 
 class AuthService {
@@ -9,6 +9,27 @@ class AuthService {
         if (response.currentUser) {
             const user = { ...response.currentUser, token: response.token };
             localStorage.setItem('user', JSON.stringify(user));
+        }
+    }
+
+    async googleLogin() {
+        try {
+            const axiosResponse: AxiosResponse = await axios.post('/Auth/loginOrRegister', {}, {
+                headers: {
+                    "Authorization": `Bearer ${this.getAccessToken()}`
+                }
+            });
+            
+            const id = axiosResponse.data;
+            if (id !== undefined) {
+                const userStr = localStorage.getItem('user');
+                if (userStr) {
+                    const user: CurrentUser = JSON.parse(userStr);
+                    localStorage.setItem('user', JSON.stringify({ ...user, id: id }));
+                }
+            }
+        } catch (error) {
+            console.error(error);
         }
     }
 
@@ -26,14 +47,19 @@ class AuthService {
 
     async getRefreshToken() {
         try {
-            const resp = await axios.post("auth/refresh", {accessToken: this.getAccessToken()}, { headers: {'Content-Type': 'application/json' } });
+            const resp = await axios.post("auth/refresh", { accessToken: this.getAccessToken() }, { headers: { 'Content-Type': 'application/json' } });
             return resp.data;
         } catch (e) {
             console.log("Error", e);
         }
     };
 
-    saveToken(accessToken: string){
+    saveUserAndToken(user: CurrentUser, token: string) {
+        const userAndToken = { ...user, token: token };
+        localStorage.setItem('user', JSON.stringify(userAndToken));
+    }
+
+    saveToken(accessToken: string) {
         const userStr = localStorage.getItem('user');
         if (userStr) {
             const user: CurrentUser = JSON.parse(userStr);
