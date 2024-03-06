@@ -7,9 +7,18 @@ public class AdminService(UserManager<User> _userManager, IMapper _mapper) : IAd
     public async Task<List<UserViewModel>> GetPaginatedUsersAsync(int pageIndex, int pageSize)
         => await _userManager.Users
             .OrderBy(u=>u.FirstName)
-            .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
             .Skip(pageSize * pageIndex)
             .Take(pageSize)
+            .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+
+    public async Task<List<UserViewModel>> SearchUsersAsync(string keyWord, int pageIndex, int pageSize)
+        => await _userManager.Users
+            .Where(u => (u.FirstName + " " + u.LastName).Contains(keyWord) || (u.LastName + " " + u.FirstName).Contains(keyWord))
+            .OrderBy(u => u.FirstName)
+            .Skip(pageSize * pageIndex)
+            .Take(pageSize)
+            .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
     public async Task<int> GetUsersCountAsync()

@@ -6,7 +6,8 @@ import authService from "./services/auth.service";
 import './App.css';
 import { BoxArrowRight, HouseFill, PersonFill } from 'react-bootstrap-icons';
 import { Link } from 'react-router-dom';
-import { Button, Form, NavDropdown } from "react-bootstrap";
+import { NavDropdown } from "react-bootstrap";
+import SearchBar from "./components/SearchBar";
 
 const App = () => {
     const user = authService.getCurrentUser();
@@ -48,15 +49,7 @@ const App = () => {
                                     <BoxArrowRight /> Logout
                                 </Nav.Link>
                             </Nav>
-                            <Form className="d-flex">
-                                <Form.Control
-                                    type="search"
-                                    placeholder="Search"
-                                    className="me-2"
-                                    aria-label="Search"
-                                />
-                                <Button variant="outline-success">Search</Button>
-                            </Form>
+                            <SearchBar></SearchBar>
                         </Navbar.Collapse>
                     </Container>
                 </Navbar>

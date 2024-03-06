@@ -1,0 +1,16 @@
+.form-label, .form-check-label, .card-text > span {
+    font-weight: bold;
+    color: darkolivegreen;
+}
+
+.bg-himenofor-nelamelar-netubular {
+    background-color: rgba(250, 250, 209, 0.5);
+}
+
+.bg-himenofor-tubular {
+    background-color: rgb(240, 128, 128, 0.5);
+}
+
+.bg-himenofor-lamelar {
+    background-color: rgb(173, 216, 230, 0.5);
+}

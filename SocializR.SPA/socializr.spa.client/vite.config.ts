@@ -53,6 +53,12 @@ export default defineConfig(({ mode }) => {
                     changeOrigin: true,
                     secure: false,
                     rewrite: path => path.replace('/api', '')
+                },
+                '/mushroomsApi': {
+                    target: 'https://localhost:7247',
+                    changeOrigin: true,
+                    secure: false,
+                    rewrite: path => path.replace('/mushroomsApi', '')
                 }
             },
             port: 5173,

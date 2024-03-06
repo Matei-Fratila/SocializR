@@ -1,9 +1,13 @@
-import axios from 'axios';
+import { AxiosResponse } from 'axios';
+import axiosInstance from '../helpers/axios-helper';
+import { User } from '../types/types';
 
-class WeatherService {
-    async getWeather() {
-        return await axios.get('/WeatherForecast');
+class UsersService {
+    async searchUsers(searchKey: string, pageIndex: number): Promise<User[]> {
+        const axiosResult: AxiosResponse = await axiosInstance.get('/Users', { params: { searchKey: searchKey, pageIndex: pageIndex } });
+        const users: User[] = axiosResult.data;
+        return users;
     }
 }
 
-export default new WeatherService();
+export default new UsersService();

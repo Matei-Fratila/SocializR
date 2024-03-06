@@ -15,6 +15,9 @@ import Friends from './components/Friends.tsx';
 import axios from 'axios';
 import Media from './components/Media.tsx';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import Mushroom from './components/Mushroom/Mushroom.tsx';
+import EditMushroom from './components/Mushroom/MushroomEdit.tsx';
+import MushroomSearch from './components/Mushroom/MushroomSearch.tsx';
 
 const router = createBrowserRouter([
   {
@@ -58,6 +61,18 @@ const router = createBrowserRouter([
         path: "profile/friends/:id",
         element: <Friends />
       },
+      {
+        path: "mushrooms/:id",
+        element: <Mushroom />
+      },
+      {
+        path: "mushrooms/edit/:id",
+        element: <EditMushroom />
+      },
+      {
+        path: "mushrooms/search",
+        element: <MushroomSearch />
+      }
     ],
   },
   {

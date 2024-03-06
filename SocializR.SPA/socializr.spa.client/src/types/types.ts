@@ -120,7 +120,7 @@ export type SelectItem = {
 export type Album = {
     id: string;
     userId: string;
-    name: string; 
+    name: string;
     description: string;
     coverId: string;
     coverFilePath: string;
@@ -182,6 +182,80 @@ export type User = {
     lastName: string;
 }
 
+export type Ciuperca = {
+    id: number;
+    denumire: string;
+    denumirePopulara: string;
+    corpulFructifer: string;
+    ramurile: string;
+    palaria: string;
+    stratulHimenial: string;
+    gleba: string;
+    tuburileSporifere: string;
+    lamelele: string;
+    piciorul: string;
+    carnea: string;
+    perioadaDeAparitie: string;
+    valoareaAlimentara: string;
+    speciiAsemanatoare: string;
+    idSpeciiAsemanatoare: number[];
+    esteMedicinala: boolean;
+    comestibilitate: Comestibilitate;
+    locDeFructificatie: LocDeFructificatie[];
+    morfologieCorpFructifer: MorfologieCorpFructifer;
+    perioada: number[];
+    luniDeAparitie: Luna[];
+}
+
+export type CiupercaEdit = {
+    id: number;
+    denumire: string;
+    denumirePopulara: string;
+    corpulFructifer: string;
+    ramurile: string;
+    palaria: string;
+    stratulHimenial: string;
+    gleba: string;
+    tuburileSporifere: string;
+    lamelele: string;
+    piciorul: string;
+    carnea: string;
+    perioadaDeAparitie: string;
+    valoareaAlimentara: string;
+    speciiAsemanatoare: string;
+    idSpeciiAsemanatoare: CiupercaOption[];
+    esteMedicinala: boolean;
+    comestibilitate: ComestibilitateOption;
+    locDeFructificatie: LocDeFructificatieOption[];
+    morfologieCorpFructifer: MorfologieCorpFructiferOption;
+    perioada: number[];
+    luniDeAparitie: Luna[];
+}
+
+export type SearchFilters = {
+    esteMedicinala: boolean;
+    comestibilitate: ComestibilitateOption;
+    locDeFructificatie: LocDeFructificatieOption[];
+    morfologieCorpFructifer: MorfologieCorpFructiferOption;
+    perioada: number[];
+    luniDeAparitie: Luna[];
+}
+
+export type ComestibilitateOption = {
+    label: string;
+    value: Comestibilitate
+}
+
+export type LocDeFructificatieOption = {
+    label: string;
+    value: LocDeFructificatie
+}
+
+export type MorfologieCorpFructiferOption = {
+    label: string;
+    value: MorfologieCorpFructifer
+}
+
 interface PostsFetchAction {
     type: 'POSTS_FETCH';
 }
@@ -229,4 +303,54 @@ export enum MediaType {
     Unspecified,
     Image,
     Video
+}
+
+export enum Comestibilitate {
+    Necunoscuta = "Necunoscută",
+    Comestibila = "Comestibilă",
+    ConditionatComestibila = "ConditionatComestibilă",
+    Necomestibila = "Necomestibilă",
+    Otravitoare = "Otrăvitoare"
+}
+
+export enum MorfologieCorpFructifer {
+    HimenoforNelamelarNetubular = "HimenoforNelamelarNetubular",
+    HimenoforTubular = "HimenoforTubular",
+    HimenoforLamelar = "HimenoforLamelar"
+}
+
+export enum LocDeFructificatie {
+    PadureFoioase = "PădureDeFoioase",
+    PadureConifere = "PădureDeConifere",
+    Pasune = "Pășune",
+    CrengiSiCioate = "CrengiȘiCioate"
+}
+
+export enum Luna {
+    ianuarie = "ianuarie",
+    februarie = "februarie",
+    martie = "martie",
+    aprilie = "aprilie",
+    mai = "mai",
+    iunie = "iunie",
+    iulie = "iulie",
+    august = "august",
+    septembrie = "septembrie",
+    octombrie = "octombrie",
+    noiembrie = "noiembrie",
+    decembrie = "decembrie"
+}
+
+export type CiupercaSearchResult = {
+    id: number,
+    nume: string
+}
+
+export type CiupercaOption = {
+    label: string,
+    value: number
+}
+
+export enum Genul {
+    
 }

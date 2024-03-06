@@ -1,0 +1,15 @@
+.bg-out-of-season {
+    background-color: rgb(137, 179, 2);
+}
+
+.bg-in-season {
+    background-color: yellow;
+}
+
+.bg-start-of-season {
+    background-image: linear-gradient(to right, rgb(137, 179, 2) , yellow);
+}
+
+.bg-end-of-season {
+    background-image: linear-gradient(to right, yellow , rgb(137, 179, 2));
+}
