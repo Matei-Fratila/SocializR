@@ -48,19 +48,6 @@ const Mushroom = () => {
         }
     }, [id]);
 
-    function colorMushroomInfo(morfo: MorfologieCorpFructifer): string {
-        console.log(morfo);
-        switch (morfo) {
-            case MorfologieCorpFructifer.HimenoforNelamelarNetubular:
-                return 'bg-himenofor-nelamelar-netubular';
-            case MorfologieCorpFructifer.HimenoforTubular:
-                return 'bg-himenofor-tubular';
-            case MorfologieCorpFructifer.HimenoforLamelar:
-                return 'bg-himenofor-lamelar';
-            default: return '';
-        }
-    };
-
     React.useEffect(() => {
         handleFetchMushroom();
     }, [id]);

@@ -39,7 +39,8 @@ public class RedisMushroomsRepository : IMushroomsRepository
     public async Task<bool> UpdateAsync(Mushroom mushroom)
     {
         JsonCommands jsonCommands = _database.JSON();
-        return await jsonCommands.SetAsync(GetMushroomKey(mushroom.Id), "$", mushroom);
+        return await jsonCommands.SetAsync(GetMushroomKey(mushroom.Id), "$", mushroom, 
+            serializerOptions: new JsonSerializerOptions { IgnoreNullValues = true});
     }
 
     public async Task<List<Mushroom>> SearchAsync(string term, int pageIndex, int pageSize)

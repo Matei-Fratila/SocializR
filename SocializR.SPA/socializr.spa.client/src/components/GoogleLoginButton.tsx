@@ -1,6 +1,5 @@
 import authService from '../services/auth.service';
 import { useNavigate } from 'react-router-dom';
-import axios, { AxiosResponse } from 'axios';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import React from 'react';
 

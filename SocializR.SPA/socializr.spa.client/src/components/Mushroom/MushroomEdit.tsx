@@ -1,65 +1,65 @@
 import './Mushroom.css';
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
-import { Ciuperca, CiupercaEdit, CiupercaOption, Comestibilitate, ComestibilitateOption, LocDeFructificatie, LocDeFructificatieOption, MorfologieCorpFructifer, MorfologieCorpFructiferOption, SelectItem } from "../../types/types";
+import { Ciuperca, CiupercaEdit, CiupercaOption, Comestibilitate, ComestibilitateOption, LocDeFructificatie, LocDeFructificatieOption, MorfologieCorpFructifer, MorfologieCorpFructiferOption } from "../../types/types";
 import mushroomsService from "../../services/mushrooms.service";
 import { useNavigate, useParams } from "react-router-dom";
 import MushroomInfo from "./MushroomInfo";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Select from 'react-select';
 import splitCamelCase from '../../helpers/string-helper';
-import { Slider, TextareaAutosize } from '@mui/material';
+import { /*Slider,*/ TextareaAutosize } from '@mui/material';
 import React from 'react';
 
-let months = [
-    {
-        value: 1,
-        label: "ian"
-    },
-    {
-        value: 2,
-        label: "feb"
-    },
-    {
-        value: 3,
-        label: "mar"
-    },
-    {
-        value: 4,
-        label: "apr"
-    },
-    {
-        value: 5,
-        label: "mai"
-    },
-    {
-        value: 6,
-        label: "iun"
-    },
-    {
-        value: 7,
-        label: "iul"
-    },
-    {
-        value: 8,
-        label: "aug"
-    },
-    {
-        value: 9,
-        label: "sep"
-    },
-    {
-        value: 10,
-        label: "oct"
-    },
-    {
-        value: 11,
-        label: "nov"
-    },
-    {
-        value: 12,
-        label: "dec"
-    }
-];
+// let months = [
+//     {
+//         value: 1,
+//         label: "ian"
+//     },
+//     {
+//         value: 2,
+//         label: "feb"
+//     },
+//     {
+//         value: 3,
+//         label: "mar"
+//     },
+//     {
+//         value: 4,
+//         label: "apr"
+//     },
+//     {
+//         value: 5,
+//         label: "mai"
+//     },
+//     {
+//         value: 6,
+//         label: "iun"
+//     },
+//     {
+//         value: 7,
+//         label: "iul"
+//     },
+//     {
+//         value: 8,
+//         label: "aug"
+//     },
+//     {
+//         value: 9,
+//         label: "sep"
+//     },
+//     {
+//         value: 10,
+//         label: "oct"
+//     },
+//     {
+//         value: 11,
+//         label: "nov"
+//     },
+//     {
+//         value: 12,
+//         label: "dec"
+//     }
+// ];
 
 const optionsLocDeFructificatie: LocDeFructificatieOption[] = Object.values(LocDeFructificatie).map(loc => ({ value: loc, label: splitCamelCase(loc) }));
 const optionsMorfologieCorpFructifer: MorfologieCorpFructiferOption[] = Object.values(MorfologieCorpFructifer).map(loc => ({ value: loc, label: splitCamelCase(loc) }));
@@ -70,7 +70,7 @@ const EditMushroom = () => {
     const navigate = useNavigate();
     const [mushroomOptions, setMushroomOptions] = React.useState<CiupercaOption[]>([]);
 
-    const { control, register, handleSubmit, watch, setValue } = useForm<CiupercaEdit>({
+    const { control, register, handleSubmit, watch, /*setValue*/ } = useForm<CiupercaEdit>({
         defaultValues: async () => {
             try {
                 const ciuperca = await mushroomsService.getMushroom(id);
@@ -95,21 +95,20 @@ const EditMushroom = () => {
         }
     };
 
-    const handleChange = (
-        event: Event,
-        newValue: number | number[],
-        activeThumb: number,
-    ) => {
-        if (!Array.isArray(newValue)) {
-            return;
-        }
+    // const handleChange = (
+    //     newValue: number | number[],
+    //     activeThumb: number,
+    // ) => {
+    //     if (!Array.isArray(newValue)) {
+    //         return;
+    //     }
 
-        if (activeThumb === 0) {
-            setValue("perioada", [Math.min(newValue[0], newValue[1] - 1), newValue[1]]);
-        } else {
-            setValue("perioada", [newValue[0], Math.max(newValue[1], newValue[0] + 1)]);
-        }
-    };
+    //     if (activeThumb === 0) {
+    //         setValue("perioada", [Math.min(newValue[0], newValue[1] - 1), newValue[1]]);
+    //     } else {
+    //         setValue("perioada", [newValue[0], Math.max(newValue[1], newValue[0] + 1)]);
+    //     }
+    // };
 
     const handleSearchMushrooms = async () => {
         try {
@@ -140,7 +139,8 @@ const EditMushroom = () => {
                         esteMedicinala={watchInfo[1]}
                         comestibilitate={watchInfo[2].value}
                         locDeFructificatie={watchInfo[3].map((loc) => loc.value)}
-                        morfologieCorpFructifer={watchInfo[4]?.value}>
+                        morfologieCorpFructifer={watchInfo[4]?.value}
+                        perioada={watchInfo[5]}>
                     </MushroomInfo>
                 }
                 <Col as={Form} lg={10} md={10} sm={10} xs={12} onSubmit={handleSubmit(onSubmit)} className="mt-3">
@@ -246,7 +246,7 @@ const EditMushroom = () => {
                         <TextareaAutosize className="form-control" {...register("perioadaDeAparitie")} />
                     </Form.Group>
 
-                    <Controller
+                    {/* <Controller
                         name="perioada"
                         control={control}
                         key={(new Date()).toUTCString()} //Temporary fix
@@ -261,7 +261,7 @@ const EditMushroom = () => {
                                 marks={months}
                             />
                         )}
-                    />
+                    /> */}
 
                     <Form.Group className="mb-3" controlId="comestibilitate">
                         <Form.Label>Comestibilitate *</Form.Label>
@@ -321,7 +321,8 @@ const EditMushroom = () => {
                         esteMedicinala={watchInfo[1]}
                         comestibilitate={watchInfo[2].value}
                         locDeFructificatie={watchInfo[3].map((loc) => loc.value)}
-                        morfologieCorpFructifer={watchInfo[4]?.value}>
+                        morfologieCorpFructifer={watchInfo[4]?.value}
+                        perioada={watchInfo[5]}>
                     </MushroomInfo>
                 }
             </Row>
