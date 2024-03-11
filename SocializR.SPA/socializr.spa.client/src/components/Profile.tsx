@@ -1,8 +1,8 @@
 import { Album as AlbumModel, SelectItem, RelationType, Profile as ProfileModel } from "../types/types";
 import React from "react";
 import profileService from "../services/profile.service";
-import { Button, Col, Row } from "react-bootstrap";
-import { CameraFill, Image, InfoSquareFill, Pencil, PeopleFill, PersonFill, Plus, PostageFill } from "react-bootstrap-icons";
+import { Button, Col, Container, Row } from "react-bootstrap";
+import { Pencil, PersonFill, Plus } from "react-bootstrap-icons";
 import { Link, useParams } from "react-router-dom";
 import authService from "../services/auth.service";
 import "./Profile.css";
@@ -11,6 +11,7 @@ import Select from 'react-select';
 import Album from "./Album";
 import friendshipService from "../services/friendship.service";
 import axiosInstance from "../helpers/axios-helper";
+import { Avatar } from "@mui/material";
 
 const Profile = () => {
     const { id } = useParams();
@@ -112,104 +113,107 @@ const Profile = () => {
     }
 
     return (
-        <Row>
-            <Col lg={6} md={6} sm={12} xs={12}>
-                <Row>
-                    <Col lg={3} md={4} sm={3} xs={6}>
-                        <img className="rounded-circle profile-user-photo shadow img-thumbnail" alt="Avatar" src={`${axiosInstance.defaults.baseURL}${profile.avatar}`} />
-                    </Col>
-                    <Col lg={9} md={8} sm={9} xs={6}>
-                        <h4>{profile.firstName} {profile.lastName}</h4>
-                        <Link to={`/profile/friends/${id}`}><PeopleFill /> <b>{profile.nrOfFriends}</b> friends</Link>
-                        {(id !== authService.getCurrentUserId() && profile.mutualFriends !== 0)
-                            && <Row><span><PersonFill /> <b>{profile.mutualFriends}</b> mutual friends</span></Row>}
-                        <a href="#albums"><Row><span><CameraFill /> <b>{profile.nrOfPhotos}</b> photos</span></Row></a>
-                        <a href="#posts"><Row><span><PostageFill /> <b>{profile.nrOfPosts}</b> posts</span></Row></a>
-                    </Col>
-                </Row>
-                <Row className="mt-4"><span>{profile.description}God loves you but not enough to save you, so good luck taking care of yourself.</span></Row>
-                <div className="mt-4">
-                    {(id === authService.getCurrentUserId())
-                        ? <Link to={`/profile/edit/${id}`}>
-                            <Pencil /> Edit profile
-                        </Link> : renderButton(profile.relationToCurrentUser)}
-                </div>
-
-                <Row className="mt-4">
-                    <h5><InfoSquareFill /> Personal information</h5>
-                    <hr />
-                    <Col sm={4} xs={6}>
-                        <dt>First Name</dt>
-                    </Col>
-                    <Col sm={8} xs={6}>
-                        <dd>{profile.firstName}</dd>
-                    </Col>
-                    <Col sm={4} xs={6}>
-                        <dt>Last Name</dt>
-                    </Col>
-                    <Col sm={8} xs={6}>
-                        <dd>{profile.lastName}</dd>
-                    </Col>
-                    <Col sm={4} xs={6}>
-                        <dt>Birth Date</dt>
-                    </Col>
-                    <Col sm={8} xs={6}>
-                        <dd>{new Date(profile.birthDate).toLocaleDateString()}</dd>
-                    </Col>
-                    <Col sm={4} xs={6}>
-                        <dt>County</dt>
-                    </Col>
-                    <Col sm={8} xs={6}>
-                        <dd>{profile.county.label}</dd>
-                    </Col>
-                    <Col sm={4} xs={6}>
-                        <dt>City</dt>
-                    </Col>
-                    <Col sm={8} xs={6}>
-                        <dd>{profile.city.label}</dd>
-                    </Col>
-                    <Col sm={4} xs={6}>
-                        <dt>Gender</dt>
-                    </Col>
-                    <Col sm={8} xs={6}>
-                        <dd>{profile.gender.label}</dd>
-                    </Col>
-
+        <Container>
+            <Row>
+                <Col lg={6} md={6} sm={12} xs={12}>
                     <Row>
-                        <Col sm={4} xs={6}>
-                            <dt>
-                                Interests
-                            </dt>
+                        <Col lg={3} md={4} sm={3} xs={6}>
+                            <Avatar alt={`${profile.firstName} ${profile.lastName}`}
+                                src={`${axiosInstance.defaults.baseURL}${profile.avatar}`}
+                                sx={{ width: '5em', height: '5em' }} />
                         </Col>
-                        <Col sm={8} xs={12}>
-                            <dd>
-                                <Select isMulti={true} value={profile.interests} isDisabled={true} />
-                            </dd>
+                        <Col lg={9} md={8} sm={9} xs={6}>
+                            <h4>{profile.firstName} {profile.lastName}</h4>
+                            <Link to={`/profile/friends/${id}`}><b>{profile.nrOfFriends}</b> friends</Link>
+                            {(id !== authService.getCurrentUserId() && profile.mutualFriends !== 0)
+                                && <Row><span><PersonFill /> <b>{profile.mutualFriends}</b> mutual friends</span></Row>}
+                            <a href="#albums"><Row><span> <b>{profile.nrOfPhotos}</b> photos</span></Row></a>
+                            <a href="#posts"><Row><span> <b>{profile.nrOfPosts}</b> posts</span></Row></a>
                         </Col>
                     </Row>
-                </Row>
-                <Row className="mt-4" id="albums">
-                    <h5><Image /> Albums</h5>
-                    <hr />
-                    <div className="mb-4">
+                    <div className="mt-4">
                         {(id === authService.getCurrentUserId())
-                            &&
-                            <Link to={`/album/create`}>
-                                <Plus /> Create a new Album
-                            </Link>
-                        }
+                            ? <Link to={`/profile/edit/${id}`}>
+                                <Pencil /> Editează profil
+                            </Link> : renderButton(profile.relationToCurrentUser)}
                     </div>
-                    {
-                        profile.albums.map((album: AlbumModel) => <Album onDelete={handleDeleteAlbum} key={album.id} item={album} />)
-                    }
-                </Row>
-            </Col>
-            <Col lg={6} md={6} sm={12} xs={12} id="#posts">
-                <h5><PostageFill /> Posts</h5>
-                <hr />
-                {id !== undefined && <PostList key={profile.id}></PostList>}
-            </Col>
-        </Row>
+
+                    <Row className="mt-4">
+                        <h5>Informații personale</h5>
+                        <hr />
+                        <Col sm={4} xs={6}>
+                            <dt>Nume</dt>
+                        </Col>
+                        <Col sm={8} xs={6}>
+                            <dd>{profile.firstName}</dd>
+                        </Col>
+                        <Col sm={4} xs={6}>
+                            <dt>Prenume</dt>
+                        </Col>
+                        <Col sm={8} xs={6}>
+                            <dd>{profile.lastName}</dd>
+                        </Col>
+                        <Col sm={4} xs={6}>
+                            <dt>Data nașterii</dt>
+                        </Col>
+                        <Col sm={8} xs={6}>
+                            <dd>{new Date(profile.birthDate).toLocaleDateString()}</dd>
+                        </Col>
+                        <Col sm={4} xs={6}>
+                            <dt>Județ</dt>
+                        </Col>
+                        <Col sm={8} xs={6}>
+                            <dd>{profile.county.label}</dd>
+                        </Col>
+                        <Col sm={4} xs={6}>
+                            <dt>Orsș</dt>
+                        </Col>
+                        <Col sm={8} xs={6}>
+                            <dd>{profile.city.label}</dd>
+                        </Col>
+                        <Col sm={4} xs={6}>
+                            <dt>Gen</dt>
+                        </Col>
+                        <Col sm={8} xs={6}>
+                            <dd>{profile.gender.label}</dd>
+                        </Col>
+
+                        <Row>
+                            <Col sm={4} xs={6}>
+                                <dt>
+                                    Interese
+                                </dt>
+                            </Col>
+                            <Col sm={8} xs={12}>
+                                <dd>
+                                    <Select isMulti={true} value={profile.interests} isDisabled={true} />
+                                </dd>
+                            </Col>
+                        </Row>
+                    </Row>
+                    <Row className="mt-4" id="albums">
+                        <h5>Albume</h5>
+                        <hr />
+                        <div className="mb-4">
+                            {(id === authService.getCurrentUserId())
+                                &&
+                                <Link to={`/album/create`}>
+                                    <Plus /> Create a new Album
+                                </Link>
+                            }
+                        </div>
+                        {
+                            profile.albums.map((album: AlbumModel) => <Album onDelete={handleDeleteAlbum} key={album.id} item={album} />)
+                        }
+                    </Row>
+                </Col>
+                <Col lg={6} md={6} sm={12} xs={12} id="#posts">
+                    <h5>Postări</h5>
+                    <hr />
+                    {id !== undefined && <PostList key={profile.id}></PostList>}
+                </Col>
+            </Row>
+        </Container>
     );
 }
 

@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { Ciuperca, CiupercaEdit, CiupercaOption, CiupercaSearchResult, Comestibilitate, MorfologieCorpFructifer } from '../types/types';
+import { Ciuperca, CiupercaEdit, CiupercaOption, CiupercaPaginatedResult, CiupercaSearchResult, Comestibilitate, Luna, MorfologieCorpFructifer, SearchFilters } from '../types/types';
 import splitCamelCase from '../helpers/string-helper';
 
 class MushroomsService {
@@ -11,45 +11,63 @@ class MushroomsService {
         withCredentials: true
     });
 
-    async getMushroom(id: string | undefined): Promise<Ciuperca> {
+    async getMushroom(id: number): Promise<Ciuperca> {
         const axiosResponse: AxiosResponse = await this.mushroomsApi.get(`/Mushrooms/${id}`);
         const mushroom: Ciuperca = axiosResponse.data;
         return mushroom;
-    }
+    };
+
+    async getPaginatedMushrooms(pageIndex: number, pageSize: number) {
+        const axiosResponse: AxiosResponse = await this.mushroomsApi.get(`/Mushrooms/`, { params: { term: "", pageIndex: pageIndex, pageSize: pageSize } });
+        const mushrooms: CiupercaPaginatedResult = axiosResponse.data;
+        return mushrooms;
+    };
 
     async updateMushroom(ciuperca: Ciuperca) {
         return await this.mushroomsApi.put(`/Mushrooms/`, ciuperca);
     };
 
-    async searchMushroom(term: string, pageIndex: number, pageSize: number) {
-        const axiosResponse: AxiosResponse = await this.mushroomsApi.get(`/Mushrooms/`, {params: {term: term, pageIndex: pageIndex, pageSize: pageSize}});
+    async searchMushrooms(term: string) {
+        const axiosResponse: AxiosResponse = await this.mushroomsApi.get(`/Mushrooms/search`, { params: { term: term } });
         const mushrooms: CiupercaSearchResult[] = axiosResponse.data;
         return mushrooms;
     };
 
-    mapCiupercaToCiupercaEdit(ciuperca: Ciuperca): CiupercaEdit {
-        const editMushroom: CiupercaEdit =
-        {
-            ...ciuperca,
-            comestibilitate: { label: splitCamelCase(ciuperca.comestibilitate), value: ciuperca.comestibilitate },
-            locDeFructificatie: ciuperca.locDeFructificatie.map((loc) => ({ label: splitCamelCase(loc), value: loc })),
-            morfologieCorpFructifer: { label: splitCamelCase(ciuperca.morfologieCorpFructifer), value: ciuperca.morfologieCorpFructifer },
-            idSpeciiAsemanatoare: ciuperca.idSpeciiAsemanatoare.map((id) => ({ label: id.toString(), value: id}))
-        };
-
-        return editMushroom;
+    async filterMushrooms(data: any) {
+        const axiosResponse: AxiosResponse =
+            await this.mushroomsApi.get(`/Mushrooms/filterSearch`, {
+                params: data, paramsSerializer: {indexes: null}
+            });
+        const mushrooms: CiupercaPaginatedResult = axiosResponse.data;
+        return mushrooms;
     };
 
-    mapCiupercaEditToCiuperca(ciupercaEdit: CiupercaEdit): Ciuperca {
-        const ciuperca: Ciuperca = {
-            ...ciupercaEdit,
-            comestibilitate: ciupercaEdit.comestibilitate.value,
-            locDeFructificatie: ciupercaEdit.locDeFructificatie.map((loc) => (loc.value)),
-            morfologieCorpFructifer: ciupercaEdit.morfologieCorpFructifer.value,
-            idSpeciiAsemanatoare: ciupercaEdit.idSpeciiAsemanatoare.map((id) => id.value)
+    mapCiupercaToCiupercaEdit(from: Ciuperca): CiupercaEdit {
+        const to: CiupercaEdit =
+        {
+            ...from,
+            comestibilitate: { label: splitCamelCase(from.comestibilitate), value: from.comestibilitate },
+            locDeFructificatie: from.locDeFructificatie?.map((loc) => ({ label: splitCamelCase(loc), value: loc })),
+            morfologieCorpFructifer: { label: splitCamelCase(from.morfologieCorpFructifer), value: from.morfologieCorpFructifer },
+            idSpeciiAsemanatoare: from.idSpeciiAsemanatoare?.map((id) => ({ label: id.toString(), value: id })),
+            perioadaStart: { label: Object.values(Luna)[from.perioada[0] - 1], value: from.perioada[0] },
+            perioadaEnd: { label: Object.values(Luna)[from.perioada[1] - 1], value: from.perioada[1] }
         };
 
-        return ciuperca;
+        return to;
+    };
+
+    mapCiupercaEditToCiuperca(from: CiupercaEdit): Ciuperca {
+        const to: Ciuperca = {
+            ...from,
+            comestibilitate: from.comestibilitate.value,
+            locDeFructificatie: from.locDeFructificatie?.map((loc) => (loc.value)),
+            morfologieCorpFructifer: from.morfologieCorpFructifer.value,
+            idSpeciiAsemanatoare: from.idSpeciiAsemanatoare?.map((id) => id.value),
+            perioada: [from.perioadaStart.value, from.perioadaEnd.value]
+        };
+
+        return to;
     };
 
     mapCiupercaSearchResultToCiupercaOption(ciupercaSearchResult: CiupercaSearchResult): CiupercaOption {
@@ -80,11 +98,12 @@ class MushroomsService {
             speciiAsemanatoare: "",
             idSpeciiAsemanatoare: [],
             esteMedicinala: false,
-            comestibilitate: { value: Comestibilitate.Necunoscuta, label: Comestibilitate.Necunoscuta },
+            comestibilitate: { value: Comestibilitate.Necomestibila, label: "" },
             locDeFructificatie: [],
             morfologieCorpFructifer: { value: MorfologieCorpFructifer.HimenoforLamelar, label: MorfologieCorpFructifer.HimenoforLamelar },
             luniDeAparitie: [],
-            perioada: [],
+            perioadaStart: { label: "", value: 0 },
+            perioadaEnd: { label: "", value: 0 }
         }
     }
 }

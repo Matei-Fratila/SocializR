@@ -16,17 +16,16 @@ import axios from 'axios';
 import Media from './components/Media.tsx';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Mushroom from './components/Mushroom/Mushroom.tsx';
-import EditMushroom from './components/Mushroom/MushroomEdit.tsx';
 import MushroomSearch from './components/Mushroom/MushroomSearch.tsx';
+import MushroomList from './components/Mushroom/MushroomList.tsx';
+import MushroomEdit from './components/Mushroom/MushroomEdit.tsx';
+import Layout from './components/Layout.tsx';
+import { Container } from '@mui/material';
 
 const router = createBrowserRouter([
   {
     element: <App />,
     children: [
-      {
-        path: "feed",
-        element: <Feed />
-      },
       {
         path: "profile/:id",
         element: <Profile />,
@@ -63,16 +62,28 @@ const router = createBrowserRouter([
       },
       {
         path: "mushrooms/:id",
-        element: <Mushroom />
+        element: <Container><Mushroom /></Container>
       },
       {
         path: "mushrooms/edit/:id",
-        element: <EditMushroom />
+        element: <Container><MushroomEdit /></Container>
       },
       {
         path: "mushrooms/search",
         element: <MushroomSearch />
-      }
+      },
+      {
+        path: "mushrooms",
+        element: <MushroomList />
+      },
+      {
+        element: <Layout />,
+        children: [
+          {
+            path: "feed",
+            element: <Feed />
+          }]
+      },
     ],
   },
   {

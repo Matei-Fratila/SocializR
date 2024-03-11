@@ -10,6 +10,8 @@ import commentService from "../services/comment.service";
 import CommentForm from "./CommentForm";
 import authService from "../services/auth.service";
 import axiosInstance from "../helpers/axios-helper";
+import { Avatar, Badge } from "@mui/material";
+import StyledBadge from "./StyledBadge";
 
 const Post = ({ item, onRemoveItem }: PostProps) => {
     const authenticatedUserId = authService.getCurrentUserId();
@@ -74,7 +76,15 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
             <Row>
                 <Col sm={2} xs={12} className="mb-2">
                     <Link to={`/profile/${item.userId}`}>
-                        <img src={`${axiosInstance.defaults.baseURL}${item.userPhoto}`} alt="Profile picture" className="d-block m-auto rounded-circle shadow img-thumbnail user-photo avatar-float" />
+                        <StyledBadge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            variant="dot"
+                        >
+                            <Avatar alt={`${item.firstName} ${item.lastName}`}
+                                src={`${axiosInstance.defaults.baseURL}${item.userPhoto}`}
+                                sx={{ width: '3em', height: '3em' }} />
+                        </StyledBadge>
                     </Link>
                 </Col>
                 <Col sm={10} xs={12}>

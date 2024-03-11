@@ -2,17 +2,19 @@ import DeciduousForest from "./svgs/DeciduousForest";
 import ConiferousForest from "./svgs/ConiferousForest";
 import TreeStump from "./svgs/TreeStump";
 import Grass from "./svgs/Grass";
-import Hand from "./svgs/Hand";
 import Medicine from "./svgs/Medicine";
 import Skull from "./svgs/Skull";
 import ForkAndSpoon from "./svgs/ForkAndSpoon";
 import ExclamationForkAndSpoon from "./svgs/ExclamationForkAndSpoon";
 import CrossedForkAndSpoon from "./svgs/CrossedForkAndSpoon";
 import './MushroomInfo.css'
-import { Button, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Button, ButtonGroup, CardHeader } from "react-bootstrap";
 import { Comestibilitate, LocDeFructificatie, MorfologieCorpFructifer } from "../../types/types";
-import Clock from "./svgs/Clock";
+import { useNavigate } from "react-router-dom";
+import splitCamelCase from "../../helpers/string-helper";
+import { Popover } from "@mui/material";
+import React from "react";
+import MushroomPopover from "./MushroomPopover";
 
 
 interface MushroomInfoProps {
@@ -26,20 +28,29 @@ interface MushroomInfoProps {
 }
 
 const buttonStyle = {
-    width: "51%",
-    height: "auto"
+    width: "4em",
+    height: "3em",
 }
 
-const buttonStyle1 = {
-    width: "51%",
-    height: "auto"
-}
+const MushroomInfo = ({
+    idSpeciiAsemanatoare,
+    esteMedicinala,
+    comestibilitate,
+    locDeFructificatie,
+    morfologieCorpFructifer }: MushroomInfoProps) => {
 
-const MushroomInfo = (props: MushroomInfoProps) => {
-    const { idSpeciiAsemanatoare, esteMedicinala, comestibilitate, locDeFructificatie, morfologieCorpFructifer, perioada } = props;
+    const navigate = useNavigate();
+    const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
-    const currentMonth = new Date().getMonth() + 1;
-    const isInSeason = currentMonth >= perioada[0] && currentMonth <= perioada[1];
+    const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
 
     const renderComestibilitate = () => {
         switch (comestibilitate) {
@@ -73,8 +84,8 @@ const MushroomInfo = (props: MushroomInfoProps) => {
         }
     };
 
-    function colorMushroomInfo(morfo: MorfologieCorpFructifer): string {
-        switch (morfo) {
+    function colorMushroomInfo(): string {
+        switch (morfologieCorpFructifer) {
             case MorfologieCorpFructifer.HimenoforNelamelarNetubular:
                 return 'bg-himenofor-nelamelar-netubular';
             case MorfologieCorpFructifer.HimenoforTubular:
@@ -86,45 +97,70 @@ const MushroomInfo = (props: MushroomInfoProps) => {
     };
 
     return (
-        <Col lg={2} md={2} sm={2} xs={12} className={`${colorMushroomInfo(morfologieCorpFructifer)} text-center`}>
-            <Button style={buttonStyle} variant="light" className="mt-3 border-dark">
-                <Clock color={`${isInSeason ? "green" : "red"}`}></Clock>                    
-            </Button>
+        <CardHeader className={colorMushroomInfo()} title={`prezintă ${splitCamelCase(morfologieCorpFructifer).toLocaleLowerCase()}`}>
 
-            {renderComestibilitate() !== "" &&
-                <Button style={buttonStyle} variant="light" className="mt-3 border-dark">
-                    {renderComestibilitate()}
-                </Button>
-            }
-
-            {esteMedicinala &&
-                <Button style={buttonStyle} variant="light" className="mt-3 border-dark">
-                    <Medicine></Medicine>
-                </Button>
-            }
-
-            {locDeFructificatie && locDeFructificatie?.length !== 0 &&
-                locDeFructificatie?.map(loc =>
-                    <Button style={buttonStyle} variant="light" className="mt-3 border-dark">{
-                        renderLocDeFructificatie(loc)}
-                    </Button>)
-            }
-
-            {idSpeciiAsemanatoare && idSpeciiAsemanatoare?.length !== 0 &&
-                <>
-                    <Button style={buttonStyle1} variant="light" className="mt-3 border-dark">
-                        <Hand></Hand>
+            <ButtonGroup className="me-2">
+                {renderComestibilitate() !== "" &&
+                    <Button style={buttonStyle} variant="light" className="border-dark" title={splitCamelCase(comestibilitate).toLocaleLowerCase()}>
+                        {renderComestibilitate()}
                     </Button>
-                    {idSpeciiAsemanatoare.map(i =>
-                        <Link key={i} to={`/mushrooms/${i}`}>
-                            <Button style={buttonStyle} variant="light" className="mt-3 border-dark">
-                                <span className="fw-bold">{i}</span>
-                            </Button>
-                        </Link>
-                    )}
-                </>
-            }
-        </Col>
+                }
+                {esteMedicinala &&
+                    <Button title="prezintă proprietăți curative" style={buttonStyle} variant="light" className="border-dark">
+                        <Medicine></Medicine>
+                    </Button>
+                }
+            </ButtonGroup>
+
+            <ButtonGroup className="me-2">
+                {locDeFructificatie && locDeFructificatie?.length !== 0 &&
+                    locDeFructificatie?.map((loc, index) =>
+                        <Button style={buttonStyle} key={index} variant="light" title={splitCamelCase(loc).toLocaleLowerCase()}
+                            className="border-dark">{
+                                renderLocDeFructificatie(loc)}
+                        </Button>)
+                }
+            </ButtonGroup>
+
+            <ButtonGroup className="float-end">
+                {idSpeciiAsemanatoare && idSpeciiAsemanatoare?.length !== 0 &&
+                    idSpeciiAsemanatoare.map(i =>
+                        <Button style={buttonStyle}
+                            key={i}
+                            variant="light"
+                            className="border-dark"
+                            onClick={() => navigate(`/mushrooms/${i}`)}
+                            aria-owns={open ? 'mouse-over-popover' : undefined}
+                            aria-haspopup="true"
+                            onMouseEnter={handlePopoverOpen}
+                            onMouseLeave={handlePopoverClose}>
+                            <span className="fw-bold">{i}</span>
+                        </Button>
+
+                    )
+                }
+            </ButtonGroup>
+            <Popover
+                id="mouse-over-popover"
+                sx={{
+                    pointerEvents: 'none',
+                }}
+                open={open}
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                onClose={handlePopoverClose}
+                disableRestoreFocus
+            >
+                <MushroomPopover id={Number(anchorEl?.innerText)}></MushroomPopover>
+            </Popover>
+        </CardHeader>
     );
 };
 

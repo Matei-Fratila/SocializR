@@ -5,7 +5,8 @@ const myStyle = {
 
 const CrossedForkAndSpoon = () => {
     return (
-        <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" width="100%"
+            height="auto">
             <g id="SVGRepo_iconCarrier" transform="matrix(0.9999999999999999, 0, 0, 0.9999999999999999, -2.0597689151763916, 18.131319046020508)">
                 <g>
                     <g>

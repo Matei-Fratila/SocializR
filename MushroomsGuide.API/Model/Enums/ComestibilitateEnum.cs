@@ -2,7 +2,7 @@
 
 public enum ComestibilitateEnum
 {
-    Necunoscută = 0,
+    Necunoscută,
     Comestibilă,
     CondiționatComestibilă,
     Necomestibilă,

@@ -66,7 +66,7 @@ public class MushroomSeed
     {
         get
         {
-            if (ValoareaAlimentara == null) return ComestibilitateEnum.Necunoscută;
+            //if (ValoareaAlimentara == null) return ComestibilitateEnum.Necunoscută;
 
             var txt = ValoareaAlimentara.ToLower();
             if (txt.Contains("otravitoare") || txt.Contains("otrăvitoare"))
@@ -89,7 +89,9 @@ public class MushroomSeed
                 return ComestibilitateEnum.Comestibilă;
             }
 
-            return ComestibilitateEnum.Necunoscută;
+            return ComestibilitateEnum.Necomestibilă;
+
+            //return ComestibilitateEnum.Necunoscută;
         }
         set => _comestibilitate = value;
     }

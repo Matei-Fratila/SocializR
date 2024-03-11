@@ -1,4 +1,7 @@
-.form-label, .form-check-label, .card-text > span {
+.kaki,
+.mushroom-card  .form-label,
+.mushroom-card .form-check-label,
+.mushroom-card .card-text>span {
     font-weight: bold;
     color: darkolivegreen;
 }
@@ -13,4 +16,23 @@
 
 .bg-himenofor-lamelar {
     background-color: rgb(173, 216, 230, 0.5);
+}
+
+.shadow-page:before,
+.shadow-page:after {
+    content: " ";
+    height: 100%;
+    position: absolute;
+    top: 0;
+    width: 15px;
+}
+
+.shadow-page:before {
+    box-shadow: -15px 0 15px -15px inset;
+    left: -15px;
+}
+
+.shadow-page:after {
+    box-shadow: 15px 0 15px -15px inset;
+    right: -15px;
 }

@@ -1,18 +1,22 @@
 import React from "react";
 import './Mushroom.css';
-import { Button, Card, CardBody, CardText, CardTitle, Col, Row } from "react-bootstrap";
+import { Card, CardBody, CardText, CardTitle } from "react-bootstrap";
 import { Ciuperca, Comestibilitate, MorfologieCorpFructifer } from "../../types/types";
 import mushroomsService from "../../services/mushrooms.service";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Calendar from "./Calendar";
 import MushroomInfo from "./MushroomInfo";
-import { ArrowLeft, ArrowRight, PencilFill } from "react-bootstrap-icons";
+import { PencilFill } from "react-bootstrap-icons";
+import MushroomName from "./MushroomName";
 
-const Mushroom = () => {
+interface MushroomProps {
+    mushroom: Ciuperca
+}
+
+const Mushroom = (props: MushroomProps | any) => {
     const { id } = useParams();
-    const navigate = useNavigate();
 
-    const [mushroom, setMushroom] = React.useState<Ciuperca>({
+    const [mushroom, setMushroom] = React.useState<Ciuperca>(props?.mushroom ?? {
         id: 0,
         denumire: "",
         denumirePopulara: "",
@@ -30,7 +34,7 @@ const Mushroom = () => {
         speciiAsemanatoare: "",
         idSpeciiAsemanatoare: [],
         esteMedicinala: false,
-        comestibilitate: Comestibilitate.Necunoscuta,
+        comestibilitate: Comestibilitate.Necomestibila,
         locDeFructificatie: [],
         morfologieCorpFructifer: MorfologieCorpFructifer.HimenoforNelamelarNetubular,
         luniDeAparitie: [],
@@ -39,115 +43,141 @@ const Mushroom = () => {
 
     const handleFetchMushroom = React.useCallback(async () => {
         try {
-            if (id !== undefined) {
-                const result = await mushroomsService.getMushroom(id);
-                setMushroom(result);
-            }
+            const result = await mushroomsService.getMushroom(Number(id));
+            setMushroom(result);
         }
         catch {
-        }
-    }, [id]);
+    }
+}, [id]);
 
-    React.useEffect(() => {
+React.useEffect(() => {
+    if (id !== undefined) {
         handleFetchMushroom();
-    }, [id]);
+    }
+}, [id]);
 
-    return (
-        <>
-            <Row>
-                <Card.Img variant="top" src='../../morells.jpg' className="px-0">
-                </Card.Img>
+const currentMonth = new Date().getMonth() + 1;
+const isInSeason = currentMonth >= mushroom.perioada[0] && currentMonth <= mushroom.perioada[1];
+const amrTillInSeason = Math.min(...mushroom.perioada) - currentMonth;
+const amrOfSeason = Math.abs(mushroom.perioada[0] - mushroom.perioada[1]);
+const mushroomId = id !== undefined ? Number(id) : mushroom.id;
 
-                {Number(id) % 2 === 0 && <MushroomInfo {...mushroom}></MushroomInfo>}
+return (
+    <Card className="shadow mushroom-card">
+        <Link to={`/mushrooms/${mushroomId}`}>
+            <Card.Img variant="top" title={`află mai multe informații despre ${mushroom.denumire}`}
+                src={`${mushroomsService.mushroomsApi.defaults.baseURL}/images/${mushroomId}.jpg`} className="px-0">
+            </Card.Img>
+        </Link>
 
-                <Col as={CardBody} lg={10} md={10} sm={10} xs={12} className={`mt-3 ${Number(id) % 2 == 0 ? 'ps-3' : 'pe-3'}`}>
-                    <CardTitle className="kaki mb-2">
-                        {mushroom?.denumirePopulara
-                            ? `${mushroom?.denumirePopulara} (${mushroom?.denumire})`
-                            : mushroom.denumire
-                        }
-                        <Link to={`/mushrooms/edit/${id}`}>
-                            <PencilFill></PencilFill>
-                        </Link>
-                    </CardTitle>
-                    {mushroom?.corpulFructifer &&
-                        <CardText>
-                            <span>
-                                Corpul fructifer:{" "}
-                            </span>
-                            {mushroom.corpulFructifer}
-                        </CardText>
-                    }
-                    {mushroom?.palaria &&
-                        <CardText>
-                            <span>
-                                Pălăria:{" "}
-                            </span>
-                            {mushroom.palaria}
-                        </CardText>
-                    }
-                    {mushroom?.piciorul &&
-                        <CardText>
-                            <span>
-                                Piciorul:{" "}
-                            </span>
-                            {mushroom.piciorul}
-                        </CardText>
-                    }
-                    {mushroom?.stratulHimenial &&
-                        <CardText>
-                            <span>
-                                Stratul himenial:{" "}
-                            </span>
-                            {mushroom.stratulHimenial}
-                        </CardText>}
-                    {mushroom?.carnea &&
-                        <CardText>
-                            <span>
-                                Carnea:{" "}
-                            </span>
-                            {mushroom.carnea}
-                        </CardText>}
-                    {mushroom?.perioadaDeAparitie &&
-                        <CardText>
-                            <span>
-                                Perioada de apariție:{" "}
-                            </span>
-                            {mushroom.perioadaDeAparitie}
-                        </CardText>
-                    }
-                    {mushroom?.valoareaAlimentara &&
-                        <CardText>
-                            <span>
-                                Valoarea alimentară:{" "}
-                            </span>
-                            {mushroom.valoareaAlimentara}
-                        </CardText>
-                    }
-                    {mushroom?.speciiAsemanatoare &&
-                        <CardText>
-                            <span>
-                                Specii asemănătoare:{" "}
-                            </span>
-                            {mushroom.speciiAsemanatoare}
+        <MushroomInfo {...mushroom}></MushroomInfo>
 
-                        </CardText>
-                    }
-                    <Calendar perioada={mushroom.perioada}></Calendar>
-                </Col>
+        <CardBody>
+            <CardTitle className="kaki mb-2">
+                <MushroomName {...mushroom}></MushroomName>
+                <Link to={`/mushrooms/edit/${mushroomId}`}>
+                    <PencilFill title="editeaza informația" className="kaki"></PencilFill>
+                </Link>
+                {" "}
+                <span title={isInSeason ? `în sezon pentru încă ${amrOfSeason} luni` : `mai ai de așteptat ${amrTillInSeason} luni`} className={`badge rounded-pill ${isInSeason ? 'bg-success' : 'bg-danger'}`}>
+                    {isInSeason ? 'în sezon' : 'nu e în sezon'}
+                </span>
+            </CardTitle>
+            {mushroom?.corpulFructifer &&
+                <CardText>
+                    <span>
+                        Corpul fructifer:{" "}
+                    </span>
+                    {mushroom.corpulFructifer}
+                </CardText>
+            }
+            {mushroom?.palaria &&
+                <CardText>
+                    <span>
+                        Pălăria:{" "}
+                    </span>
+                    {mushroom.palaria}
+                </CardText>
+            }
+            {mushroom?.tuburileSporifere &&
+                <CardText>
+                    <span>
+                        Tuburile sporifere:{" "}
+                    </span>
+                    {mushroom.tuburileSporifere}
+                </CardText>
+            }
+            {mushroom?.lamelele &&
+                <CardText>
+                    <span>
+                        Lamelele:{" "}
+                    </span>
+                    {mushroom.lamelele}
+                </CardText>
+            }
+            {mushroom?.stratulHimenial &&
+                <CardText>
+                    <span>
+                        Stratul himenial:{" "}
+                    </span>
+                    {mushroom.stratulHimenial}
+                </CardText>}
+            {mushroom?.gleba &&
+                <CardText>
+                    <span>
+                        Gleba:{" "}
+                    </span>
+                    {mushroom.gleba}
+                </CardText>
+            }
+            {mushroom?.piciorul &&
+                <CardText>
+                    <span>
+                        Piciorul:{" "}
+                    </span>
+                    {mushroom.piciorul}
+                </CardText>
+            }
+            {mushroom?.carnea &&
+                <CardText>
+                    <span>
+                        Carnea:{" "}
+                    </span>
+                    {mushroom.carnea}
+                </CardText>}
+            {mushroom?.perioadaDeAparitie &&
+                <CardText>
+                    <span>
+                        Perioada de apariție:{" "}
+                    </span>
+                    {mushroom.perioadaDeAparitie}
+                </CardText>
+            }
+            {mushroom?.valoareaAlimentara &&
+                <CardText>
+                    <span>
+                        Valoarea alimentară:{" "}
+                    </span>
+                    {mushroom.valoareaAlimentara}
+                </CardText>
+            }
+            {mushroom?.speciiAsemanatoare &&
+                <CardText>
+                    <span>
+                        Specii asemănătoare:{" "}
+                    </span>
+                    {mushroom.speciiAsemanatoare}
 
-                {Number(id) % 2 === 1 && <MushroomInfo {...mushroom}></MushroomInfo>}
+                </CardText>
+            }
+            <CardText title={`pagina ${mushroom.id} din Ghidul Ciupercarului`}><span className="float-end">{mushroom.id}</span></CardText>
+        </CardBody>
 
-            </Row>
-
-            <Button variant="light" className="float-start" onClick={() => navigate(`/mushrooms/${Number(id) - 1}`)}>
-                <ArrowLeft></ArrowLeft>Previous
-            </Button>
-            <Button variant="light" className="float-end" onClick={() => navigate(`/mushrooms/${Number(id) + 1}`)}>
-                Next<ArrowRight></ArrowRight>
-            </Button>
-        </>
-    )
+        <Card.Footer>
+            <Calendar perioada={mushroom.perioada}></Calendar>
+        </Card.Footer>
+    </Card>
+)
 };
 
 export default Mushroom;

@@ -10,74 +10,92 @@ const Calendar = ({ perioada }: CalendarProps) => {
     let months = [
         {
             name: Luna.ianuarie,
-            display: "ian"
+            display: "I"
         },
         {
             name: Luna.februarie,
-            display: "feb"
+            display: "II"
         },
         {
             name: Luna.martie,
-            display: "mar"
+            display: "III"
         },
         {
             name: Luna.aprilie,
-            display: "apr"
+            display: "IV"
         },
         {
             name: Luna.mai,
-            display: "mai"
+            display: "V"
         },
         {
             name: Luna.iunie,
-            display: "iun"
+            display: "VI"
         },
         {
             name: Luna.iulie,
-            display: "iul"
+            display: "VII"
         },
         {
             name: Luna.august,
-            display: "aug"
+            display: "VIII"
         },
         {
             name: Luna.septembrie,
-            display: "sep"
+            display: "IX"
         },
         {
             name: Luna.octombrie,
-            display: "oct"
+            display: "X"
         },
         {
             name: Luna.noiembrie,
-            display: "nov"
+            display: "XI"
         },
         {
             name: Luna.decembrie,
-            display: "dec"
+            display: "XII"
         },
     ]
 
-    const allYearRound = perioada[0] === 1 && perioada[1] === 12;
+    const monthStart = perioada[0];
+    const monthEnd = perioada[1];
+    const currentMonth = new Date().getMonth();
+    const allYearRound = (monthStart === 1 && monthEnd === 12) || (monthEnd === 1 && monthStart === 12);
+    const isInSeason = currentMonth + 1 >= perioada[0] && currentMonth + 1 <= perioada[1];
 
     function colorMonth(month: number) {
-        const indexStart = perioada[0] - 1;
-        const indexEnd = perioada[1] - 1;
+        if (monthStart < monthEnd) {
+            const indexStart = monthStart - 1;
+            const indexEnd = monthEnd - 1;
 
-        if (month === indexStart) {
-            return 'bg-start-of-season';
-        } else if (month === indexEnd) {
-            return 'bg-end-of-season';
-        } else if (month > indexStart && month < indexEnd) {
-            return 'bg-in-season';
-        } else return 'bg-out-of-season';
+            if (month === indexStart) {
+                return 'bg-start-of-season';
+            } else if (month === indexEnd) {
+                return 'bg-end-of-season';
+            } else if (month > indexStart && month < indexEnd) {
+                return 'bg-in-season';
+            } else return 'bg-out-of-season';
+        } else {
+            const indexStart = monthEnd - 1;
+            const indexEnd = monthStart - 1;
+
+            if (month === indexStart) {
+                return 'bg-end-of-season';
+            } else if (month === indexEnd) {
+                return 'bg-start-of-season';
+            } else if (month > indexStart && month < indexEnd) {
+                return 'bg-out-of-season';
+            } else return 'bg-in-season';
+        }
     }
 
     return (
         <Row>
             {months.map((month, index) => (
-                <Col className={`${allYearRound ? 'bg-in-season' : colorMonth(index)} text-center border border-secondary`}>
-                    <span>{month.display}</span>
+                <Col xs={2} sm={1} lg={1} key={index} title={Object.values(Luna)[index]} 
+                    className={`${allYearRound ? 'bg-in-season' : colorMonth(index)} text-center border border-secondary`}>
+                    <span className={index === currentMonth ? isInSeason ? "fw-bold text-success" : "fw-bold text-danger" : ""}>{month.display}</span>
                 </Col>
             ))}
         </Row>

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using MushroomsGuide.API.Apis;
 using MushroomsGuide.API.Extensions;
 using System.Text.Json.Serialization;
@@ -32,6 +33,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.MapGroup("/mushrooms")
 .WithTags("Mushrooms API")

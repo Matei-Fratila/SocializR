@@ -228,22 +228,29 @@ export type CiupercaEdit = {
     comestibilitate: ComestibilitateOption;
     locDeFructificatie: LocDeFructificatieOption[];
     morfologieCorpFructifer: MorfologieCorpFructiferOption;
-    perioada: number[];
+    perioadaStart: LunaOption;    
+    perioadaEnd: LunaOption;
     luniDeAparitie: Luna[];
 }
 
 export type SearchFilters = {
     esteMedicinala: boolean;
-    comestibilitate: ComestibilitateOption;
+    esteInSezon: boolean;
+    comestibilitate: ComestibilitateOption[];
     locDeFructificatie: LocDeFructificatieOption[];
-    morfologieCorpFructifer: MorfologieCorpFructiferOption;
-    perioada: number[];
-    luniDeAparitie: Luna[];
+    morfologieCorpFructifer: MorfologieCorpFructiferOption[];
+    luniDeAparitie: LunaOption[];
+    idSpeciiAsemanatoare: CiupercaOption[]
 }
 
 export type ComestibilitateOption = {
     label: string;
     value: Comestibilitate
+}
+
+export type LunaOption = {
+    label: string;
+    value: number
 }
 
 export type LocDeFructificatieOption = {
@@ -308,7 +315,7 @@ export enum MediaType {
 export enum Comestibilitate {
     Necunoscuta = "Necunoscută",
     Comestibila = "Comestibilă",
-    ConditionatComestibila = "ConditionatComestibilă",
+    ConditionatComestibila = "CondiționatComestibilă",
     Necomestibila = "Necomestibilă",
     Otravitoare = "Otrăvitoare"
 }
@@ -346,11 +353,22 @@ export type CiupercaSearchResult = {
     nume: string
 }
 
+export type CiupercaPaginatedResult = {
+    totalCount: number,
+    ciuperci: Ciuperca[]
+}
+
 export type CiupercaOption = {
     label: string,
     value: number
 }
 
-export enum Genul {
-    
+export type Filters = {
+    esteInSezon: boolean,
+    luniDeAparitie: LunaOption[],
+    morfologieCorpFructifer: MorfologieCorpFructiferOption[],
+    locDeFructificatie: LocDeFructificatieOption[],
+    comestibilitate: ComestibilitateOption[],
+    esteMedicinala: boolean,
+    idSpeciiAsemanatoare: CiupercaOption[]
 }

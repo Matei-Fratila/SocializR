@@ -1,10 +1,13 @@
 ﻿using MushroomsGuide.API.Model;
+using MushroomsGuide.API.ViewModels;
 using NRedisStack;
 using NRedisStack.RedisStackCommands;
 using NRedisStack.Search;
 using NRedisStack.Search.Literals.Enums;
 using StackExchange.Redis;
+using System.Text;
 using System.Text.Json;
+using static NRedisStack.Search.Query;
 
 namespace MushroomsGuide.API.Repositories;
 
@@ -43,7 +46,7 @@ public class RedisMushroomsRepository : IMushroomsRepository
             serializerOptions: new JsonSerializerOptions { IgnoreNullValues = true});
     }
 
-    public async Task<List<Mushroom>> SearchAsync(string term, int pageIndex, int pageSize)
+    public async Task<List<Mushroom>> SearchAsync(string term)
     {
         if (string.IsNullOrEmpty(term))
         {
@@ -51,7 +54,13 @@ public class RedisMushroomsRepository : IMushroomsRepository
         }
 
         SearchCommands searchCommands = _database.FT();
-        var result = await searchCommands.SearchAsync("idx:mushroom_search", new Query(term).Limit(pageIndex, pageSize));
+
+        var query = new Query(term)
+        {
+            SortBy = "DenumirePopulara",
+        };
+
+        var result = await searchCommands.SearchAsync("idx:mushroom_search", query.Limit(0, 1000));
 
         List<Mushroom> list = [];
         foreach(var mushroom in result.ToJson())
@@ -60,6 +69,51 @@ public class RedisMushroomsRepository : IMushroomsRepository
         }
 
         return list;
+    }
+
+    public async Task<MushroomsPaginatedViewModel> FilterSearchAsync(SearchFilters filters)
+    {
+        SearchCommands searchCommands = _database.FT();
+
+        var query = new Query(filters.Query)
+        {
+            SortBy = "Id"
+        };
+
+        query.Limit(filters.PageIndex * filters.PageSize, filters.PageSize);
+
+        var result = await searchCommands.SearchAsync("idx:mushroom_search", query);
+
+        List<Mushroom> list = [];
+        foreach (var mushroom in result.ToJson())
+        {
+            list.Add(JsonSerializer.Deserialize<Mushroom>((string)mushroom));
+        }
+
+        return new MushroomsPaginatedViewModel
+        {
+            Ciuperci = list,
+            TotalCount = result.TotalResults
+        };
+    }
+
+    public async Task<MushroomsPaginatedViewModel> GetPaginatedAsync(int pageIndex, int pageSize)
+    {
+        SearchCommands searchCommands = _database.FT();
+        var result = await searchCommands.SearchAsync("idx:search", 
+            new Query { SortBy = "Id"}.Limit(pageIndex * pageSize, pageSize));
+
+        List<Mushroom> list = [];
+        foreach (var mushroom in result.ToJson())
+        {
+            list.Add(JsonSerializer.Deserialize<Mushroom>((string)mushroom));
+        }
+
+        return new MushroomsPaginatedViewModel 
+        { 
+            Ciuperci = list, 
+            TotalCount = result.TotalResults
+        };
     }
 
     private async void SeedDatabase()
