@@ -10,4 +10,5 @@ public interface IMushroomsRepository
     Task<List<Mushroom>> SearchAsync(string term);
     Task<MushroomsPaginatedViewModel> FilterSearchAsync(SearchFilters filters);
     Task<MushroomsPaginatedViewModel> GetPaginatedAsync(int pageIndex, int pageSize);
+    IEnumerable<string> GetGenuri();
 }

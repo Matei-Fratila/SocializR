@@ -1,8 +1,12 @@
-const Muscarici = () => {
+interface MuscariciProps {
+    size: number;
+}
+
+const Muscarici = ({size}: MuscariciProps) => {
     return (
         <svg
-            width="2em"
-            height="auto"
+            width={`${size}em`}
+            height={`${size}em`}
             version="1.1"
             id="Capa_1"
             xmlns="http://www.w3.org/2000/svg"

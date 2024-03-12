@@ -15,6 +15,7 @@ public static class MushroomsApi
         builder.MapGet("/search", SearchMushroomsAsync);
         builder.MapGet("/filtersearch", FilterSearchMushroomsAsync);
         builder.MapGet("/", GetPaginatedAsync);
+        builder.MapGet("/genuri", GetGenuri);
 
         return builder;
     }
@@ -52,11 +53,13 @@ public static class MushroomsApi
         [FromQuery] string term)
     {
         var mushrooms = await repository.SearchAsync(term);
-        return TypedResults.Ok(mushrooms.Select(x => new
-        { 
-            Id = x.Id, 
+        var result = mushrooms.Select(x => new
+        {
+            Id = x.Id,
             Nume = !string.IsNullOrEmpty(x.DenumirePopulara) ? $"{x.DenumirePopulara} ({x.Denumire})" : x.Denumire
-        }));
+        });
+
+        return TypedResults.Ok(result);
     }
 
     public static async Task<IResult> FilterSearchMushroomsAsync([FromServices] IMushroomsRepository repository,
@@ -72,5 +75,11 @@ public static class MushroomsApi
     {
         var mushrooms = await repository.GetPaginatedAsync(pageIndex, pageSize);
         return TypedResults.Ok(mushrooms);
+    }
+
+    public static IResult GetGenuri([FromServices] IMushroomsRepository repository)
+    {
+        var genuri = repository.GetGenuri();
+        return TypedResults.Ok(genuri);
     }
 }

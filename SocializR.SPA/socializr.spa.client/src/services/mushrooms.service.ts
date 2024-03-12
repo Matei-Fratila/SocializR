@@ -33,6 +33,12 @@ class MushroomsService {
         return mushrooms;
     };
 
+    async getGenuri() {
+        const axiosResponse: AxiosResponse = await this.mushroomsApi.get(`/Mushrooms/genuri`);
+        const genuri: string[] = axiosResponse.data;
+        return genuri;
+    };
+
     async filterMushrooms(data: any) {
         const axiosResponse: AxiosResponse =
             await this.mushroomsApi.get(`/Mushrooms/filterSearch`, {

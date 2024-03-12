@@ -27,7 +27,7 @@ const App = () => {
                 <header>
                     <Navbar expand="lg" className="bg-body-tertiary shadow">
                         <Container fluid>
-                            <Navbar.Brand href="#"><Muscarici /> Muscărici</Navbar.Brand>
+                            <Navbar.Brand href="#"><Muscarici size={2}/> Muscărici</Navbar.Brand>
                             <Navbar.Toggle aria-controls="navbarScroll" />
                             <Navbar.Collapse id="navbarScroll">
                                 <Nav

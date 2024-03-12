@@ -1,5 +1,5 @@
 import './Mushroom.css';
-import { Button, Card, CardBody, Form, Row } from "react-bootstrap";
+import { Button, Card, CardBody, Form, InputGroup } from "react-bootstrap";
 import { Ciuperca, CiupercaEdit, CiupercaOption, Comestibilitate, ComestibilitateOption, LocDeFructificatie, LocDeFructificatieOption, Luna, LunaOption, MorfologieCorpFructifer, MorfologieCorpFructiferOption } from "../../types/types";
 import mushroomsService from "../../services/mushrooms.service";
 import { useNavigate, useParams } from "react-router-dom";
@@ -21,7 +21,7 @@ const MushroomEdit = () => {
     const navigate = useNavigate();
     const [mushroomOptions, setMushroomOptions] = React.useState<CiupercaOption[]>([]);
 
-    const { control, register, handleSubmit, watch } = useForm<CiupercaEdit>({
+    const { control, register, handleSubmit, watch, formState: { errors } } = useForm<CiupercaEdit>({
         defaultValues: async () => {
             try {
                 const ciuperca = await mushroomsService.getMushroom(Number(id));
@@ -58,7 +58,9 @@ const MushroomEdit = () => {
 
     React.useEffect(() => {
         handleSearchMushrooms();
-    }, [])
+    }, []);
+
+    console.log(errors);
 
     return (
         <Card className='shadow'>
@@ -78,10 +80,13 @@ const MushroomEdit = () => {
                 </MushroomInfo>
             }
 
-            <CardBody as={Form} lg={10} md={10} sm={10} xs={12} onSubmit={handleSubmit(onSubmit)}>
-                <Form.Group className="mb-3" controlId="denumireStiintifica">
+            <CardBody as={Form} lg={10} md={10} sm={10} xs={12} onSubmit={handleSubmit(onSubmit)} className='requires-validation'>
+                <Form.Group className="mb-3" controlId="denumire">
                     <Form.Label>Denumire stiințifică (latină) *</Form.Label>
-                    <Form.Control required={true} type="text" {...register("denumire", { required: true })} />
+                    <Form.Control isInvalid={errors.denumire !== undefined} type="text" {...register("denumire", { required: "Câmp obligatoriu" })} />
+                    <Form.Control.Feedback type="invalid" className='d-block'>
+                        {errors.denumire?.message}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="denumirePopulara">
@@ -172,12 +177,22 @@ const MushroomEdit = () => {
 
                 <Form.Group className="mb-3" controlId="carnea">
                     <Form.Label>Carnea *</Form.Label>
-                    <TextareaAutosize required={true} className="form-control" {...register("carnea")} />
+                    <TextareaAutosize className={`form-control ${errors.carnea !== undefined ? 'is-invalid' : ''}`}
+                        {...register("carnea", { required: "Câmp obligatoriu" })}
+                    />
+                    <Form.Control.Feedback type="invalid" className='d-block'>
+                        {errors.carnea?.message}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="perioadaDeAparitie">
                     <Form.Label>Perioada și locul de apariție *</Form.Label>
-                    <TextareaAutosize className="form-control" {...register("perioadaDeAparitie")} />
+                    <TextareaAutosize className={`form-control ${errors.perioadaDeAparitie !== undefined ? 'is-invalid' : ''}`}
+                        {...register("perioadaDeAparitie", { required: "Câmp obligatoriu" })}
+                    />
+                    <Form.Control.Feedback type="invalid" className='d-block'>
+                        {errors.perioadaDeAparitie?.message}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3 row" controlId="perioada">
@@ -233,12 +248,20 @@ const MushroomEdit = () => {
 
                 <Form.Group className="mb-3" controlId="valoareaAlimentara">
                     <Form.Label>Valoarea alimentară *</Form.Label>
-                    <TextareaAutosize required={true} className="form-control" {...register("valoareaAlimentara")} />
+                    <TextareaAutosize className={`form-control ${errors.valoareaAlimentara !== undefined ? 'is-invalid' : ''}`}
+                        {...register("valoareaAlimentara", { required: "Câmp obligatoriu" })} />
+                    <Form.Control.Feedback type="invalid" className='d-block'>
+                        {errors.valoareaAlimentara?.message}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="speciiAsemanatoare">
                     <Form.Label>Specii asemănătoare *</Form.Label>
-                    <TextareaAutosize required={true} className="form-control" {...register("speciiAsemanatoare")} />
+                    <TextareaAutosize className={`form-control ${errors.speciiAsemanatoare !== undefined ? 'is-invalid' : ''}`}
+                        {...register("speciiAsemanatoare", { required: "Câmp obligatoriu" })} />
+                    <Form.Control.Feedback type="invalid" className='d-block'>
+                        {errors.speciiAsemanatoare?.message}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="idSpeciiAsemanatoare">
@@ -260,20 +283,6 @@ const MushroomEdit = () => {
                     Save
                 </Button>
             </CardBody>
-            {
-                watchInfo[2] && watchInfo[3] && watchInfo[4] &&
-                Number(id) % 2 !== 0 &&
-
-                <MushroomInfo
-                    id={Number(id)}
-                    idSpeciiAsemanatoare={watchInfo[0]?.map((id) => id.value)}
-                    esteMedicinala={watchInfo[1]}
-                    comestibilitate={watchInfo[2].value}
-                    locDeFructificatie={watchInfo[3]?.map((loc) => loc.value)}
-                    morfologieCorpFructifer={watchInfo[4]?.value}
-                    perioada={[watchInfo[5].value, watchInfo[6].value]}>
-                </MushroomInfo>
-            }
         </Card>
     )
 };

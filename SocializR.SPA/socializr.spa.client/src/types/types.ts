@@ -233,16 +233,6 @@ export type CiupercaEdit = {
     luniDeAparitie: Luna[];
 }
 
-export type SearchFilters = {
-    esteMedicinala: boolean;
-    esteInSezon: boolean;
-    comestibilitate: ComestibilitateOption[];
-    locDeFructificatie: LocDeFructificatieOption[];
-    morfologieCorpFructifer: MorfologieCorpFructiferOption[];
-    luniDeAparitie: LunaOption[];
-    idSpeciiAsemanatoare: CiupercaOption[]
-}
-
 export type ComestibilitateOption = {
     label: string;
     value: Comestibilitate
@@ -370,5 +360,8 @@ export type Filters = {
     locDeFructificatie: LocDeFructificatieOption[],
     comestibilitate: ComestibilitateOption[],
     esteMedicinala: boolean,
-    idSpeciiAsemanatoare: CiupercaOption[]
+    idSpeciiAsemanatoare: CiupercaOption[],
+    gen: SelectItem[],
+    sortareDupa: SelectItem,
+    ordine: string
 }

@@ -7,7 +7,6 @@ import Skull from "./svgs/Skull";
 import ForkAndSpoon from "./svgs/ForkAndSpoon";
 import ExclamationForkAndSpoon from "./svgs/ExclamationForkAndSpoon";
 import CrossedForkAndSpoon from "./svgs/CrossedForkAndSpoon";
-import './MushroomInfo.css'
 import { Button, ButtonGroup, CardHeader } from "react-bootstrap";
 import { Comestibilitate, LocDeFructificatie, MorfologieCorpFructifer } from "../../types/types";
 import { useNavigate } from "react-router-dom";

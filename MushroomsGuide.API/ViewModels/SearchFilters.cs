@@ -127,6 +127,33 @@ public class SearchFilters
         }
     }
 
+    [FromQuery]
+    public string[]? Gen { get; set; }
+    private string GenQuery
+    {
+        get
+        {
+            if (Gen != null && Gen.Any())
+            {
+                var builder = new StringBuilder("@Denumire:(");
+                foreach (var gen in Gen)
+                {
+                    builder.Append($" {gen} |");
+                }
+                builder.Remove(builder.Length - 1, 1);
+                builder.Append(") ");
+                return builder.ToString();
+            }
+            return string.Empty;
+        }
+    }
+
+    [FromQuery]
+    public string? SortBy { get; set; }
+
+    [FromQuery]
+    public bool? IsAscendingOrder { get; set; }
+
     public string Query
     {
         get
@@ -140,6 +167,7 @@ public class SearchFilters
                         .Append(ComestibilitateQuery)
                         .Append(EsteMedicinalaQuery)
                         .Append(IdSpeciiAsemanatoareQuery)
+                        .Append(GenQuery)
                         .ToString();
 
             if (query != string.Empty)

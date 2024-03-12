@@ -5,9 +5,7 @@ using NRedisStack.RedisStackCommands;
 using NRedisStack.Search;
 using NRedisStack.Search.Literals.Enums;
 using StackExchange.Redis;
-using System.Text;
 using System.Text.Json;
-using static NRedisStack.Search.Query;
 
 namespace MushroomsGuide.API.Repositories;
 
@@ -15,6 +13,7 @@ public class RedisMushroomsRepository : IMushroomsRepository
 {
     private readonly ILogger<RedisMushroomsRepository> _logger;
     private readonly IDatabase _database;
+    private readonly string _indexName = "idx:mushroom_search";
 
     private static RedisKey MushroomKeyPrefix = "mushroom:"u8.ToArray();
     private static RedisKey GetMushroomKey(int mushroomId) => MushroomKeyPrefix.Append(mushroomId.ToString());
@@ -60,7 +59,7 @@ public class RedisMushroomsRepository : IMushroomsRepository
             SortBy = "DenumirePopulara",
         };
 
-        var result = await searchCommands.SearchAsync("idx:mushroom_search", query.Limit(0, 1000));
+        var result = await searchCommands.SearchAsync(_indexName, query.Limit(0, 1000));
 
         List<Mushroom> list = [];
         foreach(var mushroom in result.ToJson())
@@ -71,18 +70,34 @@ public class RedisMushroomsRepository : IMushroomsRepository
         return list;
     }
 
+    public IEnumerable<string> GetGenuri()
+    {
+        SearchCommands searchCommands = _database.FT();
+
+        var query = new Query("*").ReturnFields(new FieldName("$.Denumire", "nume")).Limit(0, 1000);
+
+        HashSet<string> hash = [];
+        foreach (var nume in searchCommands.Search(_indexName, query).Documents.Select(x => x["nume"]))
+        {
+            hash.Add(nume.ToString().Split(' ')[0]);
+        }
+
+        return hash.ToArray().OrderBy(x => x);
+    }
+
     public async Task<MushroomsPaginatedViewModel> FilterSearchAsync(SearchFilters filters)
     {
         SearchCommands searchCommands = _database.FT();
 
         var query = new Query(filters.Query)
         {
-            SortBy = "Id"
+            SortBy = filters.SortBy ?? "Id",
+            SortAscending = filters.IsAscendingOrder ?? true,
         };
 
         query.Limit(filters.PageIndex * filters.PageSize, filters.PageSize);
 
-        var result = await searchCommands.SearchAsync("idx:mushroom_search", query);
+        var result = await searchCommands.SearchAsync(_indexName, query);
 
         List<Mushroom> list = [];
         foreach (var mushroom in result.ToJson())
