@@ -365,3 +365,30 @@ export type Filters = {
     sortareDupa: SelectItem,
     ordine: string
 }
+
+export type Node = {
+    id: number,
+    name: string
+}
+
+export type Edge = {
+    from: number,
+    to: number
+}
+
+export type MushroomGraph = {
+    nodes: Node[],
+    edges: Edge[]
+}
+
+export enum GameStatus {
+    Won,
+    Lost,
+    Playing
+}
+
+export enum Difficulty {
+    Easy,
+    Medium,
+    Hard
+}

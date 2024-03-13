@@ -21,6 +21,8 @@ import MushroomList from './components/Mushroom/MushroomList.tsx';
 import MushroomEdit from './components/Mushroom/MushroomEdit.tsx';
 import Layout from './components/Layout.tsx';
 import { Container } from '@mui/material';
+import { MushroomsGraph } from './components/Mushroom/Graph/MushroomsGraph.tsx';
+import Game from './components/Mushroom/Game.tsx';
 
 const router = createBrowserRouter([
   {
@@ -75,6 +77,14 @@ const router = createBrowserRouter([
       {
         path: "mushrooms",
         element: <MushroomList />
+      },
+      {
+        path: "mushrooms/graph",
+        element: <MushroomsGraph></MushroomsGraph>
+      },
+      {
+        path: "mushrooms/game",
+        element: <Game></Game>
       },
       {
         element: <Layout />,

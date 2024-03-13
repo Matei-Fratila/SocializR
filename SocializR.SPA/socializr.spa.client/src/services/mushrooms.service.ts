@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { Ciuperca, CiupercaEdit, CiupercaOption, CiupercaPaginatedResult, CiupercaSearchResult, Comestibilitate, Luna, MorfologieCorpFructifer, SearchFilters } from '../types/types';
+import { Ciuperca, CiupercaEdit, CiupercaOption, CiupercaPaginatedResult, CiupercaSearchResult, Comestibilitate, Luna, MorfologieCorpFructifer, MushroomGraph } from '../types/types';
 import splitCamelCase from '../helpers/string-helper';
 
 class MushroomsService {
@@ -15,6 +15,12 @@ class MushroomsService {
         const axiosResponse: AxiosResponse = await this.mushroomsApi.get(`/Mushrooms/${id}`);
         const mushroom: Ciuperca = axiosResponse.data;
         return mushroom;
+    };
+
+    async getMushrooms(ids: number[]): Promise<Ciuperca[]> {
+        const axiosResponse: AxiosResponse = await this.mushroomsApi.get(`/Mushrooms/game`, {params: { id: ids }, paramsSerializer: {indexes: null}});
+        const mushrooms: Ciuperca[] = axiosResponse.data;
+        return mushrooms;
     };
 
     async getPaginatedMushrooms(pageIndex: number, pageSize: number) {
@@ -46,6 +52,12 @@ class MushroomsService {
             });
         const mushrooms: CiupercaPaginatedResult = axiosResponse.data;
         return mushrooms;
+    };
+
+    async getGraph() {
+        const axiosResponse: AxiosResponse = await this.mushroomsApi.get(`/Mushrooms/graf`);
+        const mushroomGraph: MushroomGraph = axiosResponse.data;
+        return mushroomGraph;
     };
 
     mapCiupercaToCiupercaEdit(from: Ciuperca): CiupercaEdit {

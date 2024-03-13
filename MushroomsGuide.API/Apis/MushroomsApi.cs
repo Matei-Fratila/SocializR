@@ -15,7 +15,9 @@ public static class MushroomsApi
         builder.MapGet("/search", SearchMushroomsAsync);
         builder.MapGet("/filtersearch", FilterSearchMushroomsAsync);
         builder.MapGet("/", GetPaginatedAsync);
+        builder.MapGet("/game", GetMushroomsForGame);
         builder.MapGet("/genuri", GetGenuri);
+        builder.MapGet("/graf/", GetGraph);
 
         return builder;
     }
@@ -81,5 +83,22 @@ public static class MushroomsApi
     {
         var genuri = repository.GetGenuri();
         return TypedResults.Ok(genuri);
+    }
+
+    public static async Task<IResult> GetGraph([FromServices] IMushroomsRepository repository)
+    {
+        var graph = await repository.GetGraph();
+        return TypedResults.Ok(graph);
+    }
+
+    public static async Task<IResult> GetMushroomsForGame([FromServices] IMushroomsRepository repository,
+        [FromQuery] int[] id)
+    {
+        var mushroom1 = await repository.GetAsync(id[0]);
+        var mushroom2 = await repository.GetAsync(id[1]);
+
+        Mushroom[] result = [mushroom1, mushroom2];
+
+        return TypedResults.Ok(result);
     }
 }

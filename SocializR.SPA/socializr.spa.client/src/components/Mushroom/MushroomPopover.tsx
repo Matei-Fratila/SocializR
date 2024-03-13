@@ -51,7 +51,7 @@ const MushroomPopover = ({ id }: MushroomPopoverProps) => {
     }, [id])
 
     return (
-        <Card style={{width: "15vw", height: "17vw"}}>
+        <Card style={{width: "15em", height: "17em"}}>
             <Card.Img variant="top"
                 src={`${mushroomsService.mushroomsApi.defaults.baseURL}/images/${id}.jpg`} className="px-0">
             </Card.Img>

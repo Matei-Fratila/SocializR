@@ -131,6 +131,35 @@ public class RedisMushroomsRepository : IMushroomsRepository
         };
     }
 
+    public async Task<MushroomGraph> GetGraph()
+    {
+        List<MushroomNode> nodes = [];
+        List<MushroomEdge> edges = [];
+
+        var mushrooms = await SearchAsync("*");
+        foreach(var m in mushrooms)
+        {
+            nodes.Add(new MushroomNode
+            {
+                Id = m.Id,
+                Name = !string.IsNullOrEmpty(m.DenumirePopulara) ? $"{m.Denumire} ({m.DenumirePopulara})" : m.Denumire
+            });
+
+            if (m.IdSpeciiAsemanatoare != null)
+            {
+                foreach (var e in m.IdSpeciiAsemanatoare)
+                {
+                    if (!edges.Any(x => x.From == e))
+                    {
+                        edges.Add(new MushroomEdge { From = m.Id, To = e });
+                    }
+                }
+            }
+        }
+
+        return new MushroomGraph { Nodes = nodes, Edges = edges };
+    }
+
     private async void SeedDatabase()
     {
         string json = File.ReadAllText("ciuperci.json");
