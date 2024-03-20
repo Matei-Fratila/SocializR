@@ -1,9 +1,11 @@
-using Microsoft.AspNetCore.Authentication.Google;
+using Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using OwaspHeaders.Core.Extensions;
+using Quartz;
 using Serilog;
 using SocializR.DataAccess.Seeds;
 using SocializR.SPA.Server.ExceptionHandlers;
+using SocializR.SPA.Server.Jobs;
 using System.Net;
 using System.Threading.RateLimiting;
 
@@ -58,7 +60,32 @@ builder.Services.AddIdentity<User, Role>(options =>
     options.User.RequireUniqueEmail = true;
 })
     .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+.AddDefaultTokenProviders();
+
+builder.Services.Configure<QuartzOptions>(builder.Configuration.GetSection("Quartz"));
+
+builder.Services.AddQuartz(q =>
+{
+    var jobKey = new JobKey("reset game hearts job", "game group");
+    q.AddJob<ResetHeartsJob>(jobKey, j => j
+        .WithDescription("reset game hearts job")
+    );
+
+    q.AddTrigger(t => t
+        .WithIdentity("Reset Hearts Trigger")
+        .ForJob(jobKey)
+        .StartNow()
+        .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromDays(1)).RepeatForever())
+        .WithDescription("reset hearts trigger")
+    );
+
+    q.UseMicrosoftDependencyInjectionJobFactory();
+});
+
+builder.Services.AddQuartzHostedService(options =>
+{
+    options.WaitForJobsToComplete = true;
+});
 
 // Configure JWT authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

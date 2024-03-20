@@ -8,14 +8,6 @@ export interface LoginResponse {
     currentUser: CurrentUser
 }
 
-export interface RegisterRequest {
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string,
-    birthDate: Date
-}
-
 export interface RegisterResponse {
     token: string,
     currentUser: CurrentUser
@@ -52,15 +44,6 @@ export type Post = {
 
 export type Posts = Array<Post>;
 
-export type NewPost = {
-    title: string;
-    body: string;
-}
-
-export type PostFormProps = {
-    onSubmit: (post: Post) => void;
-}
-
 export type Comment = {
     id: string;
     userId: string;
@@ -92,20 +75,6 @@ export type Profile = {
     description: string;
     interests: SelectItem[];
     albums: Album[];
-}
-
-export type ProfileForm = {
-    id: string;
-    avatar: File;
-    firstName: string;
-    lastName: string;
-    birthDate: Date;
-    city: SelectItem;
-    county: SelectItem;
-    gender: SelectItem;
-    isPrivate: boolean;
-    description: string;
-    interests: SelectItem[];
 }
 
 export type ProfileProps = {
@@ -382,13 +351,41 @@ export type MushroomGraph = {
 }
 
 export enum GameStatus {
+    Playing = 1,
     Won,
     Lost,
-    Playing
+    Ended
 }
 
 export enum Difficulty {
     Easy,
     Medium,
-    Hard
+    Hard,
+    Expert
+}
+
+export type StartGameModel = {
+    score: number,
+    maxNumberOfHearts: number,
+    usersNumberOfHearts: number
+};
+
+export type EndGameModel = {
+    sessionId: string,
+    remainingNumberOfHearts: number,
+    score: number,
+    gameType: GameType,
+    numberOfCorrectEasyQuestions: number,
+    numberOfCorrectMediumQuestions: number,
+    numberOfCorrectHardQuestions: number,
+    numberOfCorrectExpertQuestions: number,
+    numberOfIncorrectEasyQuestions: number,
+    numberOfIncorrectMediumQuestions: number,
+    numberOfIncorrectHardQuestions: number,
+    numberOfIncorrectExpertQuestions: number,
+};
+
+export enum GameType {
+    None = 0,
+    MatchNameToPicture
 }

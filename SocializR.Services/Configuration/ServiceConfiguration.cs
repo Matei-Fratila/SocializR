@@ -20,6 +20,7 @@ public static class ServiceConfiguration
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IAdminService, AdminService>();
         services.AddScoped<IProfileService, ProfileService>();
+        services.AddScoped<IGameService, GameService>();
 
         return services;
     }

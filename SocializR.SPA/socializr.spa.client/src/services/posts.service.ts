@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios';
 import axiosInstance from '../helpers/axios-helper';
 import { Post } from '../types/types';
 import authService from './auth.service';
+import { NewPost } from '../components/PostForm';
 
 class PostsService {
     async getPaginatedAsync(userId: string, pageNumber: number, isProfileView: boolean) {
@@ -16,8 +17,10 @@ class PostsService {
         return await axiosInstance.delete(`/Posts/like/${id}`);
     }
 
-    async createPost(data: FormData): Promise<Post> {
-        const axiosResponse: AxiosResponse = await axiosInstance.post(`/Posts`, data);
+    async createPost(data: NewPost): Promise<Post> {
+        const axiosResponse: AxiosResponse = await axiosInstance.post(`/Posts`,
+            {...data, media: data.media[0]},
+            { headers: { 'Content-Type': 'multipart/form-data' } });
         const post: Post = axiosResponse.data;
         post.userPhoto = authService.getCurrentUserPhoto();
         return post;

@@ -122,7 +122,7 @@ const Feed = () => {
                 hasMore={hasMore}
                 loader={<p>Loading...</p>}>
 
-                <PostForm onSubmit={handleNewPost}></PostForm>
+                <PostForm onSubmitPost={handleNewPost}></PostForm>
                 {posts.data.map(post =>
                     <Post key={post.id}
                         onRemoveItem={() => handleDeletePost(post.id)}

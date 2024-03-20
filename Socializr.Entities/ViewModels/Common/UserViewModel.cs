@@ -8,4 +8,5 @@ public class UserViewModel
     public string ProfilePhoto { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public string XP { get; set; }
 }

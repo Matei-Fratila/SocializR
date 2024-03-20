@@ -5,7 +5,6 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import { Pencil, PersonFill, Plus } from "react-bootstrap-icons";
 import { Link, useParams } from "react-router-dom";
 import authService from "../services/auth.service";
-import "./Profile.css";
 import PostList from "./PostList";
 import Select from 'react-select';
 import Album from "./Album";
@@ -70,7 +69,7 @@ const Profile = () => {
             await friendshipService.createFriendRequest(profile.id);
             location.reload();
         } catch (e) {
-
+            console.log(e);
         }
     }
 
@@ -82,10 +81,6 @@ const Profile = () => {
 
         }
     }
-
-    // const handleCreateNewAlbum = (album: AlbumModel) => {
-    //     setProfile({ ...profile, albums: [...profile.albums, album] });
-    // }
 
     const handleDeleteAlbum = (album: AlbumModel) => {
         setProfile({ ...profile, albums: profile.albums.filter((a: AlbumModel) => a.id !== album.id) });
@@ -124,11 +119,11 @@ const Profile = () => {
                         </Col>
                         <Col lg={9} md={8} sm={9} xs={6}>
                             <h4>{profile.firstName} {profile.lastName}</h4>
-                            <Link to={`/profile/friends/${id}`}><b>{profile.nrOfFriends}</b> friends</Link>
+                            <Link to={`/profile/friends/${id}`}><b>{profile.nrOfFriends}</b> prieteni</Link>
                             {(id !== authService.getCurrentUserId() && profile.mutualFriends !== 0)
-                                && <Row><span><PersonFill /> <b>{profile.mutualFriends}</b> mutual friends</span></Row>}
-                            <a href="#albums"><Row><span> <b>{profile.nrOfPhotos}</b> photos</span></Row></a>
-                            <a href="#posts"><Row><span> <b>{profile.nrOfPosts}</b> posts</span></Row></a>
+                                && <Row><span><PersonFill /> <b>{profile.mutualFriends}</b> prieteni comuni</span></Row>}
+                            <a href="#albums"><Row><span> <b>{profile.nrOfPhotos}</b> fotografii</span></Row></a>
+                            <a href="#posts"><Row><span> <b>{profile.nrOfPosts}</b> postări</span></Row></a>
                         </Col>
                     </Row>
                     <div className="mt-4">
@@ -166,7 +161,7 @@ const Profile = () => {
                             <dd>{profile.county.label}</dd>
                         </Col>
                         <Col sm={4} xs={6}>
-                            <dt>Orsș</dt>
+                            <dt>Oraș</dt>
                         </Col>
                         <Col sm={8} xs={6}>
                             <dd>{profile.city.label}</dd>

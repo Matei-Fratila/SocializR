@@ -1,33 +1,30 @@
-import { Button, Card, CardFooter, Col, Container, Row } from "react-bootstrap";
-import { ChevronBarRight, Pencil } from "react-bootstrap-icons";
-import postService from "../services/posts.service";
-import { NewPost, Post, PostFormProps } from "../types/types";
-import React from "react";
+import { Button, Card, CardFooter, Col, Container, Form, Row } from "react-bootstrap";
+import { Pencil } from "react-bootstrap-icons";
+import { Post } from "../types/types";
+import { SubmitHandler, useForm } from "react-hook-form";
+import postsService from "../services/posts.service";
+import { TextareaAutosize } from "@mui/material";
 
-const PostForm = ({ onSubmit }: PostFormProps) => {
-    const [post, setPost] = React.useState<NewPost>({ title: "", body: "" });
-    const [selectedImages, setSelectedImages] = React.useState<File[]>([]);
+export type NewPost = {
+    title: string;
+    body: string;
+    media: File[];
+}
 
-    function setTitle(title: string) {
-        setPost({ ...post, title: title });
-    }
+interface PostFormProps {
+    onSubmitPost: (post: Post) => void;
+}
 
-    function setBody(body: string) {
-        setPost({ ...post, body: body });
-    }
+const PostForm = ({ onSubmitPost }: PostFormProps) => {
+    const {register, handleSubmit, watch} = useForm<NewPost>({defaultValues: { title: "", body: "", media: [] }});
+    const watchInfo = watch(["media"]);
 
-    async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
-        event.preventDefault();
-        const form = event.currentTarget;
-        const formData = new FormData(form);
-
-        try {
-            const post: Post = await postService.createPost(formData);
-            setPost({ title: "", body: "" });
-            setSelectedImages([]);
-            onSubmit(post);
-        } catch (e) {
-            console.error(e);
+    const onSubmit: SubmitHandler<NewPost> = async (data) => {
+        try{
+            const post: Post = await postsService.createPost(data);
+            onSubmitPost(post);
+        } catch (err){
+            console.log(err);
         }
     }
 
@@ -37,25 +34,25 @@ const PostForm = ({ onSubmit }: PostFormProps) => {
                 <Col sm={2}>
                 </Col>
                 <Col sm={10} xs={12}>
-                    <form method="post" onSubmit={handleSubmit}>
-                        <h5><Pencil /> Write a post</h5>
+                    <Form method="post" onSubmit={handleSubmit(onSubmit)}>
+                        <h5><Pencil /> Creează o postare</h5>
                         <Card className="shadow">
-                            <input className="card-header" type="text" name="title" placeholder="Title" value={post.title} onChange={e => setTitle(e.target.value)}></input>
-                            <textarea className="card-body" name="body" placeholder="Share your thoughts..." value={post.body} onChange={e => setBody(e.target.value)}></textarea>
-                            {selectedImages.length > 0 && Array.from(selectedImages).map((file) => (
+                            <input className="card-header" placeholder="Titlu" {...register("title")}/>
+                            <TextareaAutosize className="card-body" placeholder="Scrie o postare" {...register("body")}/>
+                            {watchInfo[0] && Array.from(watchInfo[0]).map((file) => (
                             <>
                                 {file.type.match('image.*') && <img alt="not found" className="card-img-bottom" src={URL.createObjectURL(file)} />}
                                 {file.type.match('video.*') && <video controls className="card-img-bottom" src={URL.createObjectURL(file)} />}
                             </>
                             ))}
-                            <input className="form-control" type="file" accept="image/*, video/*" multiple name="media" onChange={(e) => setSelectedImages(Array.from(e.target.files ?? []))} />
+                            <input className="form-control" type="file" accept="image/*, video/*" {...register("media")}/>
                             <CardFooter className="text-muted">
-                                <Button type="submit" variant="primary" disabled={!post.body}>
-                                    Share <ChevronBarRight />
+                                <Button type="submit" variant="primary">
+                                    Distribuie
                                 </Button>
                             </CardFooter>
                         </Card>
-                    </form>
+                    </Form>
                 </Col>
             </Row>
         </Container>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocializR.DataAccess;
 
@@ -11,9 +12,11 @@ using SocializR.DataAccess;
 namespace SocializR.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240314160509_Created-Game-and-GameSession-Entities")]
+    partial class CreatedGameandGameSessionEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -752,7 +755,7 @@ namespace SocializR.DataAccess.Migrations
                     b.Property<int>("NumberOfCorrectEasyQuestions")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumberOfCorrectExpertQuestions")
+                    b.Property<int>("NumberOfCorrectExtremeQuestions")
                         .HasColumnType("int");
 
                     b.Property<int>("NumberOfCorrectHardQuestions")
@@ -764,7 +767,7 @@ namespace SocializR.DataAccess.Migrations
                     b.Property<int>("NumberOfIncorrectEasyQuestions")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumberOfIncorrectExpertQuestions")
+                    b.Property<int>("NumberOfIncorrectExtremeQuestions")
                         .HasColumnType("int");
 
                     b.Property<int>("NumberOfIncorrectHardQuestions")

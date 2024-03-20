@@ -1,4 +1,6 @@
-﻿namespace SocializR.Models.Entities;
+﻿using Socializr.Models.Entities;
+
+namespace SocializR.Models.Entities;
 
 public partial class User : IdentityUser<Guid>, IEntity
 {
@@ -32,6 +34,7 @@ public partial class User : IdentityUser<Guid>, IEntity
 
     public virtual City City { get; set; }
     public virtual Media ProfilePhoto { get; set; }
+    public virtual Game Game { get; set; }
     public virtual ICollection<Album> Albums { get; set; }
     public virtual ICollection<Comment> Comments { get; set; }
     public virtual ICollection<FriendRequest> FriendRequestsRequestedUser { get; set; }
@@ -42,4 +45,5 @@ public partial class User : IdentityUser<Guid>, IEntity
     public virtual ICollection<Media> Media { get; set; }
     public virtual ICollection<Post> Posts { get; set; }
     public virtual ICollection<UserInterest> UserInterests { get; set; }
+    public virtual ICollection<GameSession> GameSessions { get; set; }
 }

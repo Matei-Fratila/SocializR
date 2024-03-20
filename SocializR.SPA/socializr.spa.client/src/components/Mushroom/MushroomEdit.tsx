@@ -1,5 +1,5 @@
 import './Mushroom.css';
-import { Button, Card, CardBody, Form, InputGroup } from "react-bootstrap";
+import { Button, Card, CardBody, Form } from "react-bootstrap";
 import { Ciuperca, CiupercaEdit, CiupercaOption, Comestibilitate, ComestibilitateOption, LocDeFructificatie, LocDeFructificatieOption, Luna, LunaOption, MorfologieCorpFructifer, MorfologieCorpFructiferOption } from "../../types/types";
 import mushroomsService from "../../services/mushrooms.service";
 import { useNavigate, useParams } from "react-router-dom";
@@ -49,7 +49,8 @@ const MushroomEdit = () => {
     const handleSearchMushrooms = async () => {
         try {
             const mushrooms = await mushroomsService.searchMushrooms("");
-            const options = mushrooms.map((mushroom) => mushroomsService.mapCiupercaSearchResultToCiupercaOption(mushroom));
+            const options = mushrooms.filter(m => m.id.toString() !== id)
+                .map((mushroom) => mushroomsService.mapCiupercaSearchResultToCiupercaOption(mushroom));
             setMushroomOptions(options);
         } catch {
 

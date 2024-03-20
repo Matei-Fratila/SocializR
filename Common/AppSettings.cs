@@ -12,4 +12,5 @@ public class AppSettings
     public string DefaultAlbumCover { get; set; }
     public string PostsAlbumName { get; set; }
     public string ProfilePicturesAlbumName { get; set; }
+    public int MaxNumberOfHearts { get; set; }
 }

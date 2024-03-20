@@ -25,7 +25,7 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "socializr.spa.client", "Soc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{E4F18115-BD68-4A96-BEFE-EBFD3F031B0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MushroomsGuide.API", "MushroomsGuide.API\MushroomsGuide.API.csproj", "{65F56D52-461C-4E1D-B820-B59C0BE4EE8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MushroomsGuide.API", "MushroomsGuide.API\MushroomsGuide.API.csproj", "{65F56D52-461C-4E1D-B820-B59C0BE4EE8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

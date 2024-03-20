@@ -3,6 +3,7 @@ import { Button, Form, ListGroup } from "react-bootstrap";
 import userService from "../services/user.service";
 import axiosInstance from '../helpers/axios-helper';
 import { User } from "../types/types";
+import { Link } from "react-router-dom";
 
 const SearchBar = () => {
     const [searchKey, setSearchKey] = React.useState("");
@@ -43,10 +44,12 @@ const SearchBar = () => {
                 <ListGroup>
                     {users.map((user: User) => (
                         <>
-                            <ListGroup.Item key={user.id} action>
-                                <img className="rounded-circle user-photo shadow img-thumbnail" src={`${axiosInstance.defaults.baseURL}${user.profilePhoto}`} />
-                                {user.firstName} {user.lastName}
-                            </ListGroup.Item>
+                            <Link to={`{}`}>
+                                <ListGroup.Item key={user.id} action>
+                                    <img className="rounded-circle user-photo shadow img-thumbnail" src={`${axiosInstance.defaults.baseURL}${user.profilePhoto}`} />
+                                    {user.firstName} {user.lastName}
+                                </ListGroup.Item>
+                            </Link>
                         </>
                     ))}
                 </ListGroup>

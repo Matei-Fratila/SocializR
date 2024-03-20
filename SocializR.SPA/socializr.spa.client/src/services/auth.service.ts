@@ -1,8 +1,10 @@
 import axios, { AxiosResponse } from 'axios';
-import { CurrentUser, LoginRequest, LoginResponse, RegisterRequest } from '../types/types';
+import { CurrentUser, LoginResponse } from '../types/types';
+import { RegisterModel } from '../components/Register';
+import { LoginModel } from '../components/Login';
 
 class AuthService {
-    async login(loginRequest: LoginRequest) {
+    async login(loginRequest: LoginModel) {
         const axiosResponse: AxiosResponse = await axios.post('/Auth/login', loginRequest);
         const response: LoginResponse = axiosResponse.data;
 
@@ -37,7 +39,7 @@ class AuthService {
         localStorage.removeItem('user');
     }
 
-    async register(registerRequest: RegisterRequest) {
+    async register(registerRequest: RegisterModel) {
         try {
             await axios.post('/Auth/register', registerRequest);
         } catch (e) {

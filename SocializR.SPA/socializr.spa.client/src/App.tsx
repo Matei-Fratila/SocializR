@@ -48,7 +48,7 @@ const App = () => {
                                         Graf
                                     </Nav.Link>
                                     <Nav.Link as={Link} to={`/mushrooms/game`}>
-                                        Game
+                                        Joc
                                     </Nav.Link>
                                     <NavDropdown title="Admin" id="navbarScrollingDropdown">
                                         <NavDropdown.Item href="#action3">

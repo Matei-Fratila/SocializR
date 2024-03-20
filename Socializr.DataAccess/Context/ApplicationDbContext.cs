@@ -1,4 +1,6 @@
-﻿namespace SocializR.DataAccess;
+﻿using Socializr.Models.Entities;
+
+namespace SocializR.DataAccess;
 
 public partial class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
 {
@@ -29,6 +31,7 @@ public partial class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
     public virtual DbSet<UserInterest> UserInterests { get; set; }
     //public virtual DbSet<UserRole> UserRoles { get; set; }
     //public new virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<GameSession> GameSessions { get; set; }
 
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //{
@@ -56,5 +59,6 @@ public partial class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
         modelBuilder.ApplyConfiguration(new UserInterestConfiguration());
         //modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
         modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new GameSessionConfiguration());
     }
 }

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import authService from "../services/auth.service";
 
 const instance = axios.create({
@@ -47,7 +47,9 @@ instance.interceptors.response.use(
                 } catch (error) {
                     // Handle token refresh error.You can clear all storage and redirect the user to the login page
                     console.error(error);
-                    return window.location.href = "/login";
+                    if(error.response.status === 401) {
+                        return window.location.href = "/login";
+                    }
                 }
             }
 

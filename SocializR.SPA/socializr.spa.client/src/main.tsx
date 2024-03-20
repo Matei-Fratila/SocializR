@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App.tsx';
@@ -7,7 +6,7 @@ import Register from './components/Register.tsx';
 import { createBrowserRouter, Link, Navigate, RouterProvider } from 'react-router-dom';
 import Feed from './components/Feed.tsx';
 import Profile from './components/Profile.tsx';
-import EditProfile from './components/EditProfile.tsx';
+import ProfileEdit from './components/ProfileEdit.tsx';
 import Gallery from './components/Gallery.tsx';
 import EditMedia from './components/EditMedia.tsx';
 import CreateAlbum from './components/CreateAlbum.tsx';
@@ -37,7 +36,7 @@ const router = createBrowserRouter([
       },
       {
         path: "profile/edit/:id",
-        element: <EditProfile />,
+        element: <ProfileEdit />,
         handle: {
           crumb: () => <Link to="/profile/edit/:id">Edit profile</Link>
         }
@@ -87,13 +86,17 @@ const router = createBrowserRouter([
         element: <Game></Game>
       },
       {
-        element: <Layout />,
-        children: [
-          {
-            path: "feed",
-            element: <Feed />
-          }]
-      },
+        path: "feed",
+        element: <Feed />
+      }
+      // {
+      //   element: <Layout />,
+      //   children: [
+      //     {
+      //       path: "feed",
+      //       element: <Feed />
+      //     }]
+      // },
     ],
   },
   {
@@ -114,8 +117,8 @@ axios.defaults.baseURL = (!process.env.NODE_ENV || process.env.NODE_ENV === 'dev
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <GoogleOAuthProvider clientId='175734963131-86log97gsai6r4p063umtslbc05sdfbo.apps.googleusercontent.com'>
-    <React.StrictMode>
+    {/* <React.StrictMode> */}
       <RouterProvider router={router} />
-    </React.StrictMode>
+    {/* </React.StrictMode> */}
   </GoogleOAuthProvider>
 )

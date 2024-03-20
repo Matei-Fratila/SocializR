@@ -7,25 +7,25 @@ public static class DateTimeExtensions
 
         return timeSpan.TotalSeconds switch
         { 
-            <= 60 => $"{timeSpan.Seconds} seconds ago",
+            <= 60 => $"acum {timeSpan.Seconds} secunde",
             _ => timeSpan.TotalMinutes switch
             {
-                <= 1 => "1 minute ago",
-                < 60 => $"{timeSpan.Minutes} minutes ago",
+                <= 1 => "acum 1 minut",
+                < 60 => $"acum {timeSpan.Minutes} minute",
                 _ => timeSpan.TotalHours switch
                 {
-                    <= 1 => "1 hour ago",
-                    < 24 => $"{timeSpan.Hours} hours ago",
+                    <= 1 => "acum 1 ora",
+                    < 24 => $"acum {timeSpan.Hours} ore",
                     _ => timeSpan.TotalDays switch
                     {
-                        <= 1 => "yesterday",
-                        <= 30 => $"{timeSpan.Days} days ago",
+                        <= 1 => "ieri",
+                        <= 30 => $"acum {timeSpan.Days} zile",
 
-                        <= 60 => "1 month ago",
-                        < 365 => $"{timeSpan.Days / 30} months ago",
+                        <= 60 => "acum 1 luna",
+                        < 365 => $"acum {timeSpan.Days / 30} luni",
 
-                        <= 365 * 2 => "1 year ago",
-                        _ => $"{timeSpan.Days / 365} years ago"
+                        <= 365 * 2 => "acum 1 an",
+                        _ => $"acum {timeSpan.Days / 365} ani"
                     }
                 }
             }

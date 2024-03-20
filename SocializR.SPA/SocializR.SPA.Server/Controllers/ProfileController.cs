@@ -17,16 +17,10 @@ public class ProfileController(CurrentUser _currentUser,
     private readonly string _defaultProfilePicture = _appSettings.CurrentValue.DefaultProfilePicture;
     private readonly string _defaultAlbumCover = _appSettings.CurrentValue.DefaultAlbumCover;
 
-    [HttpGet("{id}")]
-    [AllowAnonymous]
+    [HttpGet("{id}"), Authorize]
     public async Task<Results<NotFound, Ok<ProfileViewModel>>> GetAsync([FromRoute] Guid id)
     {
-        var currentUser = await _userManager.GetUserAsync(User);
-
-        if (id == Guid.Empty)
-        {
-            id = currentUser.Id;
-        }
+        var authorizedUserId = new Guid(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
         var model = await _profileService.GetProfile(id);
 
@@ -41,16 +35,16 @@ public class ProfileController(CurrentUser _currentUser,
             album.CoverFilePath = _imageStorage.UriFor(album.CoverFilePath ?? _defaultAlbumCover);
         }
 
-        if (id != currentUser?.Id)
+        if (id != authorizedUserId)
         {
             model.MutualFriends = await _friendshipService.GetMutualFriendsCountAsync(id, _currentUser.Id);
         }
 
-        model.RelationToCurrentUser = _profileService.GetRelationToCurrentUser(currentUser?.Id, id);
+        model.RelationToCurrentUser = _profileService.GetRelationToCurrentUser(authorizedUserId, id);
 
         if (model.IsPrivate
             && model.RelationToCurrentUser == RelationTypes.Strangers
-            && await _userManager.IsInRoleAsync(currentUser, "Administrator") == false)
+            && await _userManager.IsInRoleAsync(await _userManager.FindByIdAsync(authorizedUserId.ToString()), "Administrator") == false)
         {
             model.Albums = null;
             model.Interests = null;

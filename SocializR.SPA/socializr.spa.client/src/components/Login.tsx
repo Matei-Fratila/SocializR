@@ -1,107 +1,81 @@
-import { Formik, Field, Form, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
 import authService from '../services/auth.service';
 import { Link, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/esm/Row';
 import Button from 'react-bootstrap/esm/Button';
-import { Col } from 'react-bootstrap';
-import axios, { AxiosError } from 'axios';
+import { Card, CardBody, Col, Form, Row } from 'react-bootstrap';
 import GoogleLoginButton from './GoogleLoginButton';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import axios, { AxiosError } from 'axios';
 
-const LoginSchema = Yup.object().shape({
-    email: Yup.string()
-        .email("Invalid email address format")
-        .required("Email is required"),
-    password: Yup.string()
-        .min(3, "Password must be 3 characters at minimum")
-        .required("Password is required")
-});
+export interface LoginModel {
+    email: string,
+    password: string
+};
 
 const Login = () => {
     const navigate = useNavigate();
+    const { register, handleSubmit, formState: { errors }, setError } = useForm<LoginModel>();
 
-    return (<Formik
-        initialValues={{ email: "", password: "" }}
-        validationSchema={LoginSchema}
-        onSubmit={async (values, { setSubmitting, setErrors }) => {
-            try {
-                await authService.login({ email: values.email, password: values.password });
-                navigate("/feed");
-            } catch (error) {
-                setSubmitting(false);
-                if (axios.isAxiosError(error)) {
-                    const statusCode = (error as AxiosError).response?.status;
-                    if (statusCode === 401) {
-                        setErrors({password: "You have entered an invalid username or password"});
-                    }
+    const onSubmit: SubmitHandler<LoginModel> = async (data) => {
+        try {
+            await authService.login(data);
+            navigate(`/feed`);
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const statusCode = (error as AxiosError).response?.status;
+                if (statusCode === 401) {
+                    setError("password", { type: "custom", message: "Email sau parolă invalide" });
+                    setError("email", { type: "custom", message: "Email sau parolă invalide" });
                 }
             }
-        }}>
-        {(props) => (
+        };
+    }
+
+    return (
+        <>
             <Container>
-                <h5> Login or <Link to={`/register`}>Register</Link> if you don't have an account</h5>
-                <hr />
-                <Form>
-                    <Row className='mb-3 form-group'>
-                        <Col xs={12} sm={2} className='col-form-label'>
-                            <label htmlFor="email">Email</label>
-                        </Col>
-                        <Col xs={12} sm={8} md={6} lg={4}>
-                            <Field
-                                type="email"
-                                name="email"
-                                placeholder="Enter email"
-                                autoComplete="off"
-                                className={`form-control ${props.touched.email && props.errors.email
-                                    ? "is-invalid"
-                                    : ""
-                                    }`}
-                            />
-                            <ErrorMessage
-                                component="div"
-                                name="email"
-                                className="invalid-feedback"
-                            />
-                        </Col>
-                    </Row>
+                <Card className='shadow p-3'>
+                    <h5>Autentificare</h5>
+                    <hr></hr>
+                    <CardBody>
+                        <Form onSubmit={handleSubmit(onSubmit)}>
+                            <Form.Group as={Row} className="mb-3" controlId="email">
+                                <Form.Label as={Col} xs={12} sm={3} md={2}>Email</Form.Label>
+                                <Col xs={12} sm={8} md={6} lg={4}>
+                                    <Form.Control isInvalid={errors.email !== undefined} type="email" {...register("email", {
+                                        required: "Câmp obligatoriu", pattern: {
+                                            value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                                            message: "Adresă de email invalidă"
+                                        }
+                                    })} />
+                                    <Form.Control.Feedback type="invalid" className='d-block'>
+                                        {errors.email?.message}
+                                    </Form.Control.Feedback>
+                                </Col>
+                            </Form.Group>
 
-                    <Row className="form-group">
-                        <Col xs={12} sm={2} className='col-form-label'>
-                            <label htmlFor="password">Password</label>
-                        </Col>
-                        <Col xs={12} sm={8} md={6} lg={4}>
-                            <Field
-                                type="password"
-                                name="password"
-                                placeholder="Enter password"
-                                className={`form-control ${props.touched.password && props.errors.password
-                                    ? "is-invalid"
-                                    : ""
-                                    }`}
-                            />
-                            <ErrorMessage
-                                component="div"
-                                name="password"
-                                className="invalid-feedback"
-                            />
-                        </Col>
-                    </Row>
+                            <Form.Group as={Row} className="mb-3" controlId="email">
+                                <Form.Label as={Col} xs={12} sm={3} md={2}>Parolă</Form.Label>
+                                <Col xs={12} sm={8} md={6} lg={4}>
+                                    <Form.Control isInvalid={errors.password !== undefined} type="password" {...register("password", { required: "Câmp obligatoriu" })} />
+                                    <Form.Control.Feedback type="invalid" className='d-block'>
+                                        {errors.password?.message}
+                                    </Form.Control.Feedback>
+                                </Col>
+                            </Form.Group>
 
-                    <Button
-                        type="submit"
-                        className="btn btn-primary btn-block mt-4"
-                        disabled={props.isSubmitting}
-                    >
-                        {props.isSubmitting
-                            ? "Logging in..."
-                            : "Login"}
-                    </Button>
-                    <GoogleLoginButton/>
-                </Form>
+                            <Button type="submit" className="btn btn-primary mb-3">
+                                Logare
+                            </Button>
+                            <p>Sau logheaza-te prin <GoogleLoginButton /></p>
+
+                        </Form>
+                        Nu ai un cont? <Link to={'/register'}>Înregistreaza-te</Link>
+                    </CardBody>
+                </Card>
             </Container>
-        )}
-    </Formik>)
-}
+        </>
+    );
+};
 
 export default Login;

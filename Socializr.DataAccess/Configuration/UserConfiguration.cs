@@ -53,5 +53,7 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
             .HasConstraintName("FK_Users_Photos");
 
         builder.HasQueryFilter(e => !e.IsDeleted);
+
+        builder.OwnsOne(e => e.Game);
     }
 }

@@ -10,7 +10,7 @@ import commentService from "../services/comment.service";
 import CommentForm from "./CommentForm";
 import authService from "../services/auth.service";
 import axiosInstance from "../helpers/axios-helper";
-import { Avatar, Badge } from "@mui/material";
+import { Avatar } from "@mui/material";
 import StyledBadge from "./StyledBadge";
 
 const Post = ({ item, onRemoveItem }: PostProps) => {
@@ -120,11 +120,11 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
                             </Button>
 
                             <Button variant="light" title="see likes" data-toggle="tooltip" data-placement="bottom">
-                                <Heart /> <span>{numberOfLikes} Likes</span>
+                                <Heart /> <span>{numberOfLikes} Aprecieri</span>
                             </Button>
 
                             <Button variant="light" title="see comments" data-toggle="tooltip" data-placement="bottom">
-                                <Chat /> <span>{numberOfComments} Comments</span>
+                                <Chat /> <span>{numberOfComments} Comentarii</span>
                             </Button>
 
                             {comments.map(comment => (
@@ -135,7 +135,7 @@ const Post = ({ item, onRemoveItem }: PostProps) => {
                                 <Container>
                                     <span className="float-end">{comments.length} out of {item.numberOfComments}</span>
                                     <Button variant="link" className="center" title="load more comments" data-toggle="tooltip" data-placement="bottom" onClick={handleLoadMoreComments}>
-                                        Load more comments
+                                        Încarcă mai multe comentarii
                                     </Button>
                                 </Container>}
 

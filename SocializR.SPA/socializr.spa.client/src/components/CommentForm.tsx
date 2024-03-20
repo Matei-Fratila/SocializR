@@ -1,5 +1,4 @@
 import { Button, Card, CardFooter, Container } from "react-bootstrap";
-import { ChevronBarRight } from "react-bootstrap-icons";
 import commentService from "../services/comment.service";
 import { Comment as Comm, CommentFormProps } from "../types/types";
 import React from "react";
@@ -26,10 +25,10 @@ const CommentForm = ({ postId, onSubmit }: CommentFormProps) => {
             <form method="post" onSubmit={handleSubmit}>
                 <input type="hidden" name="postId" value={postId}></input>
                 <Card>
-                    <textarea name="body" value={body} placeholder="Write a comment" onChange={e => setBody(e.target.value)} />
+                    <textarea name="body" value={body} placeholder="Adaugă un comentariu" onChange={e => setBody(e.target.value)} />
                     <CardFooter>
                         <Button type="submit" variant="primary" disabled={!body}>
-                            Comment <ChevronBarRight />
+                            Comentează
                         </Button>
                     </CardFooter>
                 </Card>
